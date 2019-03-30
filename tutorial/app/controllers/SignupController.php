@@ -21,7 +21,9 @@ class SignupController extends Controller
         );
 
         if($success){
-            echo 'successed';
+            //echo 'successed';
+            // ルートにリダイレクトする
+            $this->response->redirect();
         }else{
             echo 'failed';
 
