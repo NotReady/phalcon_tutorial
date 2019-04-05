@@ -27,7 +27,7 @@ class SignupController extends Controller
         }else{
             echo 'failed';
 
-            $messsges = $usre->getMessage();
+            $messsges = $user->getMessage();
 
             foreach($messages as $message){
                 echo $message->getMessage(), '<br/>';
