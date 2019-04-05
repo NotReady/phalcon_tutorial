@@ -1,2 +1,7 @@
 # phpstorm環境ファイル
 /tutorial/.idea/*
+# テンプレートキャッシュ
+*.phtml.php
+# 動作確認用ファイル
+/tutorial/app/controllers/TestController.php
+/tutorial/app/views/*
