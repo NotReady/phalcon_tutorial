@@ -1,5 +1,5 @@
 # phpstorm環境ファイル
-/tutorial/.idea/*
+.idea/
 # テンプレートキャッシュ
 *.phtml.php
 # 動作確認用ファイル
