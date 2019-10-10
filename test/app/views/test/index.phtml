@@ -1,0 +1,45 @@
+{# comment #}
+<?php
+$val = '';
+if($_SERVER['REQUEST_METHOD'] === 'POST')
+{
+    $val = htmlspecialchars($_POST['message']);
+}
+?>
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="phpの動作確認ページ">
+    <title>{{ title }}</title>
+</head>
+<body>
+<h1><?php echo 'hello PHP!' ?></h1>
+
+<form method="post">
+<table>
+<tr>
+    <td>id</td>
+    <td>name</td>
+    <td>email</td>
+</tr>
+{% for user in users %}
+<tr>
+    <td>{{ user.id }}</td>
+    <td>{{ user.name }}</td>
+    <td>{{ user.email }}</td>
+</tr>
+{% endfor %}
+</table>
+<p>test</p>
+<form action="" method="post">
+    <input type="text" name="message" value="<?php echo $val; ?>">
+    <input type="submit" value="送信">
+</form>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</body>
+</html>
+

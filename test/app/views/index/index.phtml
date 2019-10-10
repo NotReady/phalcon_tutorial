@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>勤務表</title>
+
+    <style>
+
+        body {
+            font-size: 12px;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-size: 16px;
+        }
+
+        .kinmuhyo {
+            width: 90%;
+            margin: 10px auto;
+        }
+
+        .kinmuhyo table {
+            border: solid #eee 1px;
+            text-align: center;
+            width: 100%;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        .kinmuhyo table tr td, .kinmuhyo table tr th {
+            border: solid #eee 1px;
+            white-space: nowrap;
+            position:relative;
+        }
+
+        .kinmuhyo table tr td:nth-of-type(n+4):nth-of-type(-n+7){
+            width: 75px;
+        }
+
+        .kinmuhyo table tr td:nth-of-type(1){
+            width: 55px;
+        }
+
+        .kinmuhyo table tr td:nth-of-type(2){
+            width: 40px;
+        }
+
+        .kinmuhyo table tr td:nth-of-type(3){
+            width: 200px;
+        }
+
+        .kinmuhyo table tr td:nth-of-type(4){
+            width: 100px;
+        }
+
+        .timeinput {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .ctrlPane {
+            text-align: right;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>#月度 <?php echo $employee->first_name . ' ' .$employee->last_name ; ?>の勤務表</h1>
+
+<div class="kinmuhyo">
+<form method="post">
+    <table>
+        <thead>
+        <th>日付</th>
+        <th>曜日</th>
+        <th>勤務先</th>
+        <th>作業分類</th>
+        <th>開始時間</th>
+        <th>終了時間</th>
+        <th>休憩時間</th>
+        </thead>
+        <?php foreach($reports as $day => $report) : ?>
+            <tr>
+                <td><?php echo $day; ?></td>
+                <td><?php echo $report['week']; ?></td>
+                <td><?php echo $report['dest']; ?></td>
+                <td><?php echo $report['type']; ?></td>
+                <!-- todo: HH:MMフォーマット -->
+                <!-- todo: HH:MM単位で入力 -->
+                <!-- todo: HH:MMバリデーション -->
+                <td><input class="timeinput" width="100%" type="text" value="<?php echo $report['time_from']; ?>"></td>
+                <td><input class="timeinput" type="text" value="<?php echo $report['time_to']; ?>"></td>
+                <td><input class="timeinput" type="text" value="<?php echo $report['breaktime']; ?>"></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+
+<div class="ctrlPane">
+    <input type="reset" value="キャンセル">
+    <input type="submit" value="保存">
+</div>
+
+</form>
+</div>
+
+</body>
+</html>
