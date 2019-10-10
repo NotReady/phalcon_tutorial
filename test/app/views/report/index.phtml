@@ -103,9 +103,11 @@
         <?php foreach($reports as $day => $report) : ?>
             <tr>
                 <form method="post" action="/report/save">
+                <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
+                <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
                 <td>{{day}}</td>
                 <td <?php if($report['week']==='土'){echo 'class="sat"';}if($report['week']==='日'){echo 'class="sun"';}?>>{{report['week']}}</td>
-                <td><select class="form-control" name="<?php echo "report[$employee->id][$thisyear-$day][site_id]"; ?>">
+                <td><select class="form-control" name="nm_site_id"; ?>">
                         <?php foreach($sites as $id => $name): ?>
                         <option value="{{id}}"
                             <?php if($id==$report['report']['site']->id){echo 'selected';}?>>{{name}}</option>
@@ -113,7 +115,7 @@
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" name="<?php echo "report[$employee->id][$thisyear-$day][wtype_id]"; ?>">
+                    <select class="form-control" name="nm_wtype_id"; ?>">
                         <?php foreach($wtypes as $id => $name): ?>
                         <option value="{{id}}"
                             <?php if($id==$report['report']['wtype']->id){echo 'selected';}?>>{{name}}</option>
@@ -123,9 +125,9 @@
                 <!-- todo: HH:MMフォーマット -->
                 <!-- todo: HH:MM単位で入力 -->
                 <!-- todo: HH:MMバリデーション -->
-                <td><input class="form-control" name="<?php echo "report[$employee->id][$thisyear-$day][timefrom]"; ?>" class="timeinput" type="text" value="{{report['report']['time_from']}}"></td>
-                <td><input class="form-control" name="<?php echo "report[$employee->id][$thisyear-$day][timeto]"; ?>" class="timeinput" type="text" value="{{report['report']['time_to']}}"></td>
-                <td><input class="form-control" name="<?php echo "report[$employee->id][$thisyear-$day][breaktime]"; ?>" class="timeinput" type="text" value="{{report['report']['breaktime']}}"></td>
+                <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{report['report']['time_from']}}"></td>
+                <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{report['report']['time_to']}}"></td>
+                <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{report['report']['breaktime']}}"></td>
                 <td><input class="btn btn-primary" type="submit" value="保存"></td>
                 </form>
             </tr>

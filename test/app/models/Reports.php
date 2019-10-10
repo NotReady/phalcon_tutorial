@@ -50,10 +50,6 @@ class Reports extends Model
 
             // 1件のレポート
             $r = current($asReport);
-//            $bfrom = new DateTime($r->breaktime_from);
-//            $bto = new DateTime($r->breaktime_to);
-//            $interval = $bfrom->diff($bto);
-
             $timefrom = new DateTime($r->time_from);
             $timeto = new DateTime($r->time_to);
             $breaktime = new DateTime($r->breaktime);
@@ -93,23 +89,6 @@ class Reports extends Model
             if($mo===false) {
                 $mo = new Reports();
             }
-
-//            $mo->employee_id = $employeeId;
-//            $mo->at_day = $day;
-//            $mo->site_id = $report['site_id'];
-//            $mo->worktype_id = $report['wtype_id'];
-//            $mo->time_from = $report['timefrom'];
-//            $mo->time_to = $report['timeto'];
-//            $mo->breaktime = '1:00';
-//
-//
-//            if($mo->save()===false){
-//                foreach ($mo->getMessages() as $message) {
-//                    echo "${day}: $message . <br>";
-//                }
-//            }else{
-//                echo "${day}: save completed' . <br>";
-//            }
 
 
             $ar = array(
