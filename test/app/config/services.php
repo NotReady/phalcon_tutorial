@@ -2,6 +2,7 @@
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlProvider;
+use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 
 
@@ -14,9 +15,14 @@ $di->set(
     function(){
         $view = new View();
         $view->setViewsDir(APP_PATH. '/views/');
+
+        $volt = new VoltEngine($view);
+        $volt->getCompiler()->addFilter('strtotime', 'strtotime');
+
+
         $view->registerEngines(
             array(
-                ".volt" => 'Phalcon\Mvc\View\Engine\Volt',
+                ".volt" => $volt,
             )
         );
 
@@ -55,4 +61,3 @@ $di->set(
     require APP_PATH . '/config/routes.php';
     return $router;
 });
-
