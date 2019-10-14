@@ -1,17 +1,14 @@
 <?php
-use Phalcon\Loader;
+use Phalcon\Config;
 
-// Register an autoloader
-$loader = new Loader();
-
-$loader->registerDirs(
+return new Config(
     [
-        BASE_PATH . $config->application->controllersDir,
-        BASE_PATH . $config->application->modelsDir,
-        BASE_PATH . $config->application->formsDir,
-        //APP_PATH . '/controllers/',
-        //APP_PATH . '/models/',
+        'application' => [
+            'controllersDir' => '/app/controllers/',
+            'modelsDir' => '/app/models/',
+            'viewsDir' => 'views',
+            'formsDir' => '/app/forms/',
+        ]
     ]
-);
-
-$loader->register();
+)
+?>

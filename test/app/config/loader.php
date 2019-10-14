@@ -1,7 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: notready
- * Date: 2019-10-11
- * Time: 08:12
- */
+use Phalcon\Loader;
+
+// Register an autoloader
+$loader = new Loader();
+
+$loader->registerDirs(
+    [
+        BASE_PATH . $config->application->controllersDir,
+        BASE_PATH . $config->application->modelsDir,
+        BASE_PATH . $config->application->formsDir,
+        //APP_PATH . '/controllers/',
+        //APP_PATH . '/models/',
+    ]
+);
+
+$loader->register();
