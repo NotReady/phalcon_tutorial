@@ -20,6 +20,26 @@ class Reports extends Model
         $this->useDynamicUpdate(true);
     }
 
+    public static function getReportWithDayAll($employee_id, $year, $month){
+
+        $results = [];
+
+        // ブランクのカレンダーリストを作成します
+        $lastDay = date('t', mktime(0, 0, 0, $month, 1, $year));
+        for($day=1; $day<=$lastDay; $day++){
+            $results[sprintf("%02d-%02d", $month, $day)] = '';
+        }
+
+        // 記録のある出勤簿を上書きします
+        $repofts = self::getReport($employee_id, $year, $month);
+        foreach ( $repofts as $report) {
+            $results[date('m-d', strtotime($report->at_day))] = $report;
+        }
+
+        return $results;
+
+    }
+
     // ある年月の勤怠表を取得します。
     public function getReport($employee_id, $year, $month){
 
@@ -27,7 +47,7 @@ class Reports extends Model
         $lastDay = date('t', mktime(0, 0, 0, $month, 1, $year));
 
         // 従業員 and 指定期間でモデル取得
-        $repos = Reports::find(
+        return $reports = Reports::find(
             [
                 'conditions' => 'employee_id = ?0 and at_day between ?1 and ?2',
                 "order" => "at_day",
@@ -37,40 +57,6 @@ class Reports extends Model
                     2 => "{$year}-{$month}-{$lastDay}",
                 ]
             ]);
-
-        $reports = array();
-        // 存在する勤怠を日付のハッシュリストに登録
-        for($d=1; $d<=$lastDay; $d++){
-
-            $asReport = $repos->filter(function ($r) use ($year, $month, $d){
-                if( $r->at_day == sprintf("%04d-%02d-%02d", $year, $month, $d)) {
-                    return $r;
-                }
-            });
-
-            // 1件のレポート
-            $r = current($asReport);
-            $timefrom = new DateTime($r->time_from);
-            $timeto = new DateTime($r->time_to);
-            $breaktime = new DateTime($r->breaktime);
-
-            $week = ['日','月','火','水','木','金','土',];
-            $reports[sprintf("%02d-%02d", $month, $d)]['week'] = $week[date('w', mktime(0, 0, 0, $month, $d, $year))];;
-
-            if($r){
-                $reports[sprintf("%02d-%02d", $month, $d)]['report'] = [
-                    "site" => $r->sites,
-                    "wtype" => $r->worktypes,
-                    "time_from" => $timefrom->format("H:i"),
-                    "time_to" => $timeto->format("H:i"),
-                    // intervalはformat式が異なる。。
-                    "breaktime" => $breaktime->format("H:i"),//$interval->format("%H:%I"),
-                ];
-            }
-        }
-
-        return $reports;
-
     }
 
     public function updateOneReport($employeeId, $day, $report){

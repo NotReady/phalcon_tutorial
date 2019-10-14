@@ -13,7 +13,7 @@ class ReportController extends Controller
         $month = $this->dispatcher->getParam('month');
         $employee_id = $this->dispatcher->getParam('employee_id');
 
-        $report = Reports::getReport($employee_id, $year, $month);
+        $report = Reports::getReportWithDayAll($employee_id, $year, $month);
         $this->view->reports = $report;
 
         $employee = Employees::findfirst($employee_id);

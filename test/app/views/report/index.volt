@@ -81,25 +81,20 @@
             width: 100%;
         }
 
+        .kinmuhyo td{
+            font-size: 1rem;
+            vertical-align: middle;
+        }
+
     </style>
 </head>
 <body>
-
-<h1>{{ thismonth }}月度 {{ employee.first_name }} {{ employee.last_name }}の勤務表</h1>
-
-<?php
-
-// 日数
-$lastDay = date('t', mktime(0, 0, 0, $thismonth, 1, $thisyear));
-$week = ['日','月','火','水','木','金','土',];
-$reports[sprintf("%02d-%02d", $month, $d)]['week'] = $week[date('w', mktime(0, 0, 0, $month, $d, $year))];;
-
-?>
-
-
-
 <div class="kinmuhyo">
-    <table class="table table-hover">
+<h3>{{ thismonth }}月度 {{ employee.first_name }} {{ employee.last_name }}の勤務表</h3>
+<?php
+$week = ['日','月','火','水','木','金','土'];
+?>
+    <table class="table-hover table">
         <thead>
         <th>日付</th>
         <th>曜日</th>
@@ -111,73 +106,50 @@ $reports[sprintf("%02d-%02d", $month, $d)]['week'] = $week[date('w', mktime(0, 0
         <th>保存</th>
         </thead>
         <tbody>
-        <?php for($dayMonth=1; $dayMonth<=$lastDay; $dayMonth++): ?>
 
-            <tr>
-                <form method="post" action="/report/save">
-                    <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
-                    <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
-                    <td>{{day}}</td>
-                    <td <?php if($report['week']==='土'){echo 'class="sat"';}if($report['week']==='日'){echo 'class="sun"';}?>>{{report['week']}}</td>
-                    <td><select class="form-control" name="nm_site_id"; ?>">
-                            <?php foreach($sites as $id => $name): ?>
-                                <option value="{{id}}"
-                                    <?php if($id==$report['report']['site']->id){echo 'selected';}?>>{{name}}</option>
-                            <?php endforeach;?>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" name="nm_wtype_id"; ?>">
-                            <?php foreach($wtypes as $id => $name): ?>
-                                <option value="{{id}}"
-                                    <?php if($id==$report['report']['wtype']->id){echo 'selected';}?>>{{name}}</option>
-                            <?php endforeach;?>
-                        </select>
-                    </td>
-                    <!-- todo: HH:MMフォーマット -->
-                    <!-- todo: HH:MM単位で入力 -->
-                    <!-- todo: HH:MMバリデーション -->
-                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{report['report']['time_from']}}"></td>
-                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{report['report']['time_to']}}"></td>
-                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{report['report']['breaktime']}}"></td>
-                    <td><input class="btn btn-primary" type="submit" value="保存"></td>
-                </form>
-            </tr>
-
-        <?php endfor; ?>
-        <?php foreach($reports as $day => $report) : ?>
+        <?php foreach($reports as $day => $report): ?>
             <tr>
                 <form method="post" action="/report/save">
                 <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
                 <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
-                <td>{{day}}</td>
-                <td <?php if($report['week']==='土'){echo 'class="sat"';}if($report['week']==='日'){echo 'class="sun"';}?>>{{report['week']}}</td>
+                <td class="cell">{{day}}</td>
+                <td>
+                    <?php
+                        echo $week[date('w',  strtotime("${thisyear}-${day}"))];
+                    ?>
+                </td>
+
+
                 <td><select class="form-control" name="nm_site_id"; ?>">
                         <?php foreach($sites as $id => $name): ?>
-                        <option value="{{id}}"
-                            <?php if($id==$report['report']['site']->id){echo 'selected';}?>>{{name}}</option>
+                            <option value="{{id}}" <?php if($id==$report->site_id){echo 'selected';}?>>{{name}}</option>
                         <?php endforeach;?>
                     </select>
                 </td>
                 <td>
                     <select class="form-control" name="nm_wtype_id"; ?>">
                         <?php foreach($wtypes as $id => $name): ?>
-                        <option value="{{id}}"
-                            <?php if($id==$report['report']['wtype']->id){echo 'selected';}?>>{{name}}</option>
+                        <option value="{{id}}" <?php if($id==$report->worktype_id){echo 'selected';}?>>{{name}}</option>
                         <?php endforeach;?>
                     </select>
                 </td>
-                <!-- todo: HH:MMフォーマット -->
-                <!-- todo: HH:MM単位で入力 -->
-                <!-- todo: HH:MMバリデーション -->
-                <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{report['report']['time_from']}}"></td>
-                <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{report['report']['time_to']}}"></td>
-                <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{report['report']['breaktime']}}"></td>
+
+                {% if report is empty %}
+                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text"></td>
+                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text"></td>
+                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text"></td>
+                {% else %}
+                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{date('H:i', report.time_from | strtotime)}}"></td>
+                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{date('H:i', report.time_to | strtotime)}}"></td>
+                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
+                {% endif %}
+
                 <td><input class="btn btn-primary" type="submit" value="保存"></td>
+
                 </form>
             </tr>
         <?php endforeach; ?>
-        </tbody>
+        </tbody>∫
     </table>
 
 </div>
