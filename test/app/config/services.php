@@ -16,7 +16,7 @@ $di->set(
         $view->setViewsDir(APP_PATH. '/views/');
         $view->registerEngines(
             array(
-                ".phtml" => 'Phalcon\Mvc\View\Engine\Volt',
+                ".volt" => 'Phalcon\Mvc\View\Engine\Volt',
             )
         );
 
