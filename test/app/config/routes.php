@@ -16,5 +16,10 @@ $router->add('/report/save',[
     'action'=>'save',
 ]);
 
+$router->add('/employees',[
+    'controller' => "Employee",
+    'action'=>'index',
+]);
+
 
 $router->handle();
