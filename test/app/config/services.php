@@ -4,7 +4,7 @@ use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlProvider;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
-
+use Phalcon\Session\Adapter\Files as Session;
 
 // Create DI
 $di = new FactoryDefault();
@@ -61,3 +61,12 @@ $di->set(
     require APP_PATH . '/config/routes.php';
     return $router;
 });
+
+$di->setShared(
+    'session',
+    function(){
+        $session = new Session();
+        $session->start();
+        return $session;
+    }
+);
