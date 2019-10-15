@@ -15,6 +15,13 @@ class Employees extends Model{
 
     public function initialize(){
         $this->hasMany('id', 'Reports', 'employee_id');
+
+        $this->skipAttributes(
+            [
+                'created',
+                'updated',
+            ]
+        );
     }
 
     public function getEmployeesWithLatestInput(){
@@ -24,6 +31,7 @@ class Employees extends Model{
               e.first_name,
               e.last_name,
               e.created,
+              e.updated,
               max(r.at_day) as last_input_day
              from Employees e
              left join Reports r
