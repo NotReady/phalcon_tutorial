@@ -41,5 +41,21 @@ class ReportController extends Controller
      * 勤怠更新アクション
      */
     public function saveAction(){
+
+        $params = $this->request->getPost();
+        $report = new Reports();
+        $report->employee_id = $params['nm_employee_id'];
+        $report->at_day = $params['nm_date'];
+        $report->site_id = $params['nm_site_id'];
+        $report->worktype_id = $params['nm_wtype_id'];
+        $report->time_from = $params['nm_timefrom'];
+        $report->time_to = $params['nm_timeto'];
+        $report->breaktime = $params['nm_breaktime'];
+
+        if( $report->save() === false ){
+            header("HTTP/1.1 503 Service Unavailable");
+        }
+
+        header("Content-type: text/plain; charset=UTF-8");
     }
 }

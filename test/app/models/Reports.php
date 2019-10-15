@@ -18,6 +18,13 @@ class Reports extends Model
         $this->belongsTo('site_id', 'Sites', 'id');
         $this->belongsTo('worktype_id', 'Worktypes', 'id');
         $this->useDynamicUpdate(true);
+
+        $this->skipAttributes(
+            [
+                'created',
+                'updated',
+            ]
+        );
     }
 
     public static function getReportWithDayAll($employee_id, $year, $month){
