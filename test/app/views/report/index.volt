@@ -109,7 +109,7 @@ $week = ['日','月','火','水','木','金','土'];
 
         <?php foreach($reports as $day => $report): ?>
             <tr>
-                <form method="post" action="/report/save">
+                <form method="post" action="/report/save" class="asyncForm">
                 <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
                 <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
                 <td class="cell">{{day}}</td>
@@ -144,19 +144,52 @@ $week = ['日','月','火','水','木','金','土'];
                     <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
                 {% endif %}
 
-                <td><input class="btn btn-primary" type="submit" value="保存"></td>
+                <td><input class="btn btn-primary btn-submit" type="submit" value="保存"></td>
 
                 </form>
             </tr>
         <?php endforeach; ?>
-        </tbody>∫
+        </tbody>
     </table>
 
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
 
+<script>
+
+    $(function(){
+        $('.asyncForm').submit(function (event) {
+            // ポストキャンセル
+            event.preventDefault();
+
+            const $thisForm = $(this);
+            const $submit = $thisForm.find('.btn-submit');
+
+            // 非同期ポスト実装
+            $.ajax({
+                url: $thisForm.attr("action"),
+                type: $thisForm.attr("method"),
+                data: $thisForm.serialize(),
+                timeout: 1000 * 10,
+                beforeSend: function(xhr, settings){
+                    $submit.attr("disable", true);
+                },
+                complete: function(xhr, textStatus){
+                    $submit.attr("disable", false);
+                },
+                success: function (result, textStatus, xhr) {
+                    alert('保存しました。');
+                },
+                error: function(xhr, textStatus, error){
+                    alert('失敗しました。');
+                }
+            });
+        })
+    });
+
+</script>
 </body>
 </html>
