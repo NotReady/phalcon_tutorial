@@ -31,5 +31,9 @@ $router->add('/employees/edit/check',[
     'action'=>'editCheck',
 ]);
 
+$router->add('/sites',[
+    'controller' => "Site",
+    'action'=>'index',
+]);
 
 $router->handle();
