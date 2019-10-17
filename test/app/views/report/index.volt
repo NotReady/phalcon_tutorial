@@ -16,12 +16,12 @@
             font-size: 16px;
         }
 
-        .kinmuhyo {
+        .content_root {
             width: 90%;
             margin: 10px auto;
         }
 
-        .kinmuhyo table {
+        .content_root table {
             /*border: solid #eee 1px;*/
             text-align: center;
             width: 100%;
@@ -29,33 +29,33 @@
             border-collapse: collapse;
         }
 
-        .kinmuhyo table tr td, .kinmuhyo table tr th {
+        .content_root table tr td, .content_root table tr th {
             /*border: solid #eee 1px;*/
             /white-space: nowrap;
             position:relative;
         }
 
-        .kinmuhyo table tr td:nth-of-type(n+4):nth-of-type(-n+7){
+        .content_root table tr td:nth-of-type(n+4):nth-of-type(-n+7){
             width: 75px;
         }
 
-        .kinmuhyo table tr td:nth-of-type(1){
+        .content_root table tr td:nth-of-type(1){
             width: 55px;
         }
 
-        .kinmuhyo table tr td:nth-of-type(2){
+        .content_root table tr td:nth-of-type(2){
             width: 40px;
         }
 
-        .kinmuhyo table tr td:nth-of-type(3){
+        .content_root table tr td:nth-of-type(3){
             width: 150px;
         }
 
-        .kinmuhyo table tr td:nth-of-type(4){
+        .content_root table tr td:nth-of-type(4){
             width: 130px;
         }
 
-        .kinmuhyo table tr td:nth-of-type(8){
+        .content_root table tr td:nth-of-type(8){
             width: 50px;
         }
 
@@ -81,7 +81,7 @@
             width: 100%;
         }
 
-        .kinmuhyo td{
+        .content_root td{
             font-size: 1rem;
             vertical-align: middle;
         }
@@ -89,7 +89,7 @@
     </style>
 </head>
 <body>
-<div class="kinmuhyo">
+<div class="content_root">
 <h3>{{ thismonth }}月度 {{ employee.first_name }} {{ employee.last_name }}の勤務表</h3>
 <?php
 $week = ['日','月','火','水','木','金','土'];
