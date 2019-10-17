@@ -1,49 +1,34 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <title>従業員編集</title>
+{% extends "layout/template.volt" %}
 
-    <style>
+{% block title %}従業員編集{% endblock %}
+{% block css_include %}
+    <link rel="stylesheet" type="text/css" href="/css/base.css" />
+{% endblock %}
+{% block js_include %}{% endblock %}
+{% block content_body %}
 
-        body {
-            font-size: 12px;
-            font-family: sans-serif;
-        }
+<style>
+    .form-element-wrap{
+        margin: 0 auto 15px 0;
+    }
 
-        h1 {
-            font-size: 16px;
-        }
+    .form-element-wrap ul{
+        padding: 0;
+        text-align: right;
+    }
 
-        .kinmuhyo {
-            width: 90%;
-            margin: 10px auto;
-        }
+    .form-element-wrap ul li{
+        display: inline-block;
+        width: 100px;
+        margin-left: 10px;
+    }
 
-        .form-element-wrap{
-            margin: 0 auto 15px 0;
-        }
+    .errorMessage{
+        color: lightcoral;
+    }
+</style>
 
-        .form-element-wrap ul{
-            padding: 0;
-            text-align: right;
-        }
-
-        .form-element-wrap ul li{
-            display: inline-block;
-            width: 100px;
-            margin-left: 10px;
-        }
-
-        .errorMessage{
-            color: lightcoral;
-        }
-
-    </style>
-</head>
-<body>
-<div class="kinmuhyo">
+<div class="content_root">
 <h3>従業員編集</h3>
 
     {{ form('/employees/edit/check', 'method': 'post') }}
@@ -79,9 +64,4 @@
 
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
-
-</body>
-</html>
+{% endblock %}

@@ -16,12 +16,12 @@
             font-size: 16px;
         }
 
-        .kinmuhyo {
+        .content_root {
             width: 90%;
             margin: 10px auto;
         }
 
-        .kinmuhyo table {
+        .content_root table {
             /*border: solid #eee 1px;*/
             text-align: center;
             width: 100%;
@@ -29,37 +29,37 @@
             border-collapse: collapse;
         }
 
-        .kinmuhyo table tr td, .kinmuhyo table tr th {
+        .content_root table tr td, .content_root table tr th {
             /*border: solid #eee 1px;*/
             /white-space: nowrap;
             position:relative;
         }
 
-        .kinmuhyo table tr td:nth-of-type(1){
+        .content_root table tr td:nth-of-type(1){
             width: 25%;
         }
 
-        .kinmuhyo table tr td:nth-of-type(2){
+        .content_root table tr td:nth-of-type(2){
             width: 25%;
         }
 
-        .kinmuhyo table tr td:nth-of-type(3){
+        .content_root table tr td:nth-of-type(3){
             width: 40px;
         }
 
-        .kinmuhyo table tr td:nth-of-type(4){
+        .content_root table tr td:nth-of-type(4){
             width: 40px;
         }
 
-        .kinmuhyo table tr td:nth-of-type(5){
+        .content_root table tr td:nth-of-type(5){
             width: 40px;
         }
 
-        .kinmuhyo table tr td:nth-of-type(6){
+        .content_root table tr td:nth-of-type(6){
             width: 40px;
         }
 
-        .kinmuhyo td{
+        .content_root td{
             font-size: 1rem;
             vertical-align: middle;
         }
@@ -67,7 +67,7 @@
     </style>
 </head>
 <body>
-<div class="kinmuhyo">
+<div class="content_root">
 <h3>現場一覧</h3>
 <table class="table-hover table">
     <thead>
