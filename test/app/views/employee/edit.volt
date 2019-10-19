@@ -2,7 +2,7 @@
 
 {% block title %}従業員編集{% endblock %}
 {% block css_include %}
-    <link rel="stylesheet" type="text/css" href="/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/css/base.css" />
 {% endblock %}
 {% block js_include %}{% endblock %}
 {% block content_body %}
