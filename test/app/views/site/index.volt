@@ -1,72 +1,24 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <title>現場一覧</title>
+{% extends "layout/template.volt" %}
 
-    <style>
+{% block title %}現場一覧{% endblock %}
+{% block css_include %}
+    <link rel="stylesheet" type="text/css" href="/css/base.css" />
+{% endblock %}
+{% block js_include %}{% endblock %}
+{% block content_body %}
 
-        body {
-            font-size: 12px;
-            font-family: sans-serif;
-        }
-
-        h1 {
-            font-size: 16px;
-        }
-
-        .content_root {
-            width: 90%;
-            margin: 10px auto;
-        }
-
-        .content_root table {
-            /*border: solid #eee 1px;*/
-            text-align: center;
-            width: 100%;
-            border-spacing: 0;
-            border-collapse: collapse;
-        }
-
-        .content_root table tr td, .content_root table tr th {
-            /*border: solid #eee 1px;*/
-            /white-space: nowrap;
-            position:relative;
-        }
-
-        .content_root table tr td:nth-of-type(1){
-            width: 25%;
-        }
-
-        .content_root table tr td:nth-of-type(2){
-            width: 25%;
-        }
-
-        .content_root table tr td:nth-of-type(3){
-            width: 40px;
-        }
-
-        .content_root table tr td:nth-of-type(4){
-            width: 40px;
-        }
-
-        .content_root table tr td:nth-of-type(5){
-            width: 40px;
-        }
-
-        .content_root table tr td:nth-of-type(6){
-            width: 40px;
-        }
-
-        .content_root td{
-            font-size: 1rem;
-            vertical-align: middle;
-        }
-
-    </style>
-</head>
-<body>
+<style>
+    .content_root table tr td:nth-of-type(1){width: 25%;}
+    .content_root table tr td:nth-of-type(2){width: 25%;}
+    .content_root table tr td:nth-of-type(3){width: 40px;}
+    .content_root table tr td:nth-of-type(4){width: 40px;}
+    .content_root table tr td:nth-of-type(5){width: 40px;}
+    .content_root table tr td:nth-of-type(6){width: 40px;}
+    .content_root td{
+        font-size: 1rem;
+        vertical-align: middle;
+    }
+</style>
 <div class="content_root">
 <h3>現場一覧</h3>
 <table class="table-hover table">
@@ -93,10 +45,4 @@
 </table>
 
 </div>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script><!-- ローカルと異なるところ -->
-
-</body>
-</html>
+{% endblock %}
