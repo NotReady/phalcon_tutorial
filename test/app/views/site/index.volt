@@ -86,7 +86,7 @@
                 <td class="cell">{{ date('H:i', site.time_from | strtotime) }}</td>
                 <td class="cell">{{ date('H:i', site.time_to | strtotime) }}</td>
                 <td class="cell">{{ date('H:i', site.breaktime_from | strtotime) }}</td>
-                <td class="cell">{{ date('H:i', site.breaksite.time_to | strtotime) }}</td>
+                <td class="cell">{{ date('H:i', site.breaktime_to | strtotime) }}</td>
             </tr>
         <?php endforeach; ?>
     </tbody>
