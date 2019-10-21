@@ -8,6 +8,8 @@ return new Config(
             'modelsDir' => '/app/models/',
             'viewsDir' => 'views',
             'formsDir' => '/app/forms/',
+            'servicesDir' => '/app/services/',
+            'helpersDir' => '/app/helpers/',
         ]
     ]
 )
