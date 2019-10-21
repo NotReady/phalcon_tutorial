@@ -13,7 +13,6 @@ h1 {
 }
 
 .content_root table {
-    /*border: solid #eee 1px;*/
     text-align: center;
     width: 100%;
     border-spacing: 0;
@@ -21,7 +20,6 @@ h1 {
 }
 
 .content_root table tr td, .content_root table tr th {
-    /*border: solid #eee 1px;*/
 /white-space: nowrap;
     position:relative;
 }
@@ -29,4 +27,22 @@ h1 {
 .content_root table tr td{
     font-size: 1rem;
     vertical-align: middle;
+}
+
+.content_root .table-sm *{
+    font-size: 0.8rem;
+    vertical-align: middle;
+}
+
+p.btn-like{
+    display: inline-block;
+    padding: 0.3rem 1.0rem;
+}
+
+ul{
+    padding: 0;
+}
+
+ul li{
+    list-style-type: none;
 }

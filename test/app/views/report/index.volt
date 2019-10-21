@@ -9,12 +9,12 @@
 
 <style>
 
-    .content_root table tr td:nth-of-type(n+4):nth-of-type(-n+7){width: 75px;}
-    .content_root table tr td:nth-of-type(1){width: 55px;}
-    .content_root table tr td:nth-of-type(2){width: 40px;}
-    .content_root table tr td:nth-of-type(3){width: 150px;}
-    .content_root table tr td:nth-of-type(4){width: 130px;}
-    .content_root table tr td:nth-of-type(8){width: 50px;}
+    .content_root .table-main tr td:nth-of-type(n+4):nth-of-type(-n+7){width: 75px;}
+    .content_root .table-main tr td:nth-of-type(1){width: 55px;}
+    .content_root .table-main tr td:nth-of-type(2){width: 40px;}
+    .content_root .table-main tr td:nth-of-type(3){width: 150px;}
+    .content_root .table-main tr td:nth-of-type(4){width: 130px;}
+    .content_root .table-main tr td:nth-of-type(8){width: 50px;}
 
     .timeinput {
         width: 100%;
@@ -30,15 +30,81 @@
         vertical-align: middle;
     }
 
+    .table-sm td{
+
+    }
+
+    border *{
+        box-sizing: border-box;
+    }
+
+    .hirizontal-container > *{
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    thead tr{
+        background-color: #eee;
+    }
+
+    tfoot tr{
+        font-weight: bold;
+    }
+
+
 </style>
 
 <div class="content_root">
-<h4>{{ "%s %sさん %d年 %d月 の勤務表" |format(employee.first_name, employee.last_name ,thisyear, thismonth) }}</h4>
-    <hr>
-<?php
+<h4>{{ "%s %sさん %d年 %d月の勤務レポート" |format(employee.first_name, employee.last_name ,thisyear, thismonth) }}</h4>
+<hr>
+
+<div class="hirizontal-container">
+    <div style="width: 400px;">
+        <p class="border border-secondary rounded btn-like">総工数</p>
+    </div>
+    <div style="width: 600px">
+        <p class="border border-secondary rounded btn-like">内訳</p>
+        <table class="table-sm table">
+            <thead>
+            <th>現場</th>
+            <th>作業</th>
+            <th>出勤日数</th>
+            <th>時間内</th>
+            <th>時間外</th>
+            </thead>
+            <tbody>
+            {% for row in summary['site'] %}
+                <tr>
+                    <td>{{ row.sitename }}</td>
+                    <td>{{ row.worktype_name }}</td>
+                    <td>{{ row.days_worked }}日</td>
+                    <td>{{ row.in_time }}</td>
+                    <td>{{ row.out_time }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>合計</td>
+                <td></td>
+                <td>{{ days_worked }}日</td>
+                <td>{{ summary['inTimeAll'] }}</td>
+                <td>{{ summary['outTimeAll'] }}</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<hr>
+
+    <?php
 $week = ['日','月','火','水','木','金','土'];
 ?>
-    <table class="table-hover table">
+
+    <p class="border border-secondary rounded btn-like">勤務表</p>
+
+    <table class="table-hover table table-main">
         <thead>
         <th>日付</th>
         <th>曜日</th>
@@ -52,8 +118,8 @@ $week = ['日','月','火','水','木','金','土'];
         <tbody>
 
         <?php foreach($reports as $day => $report): ?>
-            <tr>
-                <form method="post" action="/report/save" class="asyncForm">
+        <tr>
+            <form method="post" action="/report/save" class="asyncForm">
                 <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
                 <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
                 <td class="cell">{{day}}</td>
@@ -66,7 +132,7 @@ $week = ['日','月','火','水','木','金','土'];
 
                 <td><select class="form-control" name="nm_site_id"; ?>">
                         <?php foreach($sites as $id => $name): ?>
-                            <option value="{{id}}" <?php if($id==$report->site_id){echo 'selected';}?>>{{name}}</option>
+                        <option value="{{id}}" <?php if($id==$report->site_id){echo 'selected';}?>>{{name}}</option>
                         <?php endforeach;?>
                     </select>
                 </td>
@@ -90,8 +156,8 @@ $week = ['日','月','火','水','木','金','土'];
 
                 <td><input class="btn btn-primary btn-submit" type="submit" value="保存"></td>
 
-                </form>
-            </tr>
+            </form>
+        </tr>
         <?php endforeach; ?>
         </tbody>
     </table>

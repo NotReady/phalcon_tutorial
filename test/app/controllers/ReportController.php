@@ -13,8 +13,10 @@ class ReportController extends Controller
         $month = $this->dispatcher->getParam('month');
         $employee_id = $this->dispatcher->getParam('employee_id');
 
-        $report = Reports::getReportWithDayAll($employee_id, $year, $month);
-        $this->view->reports = $report;
+        $reportService = new ReportService($employee_id, $year, $month);
+        $this->view->reports = $reportService->getMonthlyReport();
+        $this->view->days_worked = $reportService->howDaysWorked();
+        $this->view->summary = $reportService->getSummary();
 
         $employee = Employees::findfirst($employee_id);
         $this->view->employee = $employee;
@@ -34,7 +36,6 @@ class ReportController extends Controller
             $wtypeinfo += [$wtype->id=>$wtype->name];
         }
         $this->view->wtypes = $wtypeinfo;
-
     }
 
     /**

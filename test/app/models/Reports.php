@@ -1,5 +1,6 @@
 <?php
 use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\Query as phQuery;
 
 class Reports extends Model
 {
@@ -27,26 +28,6 @@ class Reports extends Model
         );
     }
 
-    public static function getReportWithDayAll($employee_id, $year, $month){
-
-        $results = [];
-
-        // ブランクのカレンダーリストを作成します
-        $lastDay = date('t', mktime(0, 0, 0, $month, 1, $year));
-        for($day=1; $day<=$lastDay; $day++){
-            $results[sprintf("%02d-%02d", $month, $day)] = '';
-        }
-
-        // 記録のある出勤簿を上書きします
-        $repofts = self::getReport($employee_id, $year, $month);
-        foreach ( $repofts as $report) {
-            $results[date('m-d', strtotime($report->at_day))] = $report;
-        }
-
-        return $results;
-
-    }
-
     // ある年月の勤怠表を取得します。
     public function getReport($employee_id, $year, $month){
 
@@ -64,6 +45,57 @@ class Reports extends Model
                     2 => "{$year}-{$month}-{$lastDay}",
                 ]
             ]);
+    }
+
+    /**
+     * 給与を算出します。
+     */
+    public function getSummaryReport($employee_id, $year, $month)
+    {
+        // 日数
+        $lastDay = date('t', mktime(0,0,0,$month, 1, $year));
+        $date_from = date('Y-m-d', mktime(0, 0, 0, $month, 1, $year));
+        $date_to = date('Y-m-d', mktime(0,0,0,$month, $lastDay, $year));
+
+        $query = "
+        select
+            count(*) as days_worked,
+            r.sitename,
+            r.worktype_name,
+            sec_to_time(sum(time_to_sec(timediff( r.worktime , timediff(r.worktime, r.overtime))))) as in_time,
+            sec_to_time(sum(time_to_sec(timediff(r.worktime, r.overtime)))) as out_time
+        from
+            (
+                select
+                    timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) as worktime,
+                    timediff(timediff(s.time_to, s.time_from), timediff(s.breaktime_to, s.breaktime_from)) as overtime,
+                    rp.site_id,
+                    s.sitename,
+                    w.id as worktype_id,
+                    w.name as worktype_name
+                from
+                 reports rp
+                join 
+                 sites s on s.id = rp.site_id
+                join
+                 worktypes w on w.id = rp.worktype_id
+                where
+                 rp.employee_id = :employee_id and
+                 rp.at_day between :date_from and :date_to
+             ) r
+        group by r.site_id, r.worktype_id
+        ";
+
+        $mo = new Reports();
+
+        $summaryReports = new \Phalcon\Mvc\Model\Resultset\Simple(null, $mo,
+            $mo->getReadConnection()->query($query, [
+            'employee_id' => $employee_id,
+            'date_from' => $date_from,
+            'date_to' => $date_to
+        ]));
+
+        return $summaryReports;
     }
 
     public function updateOneReport($employeeId, $day, $report){
