@@ -18,6 +18,7 @@ $di->set(
 
         $volt = new VoltEngine($view);
         $volt->getCompiler()->addFilter('strtotime', 'strtotime');
+        $volt->getCompiler()->addFilter('number_format', 'number_format');
 
 
         $view->registerEngines(

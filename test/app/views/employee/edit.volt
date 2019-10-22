@@ -26,10 +26,24 @@
     .errorMessage{
         color: lightcoral;
     }
+
+    table.loans tr th:nth-of-type(1){width: 25%;}
+    table.loans tr th:nth-of-type(2){width: 15%;}
+    table.loans tr th:nth-of-type(3){width: 15%;}
+    table.loans tr th:nth-of-type(4){width: 45%;}
+
+    table.loans tr td:nth-of-type(2),
+    table.loans tr td:nth-of-type(3)
+    {text-align: right;}
+
+    table.loans tr td:nth-of-type(4)
+    {text-align: left;}
+
 </style>
 
 <div class="content_root">
-<h3>従業員編集</h3>
+
+    <p class="border border-secondary rounded btn-like">登録情報</p>
 
     {{ form('/employees/edit/check', 'method': 'post') }}
 
@@ -61,6 +75,32 @@
     </div>
 
     {{ endform() }}
+
+    <hr>
+
+    <p class="border border-secondary rounded btn-like">貸付明細</p>
+
+    <h3 style="margin-bottom: 20px;">貸付残高　{{ loansAmmount.ammount | number_format }} 円</h3>
+
+    <table class="table-hover table table-main loans">
+        <thead>
+        <th>日付</th>
+        <th>貸付金額</th>
+        <th>返済金額</th>
+        <th>コメント</th>
+        </thead>
+        <tbody>
+
+        <?php foreach($loans as $loan): ?>
+        <tr>
+            <td>{{ date('Y年m月n日', loan.created | strtotime) }}</td>
+            <td>{% if loan.io_type == 1 %}{{ loan.ammount | number_format }}円{% endif %}</td>
+            <td>{% if loan.io_type == 2 %}{{ loan.ammount | number_format }}円{% endif %}</td>
+            <td>{{ loan.comment }}</td>
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
 
 </div>
 

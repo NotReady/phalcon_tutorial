@@ -30,27 +30,9 @@
         vertical-align: middle;
     }
 
-    .table-sm td{
-
-    }
-
     border *{
         box-sizing: border-box;
     }
-
-    .hirizontal-container > *{
-        display: inline-block;
-        vertical-align: top;
-    }
-
-    thead tr{
-        background-color: #eee;
-    }
-
-    tfoot tr{
-        font-weight: bold;
-    }
-
 
 </style>
 
@@ -58,7 +40,7 @@
 <h4>{{ "%s %sさん %d年 %d月の勤務レポート" |format(employee.first_name, employee.last_name ,thisyear, thismonth) }}</h4>
 <hr>
 
-<div class="hirizontal-container">
+<div class="horizontal-container">
     <div style="width: 400px;">
         <p class="border border-secondary rounded btn-like">総工数</p>
     </div>

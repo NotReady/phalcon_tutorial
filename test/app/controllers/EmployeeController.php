@@ -21,6 +21,7 @@ class EmployeeController extends Controller
      */
     public function editAction()
     {
+        $employee = null;
         if( $this->session->has('editable') === true ){
             $employee = $this->session->get('editable');
             $this->session->remove('editable');
@@ -32,6 +33,8 @@ class EmployeeController extends Controller
         }
 
         $this->view->form = $form;
+        $this->view->loans = Loans::getBook($employee->id);
+        $this->view->loansAmmount = Loans::getSummary($employee->id);
     }
 
     /**

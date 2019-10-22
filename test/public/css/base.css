@@ -46,3 +46,16 @@ ul{
 ul li{
     list-style-type: none;
 }
+
+thead tr{
+    background-color: #eee;
+}
+
+tfoot tr{
+    font-weight: bold;
+}
+
+.horizontal-container > *{
+    display: inline-block;
+    vertical-align: top;
+}
