@@ -41,10 +41,10 @@
 <hr>
 
 <div class="horizontal-container">
-    <div style="width: 400px;">
+    <div style="width: 29%;">
         <p class="border border-secondary rounded btn-like">総工数</p>
     </div>
-    <div style="width: 600px">
+    <div style="width: 70%">
         <p class="border border-secondary rounded btn-like">内訳</p>
         <table class="table-sm table">
             <thead>
