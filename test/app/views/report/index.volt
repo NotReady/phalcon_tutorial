@@ -1,4 +1,4 @@
-{% extends "layout/template.volt" %}
+{% extends "layout/template_in_service.volt" %}
 
 {% block title %}勤怠入力{% endblock %}
 {% block css_include %}

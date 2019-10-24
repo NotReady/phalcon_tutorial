@@ -13,6 +13,9 @@ class Employees extends Model{
     public $created;
     public $updated;
 
+    public $username;
+    public $password;
+
     public function initialize(){
         $this->hasMany('id', 'Reports', 'employee_id');
 
@@ -22,6 +25,20 @@ class Employees extends Model{
                 'updated',
             ]
         );
+    }
+
+    public function authorization($username, $password){
+        self::findFirst();
+
+        $employee = Employees::findfirst([
+            "conditions" => "username = :username: and password = :password:",
+            bind => [
+                'username' => $username,
+                'password' => $password,
+            ]
+        ]);
+
+        return $employee;
     }
 
     public function getEmployeesWithLatestInput(){
