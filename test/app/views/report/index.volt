@@ -37,16 +37,73 @@
 </style>
 
 <div class="content_root">
-<h4>{{ "%s %sさん %d年 %d月の勤務レポート" |format(employee.first_name, employee.last_name ,thisyear, thismonth) }}</h4>
-<hr>
+<h1 class="title">{{ "%s %sさん %d年 %d月の勤務レポート" |format(employee.first_name, employee.last_name ,thisyear, thismonth) }}</h1>
 
-<div class="horizontal-container">
-    <div style="width: 29%;">
-        <p class="border border-secondary rounded btn-like">総工数</p>
-    </div>
-    <div style="width: 70%">
-        <p class="border border-secondary rounded btn-like">内訳</p>
-        <table class="table-sm table">
+<?php
+$week = ['日','月','火','水','木','金','土'];
+?>
+
+<table class="table-hover table table-main">
+    <thead>
+    <th>日付</th>
+    <th>曜日</th>
+    <th>勤務先</th>
+    <th>作業分類</th>
+    <th>開始時間</th>
+    <th>終了時間</th>
+    <th>休憩時間</th>
+    <th>保存</th>
+    </thead>
+    <tbody>
+
+    <?php foreach($reports as $day => $report): ?>
+    <tr>
+        <form method="post" action="/report/save" class="asyncForm">
+            <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
+            <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
+            <td class="cell">{{day}}</td>
+            <td>
+                <?php
+                    echo $week[date('w',  strtotime("${thisyear}-${day}"))];
+                ?>
+            </td>
+
+
+            <td><select class="form-control" name="nm_site_id"; ?>">
+                    <?php foreach($sites as $id => $name): ?>
+                    <option value="{{id}}" <?php if($id==$report->site_id){echo 'selected';}?>>{{name}}</option>
+                    <?php endforeach;?>
+                </select>
+            </td>
+            <td>
+                <select class="form-control" name="nm_wtype_id"; ?>">
+                    <?php foreach($wtypes as $id => $name): ?>
+                    <option value="{{id}}" <?php if($id==$report->worktype_id){echo 'selected';}?>>{{name}}</option>
+                    <?php endforeach;?>
+                </select>
+            </td>
+
+            {% if report is empty %}
+                <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text"></td>
+                <td><input class="form-control" name="nm_timeto" class="timeinput" type="text"></td>
+                <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text"></td>
+            {% else %}
+                <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{date('H:i', report.time_from | strtotime)}}"></td>
+                <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{date('H:i', report.time_to | strtotime)}}"></td>
+                <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
+            {% endif %}
+
+            <td><input class="btn btn-primary btn-submit" type="submit" value="保存"></td>
+
+        </form>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+    <div class="col-12">
+        <h1 class="title">勤務内訳</h1>
+        <table class="table">
             <thead>
             <th>現場</th>
             <th>作業</th>
@@ -76,73 +133,6 @@
             </tfoot>
         </table>
     </div>
-</div>
-
-<hr>
-
-    <?php
-$week = ['日','月','火','水','木','金','土'];
-?>
-
-    <p class="border border-secondary rounded btn-like">勤務表</p>
-
-    <table class="table-hover table table-main">
-        <thead>
-        <th>日付</th>
-        <th>曜日</th>
-        <th>勤務先</th>
-        <th>作業分類</th>
-        <th>開始時間</th>
-        <th>終了時間</th>
-        <th>休憩時間</th>
-        <th>保存</th>
-        </thead>
-        <tbody>
-
-        <?php foreach($reports as $day => $report): ?>
-        <tr>
-            <form method="post" action="/report/save" class="asyncForm">
-                <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
-                <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
-                <td class="cell">{{day}}</td>
-                <td>
-                    <?php
-                        echo $week[date('w',  strtotime("${thisyear}-${day}"))];
-                    ?>
-                </td>
-
-
-                <td><select class="form-control" name="nm_site_id"; ?>">
-                        <?php foreach($sites as $id => $name): ?>
-                        <option value="{{id}}" <?php if($id==$report->site_id){echo 'selected';}?>>{{name}}</option>
-                        <?php endforeach;?>
-                    </select>
-                </td>
-                <td>
-                    <select class="form-control" name="nm_wtype_id"; ?>">
-                        <?php foreach($wtypes as $id => $name): ?>
-                        <option value="{{id}}" <?php if($id==$report->worktype_id){echo 'selected';}?>>{{name}}</option>
-                        <?php endforeach;?>
-                    </select>
-                </td>
-
-                {% if report is empty %}
-                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text"></td>
-                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text"></td>
-                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text"></td>
-                {% else %}
-                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{date('H:i', report.time_from | strtotime)}}"></td>
-                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{date('H:i', report.time_to | strtotime)}}"></td>
-                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
-                {% endif %}
-
-                <td><input class="btn btn-primary btn-submit" type="submit" value="保存"></td>
-
-            </form>
-        </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
 
 </div>
 {% endblock %}
@@ -154,7 +144,6 @@ $week = ['日','月','火','水','木','金','土'];
         $('.asyncForm').submit(function (event) {
             // ポストキャンセル
             event.preventDefault();
-
             const $thisForm = $(this);
             const $submit = $thisForm.find('.btn-submit');
 
