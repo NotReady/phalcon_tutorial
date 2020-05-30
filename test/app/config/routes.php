@@ -20,6 +20,8 @@ $router->add('/report/save',                    ['controller' => "Report", 'acti
 $router->add('/employees',                      ['controller' => "Employee",  'action'=>'index']);
 $router->add('/employees/edit/{employee_id}',   ['controller' => "Employee", 'action'=>'edit']);
 $router->add('/employees/edit/check',           ['controller' => "Employee", 'action'=>'editCheck']);
+$router->add('/employees/loan/add',             ['controller' => "Api", 'action'=>'addLoan']);
+$router->add('/employees/loan/get',             ['controller' => "Api", 'action'=>'getLoan']);
 
 // 現場
 $router->add('/sites',                          ['controller' => "Site", 'action'=>'index']);
