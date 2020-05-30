@@ -25,11 +25,6 @@
         margin-left: 10px;
     }
 
-    .errorMessage{
-        color: lightcoral;
-    }
-
-
     /* cols width */
 
     table.loans tr th:nth-of-type(1),
@@ -52,50 +47,6 @@
     {text-align: center;}
     table.loans tr td:nth-of-type(4)
     {text-align: left;}
-
-
-    .sticky-wrap {
-        width: 100%;
-        height: 400px;
-        overflow: scroll;
-    }
-
-    .sticky-wrap table {
-        table-layout: fixed;
-        width: 100%;
-        margin: 0 !important;
-    }
-
-    .sticky-wrap table thead tr th {
-        position: sticky;
-        top: 0;
-        z-index:1;
-        background-color: #666666;
-        color: white;
-    }
-
-    .sticky-wrap table tbody tr th {
-        position: sticky;
-        left: 0;
-    }
-
-    .caption-large{
-        font-size: 1.2rem;
-    }
-
-    .float-container{
-        overflow: auto;
-    }
-
-    .clearfix::after{
-        content: "";
-        display: block;
-        clear: both;
-    }
-
-    .float-right{
-        float: right;
-    }
 
 </style>
 
@@ -138,7 +89,7 @@
 
     <p class="caption-large">貸付残高　{{ loansAmmount.ammount | number_format }} 円</p>
 
-    <div class="sticky-wrap mb-3">
+    <div class="sticky-table mb-3">
     <table class="table-hover table table-main loans">
         <thead>
             <th>日付</th>
