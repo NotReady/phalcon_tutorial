@@ -32,7 +32,10 @@ class EmployeeController extends Controller
             $form = new EmployeesForm($employee);
         }
 
+        $this->view->setVar('employee_id', $employee->id);
+
         $this->view->form = $form;
+        $l = Loans::getBookAssosiatePageer($employee->id);
         $this->view->loans = Loans::getBook($employee->id);
         $this->view->loansAmmount = Loans::getSummary($employee->id);
     }
@@ -73,5 +76,12 @@ class EmployeeController extends Controller
             'action' => 'index'
         ]);
 
+    }
+
+    /**
+     * 貸付の登録アクション
+     */
+    public function addLoanAction(){
+        $params = $this->request->getPost();
     }
 }
