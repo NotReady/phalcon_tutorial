@@ -2,34 +2,12 @@
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlProvider;
-use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Session\Adapter\Files as Session;
+use Phalcon\Mvc\View\Engine\Volt;
 
 // Create DI
 $di = new FactoryDefault();
-
-// setup the view component
-$di->set(
-    'view',
-    function(){
-        $view = new View();
-        $view->setViewsDir(APP_PATH. '/views/');
-
-        $volt = new VoltEngine($view);
-        $volt->getCompiler()->addFilter('strtotime', 'strtotime');
-        $volt->getCompiler()->addFilter('number_format', 'number_format');
-
-
-        $view->registerEngines(
-            array(
-                ".volt" => $volt,
-            )
-        );
-
-        return $view;
-    }
-);
 
 // setup a base URI
 $di->set(
@@ -40,6 +18,51 @@ $di->set(
         return $url;
     }
 );
+
+// Register Volt as a service
+$di->set(
+    'voltService',
+    function ($view, $di) use ( $config ){
+
+        /* create instance */
+        $volt = new Volt($view, $di);
+
+        /* set options */
+        $volt->setOptions(
+            [
+                // absolute path
+                'compiledPath'      => BASE_PATH . $config->application->cacheDir,
+                'compiledExtension' => '.compiled',
+                'compiledSeparator' => '_',
+                'stat' => true,
+                'compileAlways' => true
+            ]
+        );
+
+        /* set filter */
+        $volt->getCompiler()->addFilter('strtotime', 'strtotime');
+        $volt->getCompiler()->addFilter('number_format', 'number_format');
+
+        return $volt;
+    }
+);
+
+// setup the view component
+$di->set('view', function() use ($config) {
+
+    $view = new View();
+    $view->setViewsDir('../app/views');
+
+    $registerOptions = [
+        // voltエンジン
+        '.volt' => 'voltService',
+        '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
+    ];
+
+    // 登録
+    $view->registerEngines($registerOptions);
+    return $view;
+}, true);
 
 // db
 $di->set(
@@ -71,3 +94,4 @@ $di->setShared(
         return $session;
     }
 );
+
