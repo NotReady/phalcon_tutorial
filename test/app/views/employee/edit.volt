@@ -4,7 +4,9 @@
 {% block css_include %}
 <link rel="stylesheet" type="text/css" href="/css/base.css" />
 {% endblock %}
-{% block js_include %}{% endblock %}
+{% block js_include %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
+{% endblock %}
 {% block content_body %}
 
 <style>
@@ -27,6 +29,7 @@
         color: lightcoral;
     }
 
+
     table.loans tr th:nth-of-type(1){width: 25%;}
     table.loans tr th:nth-of-type(2){width: 15%;}
     table.loans tr th:nth-of-type(3){width: 15%;}
@@ -43,7 +46,7 @@
 
 <div class="content_root">
 
-    <p class="border border-secondary rounded btn-like">登録情報</p>
+    <h1 class="title">登録情報</h1>
 
     {{ form('/employees/edit/check', 'method': 'post') }}
 
@@ -76,32 +79,204 @@
 
     {{ endform() }}
 
-    <hr>
+    <h1 class="title">貸付明細</h1>
 
-    <p class="border border-secondary rounded btn-like">貸付明細</p>
+    <p style="margin-bottom: 20px;">貸付残高　{{ loansAmmount.ammount | number_format }} 円</p>
 
-    <h3 style="margin-bottom: 20px;">貸付残高　{{ loansAmmount.ammount | number_format }} 円</h3>
-
-    <table class="table-hover table table-main loans">
+    <table class="table-hover table table-main loans mb-3">
         <thead>
         <th>日付</th>
         <th>貸付金額</th>
         <th>返済金額</th>
         <th>コメント</th>
         </thead>
-        <tbody>
-
-        <?php foreach($loans as $loan): ?>
-        <tr>
-            <td>{{ date('Y年m月n日', loan.created | strtotime) }}</td>
-            <td>{% if loan.io_type == 1 %}{{ loan.ammount | number_format }}円{% endif %}</td>
-            <td>{% if loan.io_type == 2 %}{{ loan.ammount | number_format }}円{% endif %}</td>
-            <td>{{ loan.comment }}</td>
-        </tr>
-        <?php endforeach; ?>
+        <tbody id="id-loans-body">
         </tbody>
     </table>
 
+    <ul id="id_pager"></ul>
+
+    <div class="text-right">
+        <!-- 切り替えボタンの設定 -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+            新規登録する
+        </button>
+    </div>
+
+    <!-- モーダルの設定 -->
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">明細を新規追加します</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" name="nm-employee-id" value="{{ employee_id }}">
+                        <ul>
+                            <li class="form-element-wrap">
+                                <label for="loan-date">登録日付</label>
+                                <input class="form-control" name="loan-date" type="date"/>
+                                <span class="text-danger d-none" id="id-warn-loan-date">登録日付を入力してください</span>
+                            </li>
+                            <li class="form-element-wrap">
+                                <label>種別</label><br />
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="loan-type" value="1" checked>
+                                    <label class="form-check-label">貸付</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="loan-type" value="2">
+                                    <label class="form-check-label">返済</label>
+                                </div>
+
+                            </li>
+                            <li class="form-element-wrap">
+                                <label for="loan-comment">金額</label>
+                                <input class="form-control" name="loan-amount" type="number" placeholder="金額を入力してください"/>
+                                <span class="text-danger d-none" id="id-warn-loan-amount">金額を入力してください</span>
+                            </li>
+                            <li class="form-element-wrap">
+                                <label for="loan-comment">コメント</label>
+                                <input class="form-control" name="loan-comment" type="text" placeholder="コメントを入力してください"/>
+                                <span class="text-danger d-none" id="id-warn-loan-comment">コメントを入力してください</span>
+                            </li>
+
+                        </ul>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                    <button type="button" class="btn btn-primary" id="id-regist-loan">登録</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>
+$(function() {
+
+    {# ページャ #}
+    $('#id_pager').twbsPagination({
+        startPage : 1,
+        totalPages: <?= ceil( count($loans) / 10); ?>,
+        first: '最初',
+        prev : '前',
+        next : '次',
+        last : '最後',
+        // これつけないと onPageClick の関数が初期表示時に実行されるアホ不具合がある。
+        initiateStartPageClick: false,
+        onPageClick: function (event, pageNum) {
+            refreshLoansByPage(pageNum);
+            console.log(pageNum);
+        },
+    });
+
+    refreshLoansByPage(1);
+    {# 貸付明細取得 #}
+    function refreshLoansByPage(page){
+        $.post({
+
+            url: "/employees/loan/get",
+            dataType: 'json',
+            // フォーム要素の内容をハッシュ形式に変換
+            data: {
+                "employee_id" : {{ employee_id }},
+                "page" : page,
+            },
+            timeout: 1000 * 30})
+            .then(
+                function(data, textStatus, jqXHR) {
+
+                    $("#id-loans-body").empty();
+
+                    $.each(JSON.parse(data['loans']), function(idx, l) {
+                        $("<tr />").appendTo($("#id-loans-body"))
+                            .append($("<td />").text(function(){
+                                d = new Date(l.regist_date);
+                                return `${d.getFullYear()}/${("00"+(d.getMonth()+1)).slice(-2)}/${("00" + d.getDate()).slice(-2)}` }))
+                            .append($("<td />").text(function(){if( l.io_type == 1 ) return l.ammount;}()).addClass("text-danger"))
+                            .append($("<td />").text(function(){if( l.io_type == 2 ) return l.ammount;}()).addClass("text-success"))
+                            .append($("<td />").text(l.comment));
+                        console.log(l);
+                    });
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                }
+            );
+    }
+
+    {# モーダルの表示イベント #}
+    $("#staticBackdrop").on("show.bs.modal", function (e) {
+        $("input[name='loan-date']").val("");
+        $("input[name='loan-amount']").val("");
+        $("input[name='loan-comment']").val("");
+        $("input[name='loan-type']:eq(0)").prop("checked", true);
+    })
+
+    {# 貸付登録 #}
+    $("#id-regist-loan").on("click", function(){
+
+        if( date = $("input[name='loan-date']").val() ){
+            $("#id-warn-loan-date").addClass("d-none");
+        }else{
+            $("#id-warn-loan-date").removeClass("d-none");
+        }
+
+        if( amount = $("input[name='loan-amount']").val() ){
+            $("#id-warn-loan-amount").addClass("d-none");
+        }else{
+            $("#id-warn-loan-amount").removeClass("d-none");
+        }
+
+        if( comment = $("input[name='loan-comment']").val() ){
+            $("#id-warn-loan-comment").addClass("d-none");
+        }else{
+            $("#id-warn-loan-comment").removeClass("d-none");
+        }
+
+        const type = $("input[name='loan-type']:checked").val();
+        employee_id = $("input[name='nm-employee-id']").val();
+
+        if( !( date && amount && comment && type && employee_id) ){return;}
+
+        $.post({
+            url: '/employees/loan/add',
+            dataType: 'json',
+            // フォーム要素の内容をハッシュ形式に変換
+            data: {
+                "date" : date,
+                "type" : type,
+                "amount" : amount,
+                "comment" : comment,
+                "employee_id" : employee_id
+            },
+            timeout: 1000 * 30,
+        })
+        .then(
+            function(data, textStatus, jqXHR) {
+                console.log(data);
+                if( data['result'] ){
+                    if( data['result'] == "success" ) {
+                        location.reload();
+                    }
+                }
+            },
+            function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+            }
+        );
+
+    });
+});
+</script>
 
 {% endblock %}
