@@ -11,8 +11,6 @@ $loader->registerDirs(
         BASE_PATH . $config->application->formsDir,
         BASE_PATH . $config->application->servicesDir,
         BASE_PATH . $config->application->helpersDir,
-        //APP_PATH . '/controllers/',
-        //APP_PATH . '/models/',
     ]
 );
 
