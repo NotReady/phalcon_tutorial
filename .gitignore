@@ -5,3 +5,10 @@
 # 動作確認用ファイル
 /tutorial/app/controllers/TestController.php
 /tutorial/app/views/*
+test/app/views/includes/header_menu_in_service.volt.php
+test/app/views/includes/header_menu_out_service.volt.php
+test/app/views/layout/template_in_service.volt%%e%%.php
+test/app/views/layout/template_out_service.volt%%e%%.php
+test/app/views/login/index.volt.php
+test/app/views/root/index.volt.php
+/test/app/cache/*
