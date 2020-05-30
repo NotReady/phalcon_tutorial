@@ -1,10 +1,8 @@
+/* container */
+
 body {
     font-size: 12px;
-    font-family: sans-serif;
-}
-
-h1 {
-    font-size: 16px;
+    font-family: Helvetica , "游ゴシック", sans-serif;
 }
 
 .content_root {
@@ -12,27 +10,6 @@ h1 {
     margin: 10px auto;
 }
 
-.content_root table {
-    text-align: center;
-    width: 100%;
-    border-spacing: 0;
-    border-collapse: collapse;
-}
-
-.content_root table tr td, .content_root table tr th {
-/white-space: nowrap;
-    position:relative;
-}
-
-.content_root table tr td{
-    font-size: 1rem;
-    vertical-align: middle;
-}
-
-.content_root .table-sm *{
-    font-size: 0.8rem;
-    vertical-align: middle;
-}
 
 p.btn-like{
     display: inline-block;
@@ -47,15 +24,91 @@ ul li{
     list-style-type: none;
 }
 
+/* table */
+
+table {
+    text-align: center;
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+table tr td,
+table tr th {
+    white-space: nowrap;
+    position:relative;
+}
+
+table tr td{
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
 thead tr{
-    background-color: #eee;
+    background-color: #666666;
+    color: white;
 }
 
 tfoot tr{
-    font-weight: bold;
+    font-weight: 700;
 }
 
-.horizontal-container > *{
-    display: inline-block;
-    vertical-align: top;
+.sticky-table {
+    width: 100%;
+    height: 400px;
+    overflow: scroll;
+}
+
+.sticky-table table {
+    table-layout: fixed;
+    width: 100%;
+    margin: 0 !important;
+}
+
+.sticky-table table thead tr th {
+    position: sticky;
+    top: 0;
+    z-index:1;
+    background-color: #666666;
+    color: white;
+}
+
+.sticky-table table tbody tr th {
+    position: sticky;
+    left: 0;
+}
+
+/* caption */
+
+h1 {
+    font-size: 16px;
+}
+
+h1.title{
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #212729;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding: 0.5rem 0.5rem 0.5rem 0.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.caption-large{
+    font-size: 1.2rem;
+}
+
+/* float */
+
+.float-container{
+    overflow: auto;
+}
+
+.clearfix::after{
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.float-right{
+    float: right;
 }
