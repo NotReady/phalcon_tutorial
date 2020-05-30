@@ -30,17 +30,72 @@
     }
 
 
-    table.loans tr th:nth-of-type(1){width: 25%;}
-    table.loans tr th:nth-of-type(2){width: 15%;}
-    table.loans tr th:nth-of-type(3){width: 15%;}
-    table.loans tr th:nth-of-type(4){width: 45%;}
+    /* cols width */
+
+    table.loans tr th:nth-of-type(1),
+    table.loans tr td:nth-of-type(1)
+    {width: 25%;}
+    table.loans tr th:nth-of-type(2),
+    table.loans tr td:nth-of-type(2)
+    {width: 15%;}
+    table.loans tr th:nth-of-type(3)
+    table.loans tr td:nth-of-type(3)
+    {width: 15%;}
+    table.loans tr th:nth-of-type(4),
+    table.loans tr td:nth-of-type(4)
+    {width: 45%;}
+
+    /* cells text-align */
 
     table.loans tr td:nth-of-type(2),
     table.loans tr td:nth-of-type(3)
-    {text-align: right;}
-
+    {text-align: center;}
     table.loans tr td:nth-of-type(4)
     {text-align: left;}
+
+
+    .sticky-wrap {
+        width: 100%;
+        height: 400px;
+        overflow: scroll;
+    }
+
+    .sticky-wrap table {
+        table-layout: fixed;
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    .sticky-wrap table thead tr th {
+        position: sticky;
+        top: 0;
+        z-index:1;
+        background-color: #666666;
+        color: white;
+    }
+
+    .sticky-wrap table tbody tr th {
+        position: sticky;
+        left: 0;
+    }
+
+    .caption-large{
+        font-size: 1.2rem;
+    }
+
+    .float-container{
+        overflow: auto;
+    }
+
+    .clearfix::after{
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    .float-right{
+        float: right;
+    }
 
 </style>
 
@@ -81,26 +136,24 @@
 
     <h1 class="title">貸付明細</h1>
 
-    <p style="margin-bottom: 20px;">貸付残高　{{ loansAmmount.ammount | number_format }} 円</p>
+    <p class="caption-large">貸付残高　{{ loansAmmount.ammount | number_format }} 円</p>
 
-    <table class="table-hover table table-main loans mb-3">
+    <div class="sticky-wrap mb-3">
+    <table class="table-hover table table-main loans">
         <thead>
-        <th>日付</th>
-        <th>貸付金額</th>
-        <th>返済金額</th>
-        <th>コメント</th>
+            <th>日付</th>
+            <th>貸付金額</th>
+            <th>返済金額</th>
+            <th>コメント</th>
         </thead>
-        <tbody id="id-loans-body">
-        </tbody>
+        <tbody id="id-loans-body"></tbody>
     </table>
+    </div>
 
-    <ul id="id_pager"></ul>
-
-    <div class="text-right">
-        <!-- 切り替えボタンの設定 -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
-            新規登録する
-        </button>
+    {# pager #}
+    <div class="float-container clearfix">
+        <button type="button" class="float-right btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">新規登録する</button>
+        <ul id="id_pager" class="float-right m0 mr-3 mb-0"></ul>
     </div>
 
     <!-- モーダルの設定 -->
@@ -202,8 +255,8 @@ $(function() {
                             .append($("<td />").text(function(){
                                 d = new Date(l.regist_date);
                                 return `${d.getFullYear()}/${("00"+(d.getMonth()+1)).slice(-2)}/${("00" + d.getDate()).slice(-2)}` }))
-                            .append($("<td />").text(function(){if( l.io_type == 1 ) return l.ammount;}()).addClass("text-danger"))
-                            .append($("<td />").text(function(){if( l.io_type == 2 ) return l.ammount;}()).addClass("text-success"))
+                            .append($("<td />").text(function(){if( l.io_type == 1 ) return "+" + l.ammount;}()))
+                            .append($("<td />").text(function(){if( l.io_type == 2 ) return "-" + l.ammount;}()))
                             .append($("<td />").text(l.comment));
                         console.log(l);
                     });
