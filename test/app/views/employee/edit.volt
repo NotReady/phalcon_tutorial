@@ -48,6 +48,12 @@
     table.loans tr td:nth-of-type(4)
     {text-align: left;}
 
+    /* table option */
+
+    .sticky-table{
+        height: 400px;
+    }
+
 </style>
 
 <div class="content_root">

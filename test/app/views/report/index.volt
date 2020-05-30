@@ -21,8 +21,6 @@
         box-sizing: border-box;
     }
 
-    td.sat {background: cornflowerblue;}
-    td.sun {background: lightcoral;}
     select {width: 100%;}
 
     .content_root td{
@@ -34,6 +32,12 @@
         box-sizing: border-box;
     }
 
+    /* table option */
+
+    .sticky-table{
+        height: 500px;
+    }
+
 </style>
 
 <div class="content_root">
@@ -43,6 +47,7 @@
 $week = ['日','月','火','水','木','金','土'];
 ?>
 
+<div class="sticky-table">
 <table class="table-hover table table-main">
     <thead>
     <th>日付</th>
@@ -100,6 +105,7 @@ $week = ['日','月','火','水','木','金','土'];
     <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
     <div class="col-12">
         <h1 class="title">勤務内訳</h1>
