@@ -8,12 +8,25 @@ class Employees extends Model{
     public $first_name;
     // 名
     public $last_name;
+    // 住所
+    public $address;
+    // 固定給
+    public $monthly_charge;
+    // 役職手当
+    public $skill_charge;
+    // 社員属性
+    public $employee_type;
+    // 職能外部キー
+    public $skill_id;
     // 交通費
     public $Transportation_expenses;
+    // 作成日
     public $created;
+    // 更新日
     public $updated;
-
+    // ログインユーザ
     public $username;
+    // ログインパスワード
     public $password;
 
     public function initialize(){

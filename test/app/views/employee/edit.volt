@@ -77,6 +77,36 @@
     </div>
 
     <div class="form-element-wrap">
+        {{ form.label('address') }}
+        {{ form.render('address') }}
+        {{ form.messages('address') }}
+    </div>
+
+    <div class="form-element-wrap">
+        {{ form.label('employee_type') }}
+        {{ form.render('employee_type') }}
+        {{ form.messages('employee_type') }}
+    </div>
+
+    <div class="form-element-wrap">
+        {{ form.label('monthly_charge') }}
+        {{ form.render('monthly_charge') }}
+        {{ form.messages('monthly_charge') }}
+    </div>
+
+    <div class="form-element-wrap">
+        {{ form.label('skill_charge') }}
+        {{ form.render('skill_charge') }}
+        {{ form.messages('skill_charge') }}
+    </div>
+
+    <div class="form-element-wrap">
+        {{ form.label('skill_id') }}
+        {{ form.render('skill_id') }}
+        {{ form.messages('skill_id') }}
+    </div>
+
+    <div class="form-element-wrap">
         {{ form.label('Transportation_expenses') }}
         {{ form.render('Transportation_expenses') }}
         {{ form.messages('Transportation_expenses') }}
