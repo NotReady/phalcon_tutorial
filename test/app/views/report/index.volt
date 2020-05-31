@@ -41,104 +41,199 @@
 </style>
 
 <div class="content_root">
-<h1 class="title">{{ "%s %sさん %d年 %d月の勤務レポート" |format(employee.first_name, employee.last_name ,thisyear, thismonth) }}</h1>
 
-<?php
-$week = ['日','月','火','水','木','金','土'];
-?>
+    <h1 class="title">{{ "%s %sさん %d年 %d月の勤務レポート" |format(employee.first_name, employee.last_name ,thisyear, thismonth) }}</h1>
 
-<div class="sticky-table">
-<table class="table-hover table table-main">
-    <thead>
-    <th>日付</th>
-    <th>曜日</th>
-    <th>勤務先</th>
-    <th>作業分類</th>
-    <th>開始時間</th>
-    <th>終了時間</th>
-    <th>休憩時間</th>
-    <th>保存</th>
-    </thead>
-    <tbody>
+    {% set week = ['日','月','火','水','木','金','土'] %}
 
-    <?php foreach($reports as $day => $report): ?>
-    <tr>
-        <form method="post" action="/report/save" class="asyncForm">
-            <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
-            <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
-            <td class="cell">{{day}}</td>
-            <td>
-                <?php
-                    echo $week[date('w',  strtotime("${thisyear}-${day}"))];
-                ?>
-            </td>
+    <div class="sticky-table mb-3">
+    <table class="table-hover table table-main">
+        <thead>
+        <th>日付</th>
+        <th>曜日</th>
+        <th>勤務先</th>
+        <th>作業分類</th>
+        <th>開始時間</th>
+        <th>終了時間</th>
+        <th>休憩時間</th>
+        <th>保存</th>
+        </thead>
+        <tbody>
+
+        <?php foreach($reports as $day => $report): ?>
+        <tr>
+            <form method="post" action="/report/save" class="asyncForm">
+                <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
+                <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
+                <td class="cell">{{day}}</td>
+                <td>
+                    <?php
+                        echo $week[date('w',  strtotime("${thisyear}-${day}"))];
+                    ?>
+                </td>
 
 
-            <td><select class="form-control" name="nm_site_id"; ?>">
-                    <?php foreach($sites as $id => $name): ?>
-                    <option value="{{id}}" <?php if($id==$report->site_id){echo 'selected';}?>>{{name}}</option>
-                    <?php endforeach;?>
-                </select>
-            </td>
-            <td>
-                <select class="form-control" name="nm_wtype_id"; ?>">
-                    <?php foreach($wtypes as $id => $name): ?>
-                    <option value="{{id}}" <?php if($id==$report->worktype_id){echo 'selected';}?>>{{name}}</option>
-                    <?php endforeach;?>
-                </select>
-            </td>
+                <td><select class="form-control" name="nm_site_id"; ?>">
+                        <?php foreach($sites as $id => $name): ?>
+                        <option value="{{id}}" <?php if($id==$report->site_id){echo 'selected';}?>>{{name}}</option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" name="nm_wtype_id"; ?>">
+                        <?php foreach($wtypes as $id => $name): ?>
+                        <option value="{{id}}" <?php if($id==$report->worktype_id){echo 'selected';}?>>{{name}}</option>
+                        <?php endforeach;?>
+                    </select>
+                </td>
 
-            {% if report is empty %}
-                <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text"></td>
-                <td><input class="form-control" name="nm_timeto" class="timeinput" type="text"></td>
-                <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text"></td>
-            {% else %}
-                <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{date('H:i', report.time_from | strtotime)}}"></td>
-                <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{date('H:i', report.time_to | strtotime)}}"></td>
-                <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
-            {% endif %}
+                {% if report is empty %}
+                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text"></td>
+                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text"></td>
+                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text"></td>
+                {% else %}
+                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{date('H:i', report.time_from | strtotime)}}"></td>
+                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{date('H:i', report.time_to | strtotime)}}"></td>
+                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
+                {% endif %}
 
-            <td><input class="btn btn-primary btn-submit" type="submit" value="保存"></td>
+                <td><input class="btn btn-primary btn-submit" type="submit" value="保存"></td>
 
-        </form>
-    </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table>
-</div>
-
-    <div class="col-12">
-        <h1 class="title">勤務内訳</h1>
-        <table class="table">
-            <thead>
-            <th>現場</th>
-            <th>作業</th>
-            <th>出勤日数</th>
-            <th>時間内</th>
-            <th>時間外</th>
-            </thead>
-            <tbody>
-            {% for row in summary['site'] %}
-                <tr>
-                    <td>{{ row.sitename }}</td>
-                    <td>{{ row.worktype_name }}</td>
-                    <td>{{ row.days_worked }}日</td>
-                    <td>{{ row.in_time }}</td>
-                    <td>{{ row.out_time }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-            <tfoot>
-            <tr>
-                <td>合計</td>
-                <td></td>
-                <td>{{ days_worked }}日</td>
-                <td>{{ summary['inTimeAll'] }}</td>
-                <td>{{ summary['outTimeAll'] }}</td>
-            </tr>
-            </tfoot>
-        </table>
+            </form>
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
     </div>
+
+    <h1 class="title">給与</h1>
+    <div class="row">
+
+        <style>
+            table.salary td:nth-of-type(1),
+            table.salary th:nth-of-type(1)
+            {width: 25%;}
+            table.salary td:nth-of-type(2),
+            table.salary th:nth-of-type(2)
+            {width: 25%;}
+            table.salary td:nth-of-type(3),
+            table.salary th:nth-of-type(3)
+            {width: 15%;}
+            table.salary td:nth-of-type(4),
+            table.salary th:nth-of-type(4)
+            {width: 15%;}
+            table.salary td:nth-of-type(5),
+            table.salary th:nth-of-type(5)
+            {width: 20%;}
+
+        </style>
+
+        <div class=" col-12">
+            <p class="subtitle">時間給</p>
+            <table class="table salary">
+                <thead>
+                    <th>現場</th>
+                    <th>作業</th>
+                    <th></th>
+                    <th>時間計</th>
+                    <th>金額</th>
+                </thead>
+                <tbody>
+                {% for row in summary['site'] %}
+                    <tr>
+                        <td>{{ row.sitename }}</td>
+                        <td>{{ row.worktype_name }}</td>
+                        <td class="{% if row.label == '時間外' %}text-danger{% endif %}" >{{ row.label }}</td>
+                        <td>{{ row.sum_time }}</td>
+                        <td>¥ 1,000</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>合計</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ summary['timeAll'] }}</td>
+                    <td>¥ 1,000</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+
+        <div class="col-6">
+            <p class="subtitle">福利厚生</p>
+            <table class="table">
+                <thead>
+                <th>項目</th>
+                <th>数量</th>
+                <th>金額</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>交通費</td>
+                        <td></td>
+                        <td>¥ 10,000</td>
+                    </tr>
+                    <tr>
+                        <td>役職手当</td>
+                        <td></td>
+                        <td>¥ 10,000</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>合計</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="col-6">
+            <p class="subtitle">控除</p>
+            <table class="table">
+                <thead>
+                <th>項目</th>
+                <th>数量</th>
+                <th>金額</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>寮費</td>
+                        <td></td>
+                        <td>¥ 20,000</td>
+                    </tr>
+                    <tr>
+                        <td>貸付金返済</td>
+                        <td></td>
+                        <td>¥ 30,000</td>
+                    </tr>
+                    <tr>
+                        <td>社会保険</td>
+                        <td></td>
+                        <td>¥ 30,000</td>
+                    </tr>
+                    <tr>
+                        <td>雇用保険</td>
+                        <td></td>
+                        <td>¥ 10,000</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>合計</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+
 
 </div>
 {% endblock %}

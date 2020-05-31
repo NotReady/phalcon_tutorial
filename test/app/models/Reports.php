@@ -49,6 +49,15 @@ class Reports extends Model
 
     /**
      * 給与を算出します。
+     * @params $employee_id integer 社員Id
+     * @params $year integer 指定年
+     * @params $month integer 指定月
+     * @return Simple collections
+     * days_worked      integer 出勤日数
+     * sitename         string  現場名
+     * worktype_name    string  現場作業名
+     * in_time          time    定時内就業時間
+     * out_time         time    定時外就業時間
      */
     public function getSummaryReport($employee_id, $year, $month)
     {
@@ -94,6 +103,95 @@ class Reports extends Model
             'date_from' => $date_from,
             'date_to' => $date_to
         ]));
+
+        return $summaryReports;
+    }
+
+    /**
+     * 指定年月で現場作業∩時間内∪時間外作業時間の合計を取得します
+     * @params $employee_id integer 社員Id
+     * @params $year integer 指定年
+     * @params $month integer 指定月
+     * @return Simple collections
+     * sitename         string  現場名
+     * worktype_name    string  現場作業名
+     * label            string  時間内|時間外
+     * sum_time         time    就業時間
+     */
+    public function getSummaryOfGroupBySiteWorkType($employee_id, $year, $month)
+    {
+        // 日数
+        $lastDay = date('t', mktime(0,0,0,$month, 1, $year));
+        $date_from = date('Y-m-d', mktime(0, 0, 0, $month, 1, $year));
+        $date_to = date('Y-m-d', mktime(0,0,0,$month, $lastDay, $year));
+
+        $query = "
+
+        select
+            in_time.sitename,
+            in_time.worktype_name,
+            '時間内' as label,
+            sec_to_time(sum(time_to_sec(timediff( in_time.worktime , timediff(in_time.worktime, in_time.overtime))))) as sum_time
+        from
+            (
+                select
+                    timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) as worktime,
+                    timediff(timediff(s.time_to, s.time_from), timediff(s.breaktime_to, s.breaktime_from)) as overtime,
+                    rp.site_id,
+                    s.sitename,
+                    w.id as worktype_id,
+                    w.name as worktype_name
+                from
+                    reports rp
+                join 
+                    sites s on s.id = rp.site_id
+                join
+                    worktypes w on w.id = rp.worktype_id
+                where
+                    rp.employee_id = :employee_id and
+                    rp.at_day between :date_from and :date_to
+             ) in_time
+        group by in_time.site_id, in_time.worktype_id
+
+		union 
+		
+        select
+            out_time.sitename,
+            out_time.worktype_name,
+            '時間外' as label,
+            sec_to_time(sum(time_to_sec(timediff(out_time.worktime, out_time.overtime)))) as sum_time
+        from
+            (
+                select
+                    timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) as worktime,
+                    timediff(timediff(s.time_to, s.time_from), timediff(s.breaktime_to, s.breaktime_from)) as overtime,
+                    rp.site_id,
+                    s.sitename,
+                    w.id as worktype_id,
+                    w.name as worktype_name
+                from
+                    reports rp
+                join 
+                    sites s on s.id = rp.site_id
+                join
+                    worktypes w on w.id = rp.worktype_id
+                where
+                    rp.employee_id = :employee_id and
+                    rp.at_day between :date_from and :date_to
+             ) out_time
+        group by out_time.site_id, out_time.worktype_id
+        having sum_time > 0
+        order by sitename, worktype_name, label asc
+        ";
+
+        $mo = new Reports();
+
+        $summaryReports = new \Phalcon\Mvc\Model\Resultset\Simple(null, $mo,
+            $mo->getReadConnection()->query($query, [
+                'employee_id' => $employee_id,
+                'date_from' => $date_from,
+                'date_to' => $date_to
+            ]));
 
         return $summaryReports;
     }

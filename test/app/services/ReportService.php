@@ -58,7 +58,7 @@ class ReportService
     }
 
     /**
-     * 月間勤務表の時間集計結果を取得します
+     * 月間勤務表の時間集計を取得します
      * @return array
      */
     public function getSummary(){
@@ -85,6 +85,30 @@ class ReportService
             'inTimeAll' => $inTimeCalc->getTimeStr(),
             'outTimeAll' => $outTimeCalc->getTimeStr(),
         ];
-//        return $viewable;
     }
+
+    /**
+     * 月間勤務表の時間集計を取得します
+     * @return array
+     */
+    public function getSummaryBySiteWorkUnit(){
+        $report = new Reports();
+        $summary = $report->getSummaryOfGroupBySiteWorkType($this->_employee_id, $this->_year, $this->_month);
+        $viewable = [];
+
+        $timeAll = new TimeUtil();
+
+        foreach($summary as $row){
+            $hms = explode(':', $row->sum_time);
+            $row->sum_time = "${hms[0]}:${hms[1]}";
+            $timeAll->addTimeStr($row->sum_time);
+            array_push($viewable, $row);
+        }
+
+        return [
+            'site' => $viewable,
+            'timeAll' => $timeAll->getTimeStr(),
+        ];
+    }
+
 }

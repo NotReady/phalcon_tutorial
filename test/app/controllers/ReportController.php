@@ -16,7 +16,7 @@ class ReportController extends Controller
         $reportService = new ReportService($employee_id, $year, $month);
         $this->view->reports = $reportService->getMonthlyReport();
         $this->view->days_worked = $reportService->howDaysWorked();
-        $this->view->summary = $reportService->getSummary();
+        $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
 
         $employee = Employees::findfirst($employee_id);
         $this->view->employee = $employee;
