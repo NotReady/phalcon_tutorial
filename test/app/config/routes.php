@@ -16,6 +16,9 @@ $router->add('/login/check',                    ['controller' => "Login", 'actio
 $router->add('/report/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Report", 'action'=>'index']);
 $router->add('/report/save',                    ['controller' => "Report", 'action'=>'save']);
 
+// 給与編集
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Salary", 'action'=>'index']);
+
 // 従業員
 $router->add('/employees',                      ['controller' => "Employee",  'action'=>'index']);
 $router->add('/employees/edit/{employee_id}',   ['controller' => "Employee", 'action'=>'edit']);
