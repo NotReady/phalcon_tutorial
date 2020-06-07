@@ -97,17 +97,20 @@ class ReportService
         $viewable = [];
 
         $timeAll = new TimeUtil();
+        $chargeAll = 0;
 
         foreach($summary as $row){
             $hms = explode(':', $row->sum_time);
             $row->sum_time = "${hms[0]}:${hms[1]}";
             $timeAll->addTimeStr($row->sum_time);
+            $chargeAll += $row->sum_charge;
             array_push($viewable, $row);
         }
 
         return [
             'site' => $viewable,
             'timeAll' => $timeAll->getTimeStr(),
+            'chargeAll' => $chargeAll,
         ];
     }
 

@@ -145,7 +145,7 @@
                         <td>{{ row.worktype_name }}</td>
                         <td class="{% if row.label == '時間外' %}text-danger{% endif %}" >{{ row.label }}</td>
                         <td>{{ row.sum_time }}</td>
-                        <td>¥ 1,000</td>
+                        <td class="text-right">{{ row.sum_charge | number_format }} 円</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -155,7 +155,7 @@
                     <td></td>
                     <td></td>
                     <td>{{ summary['timeAll'] }}</td>
-                    <td>¥ 1,000</td>
+                    <td class="text-right">{{ summary['chargeAll'] | number_format }} 円</td>
                 </tr>
                 </tfoot>
             </table>
