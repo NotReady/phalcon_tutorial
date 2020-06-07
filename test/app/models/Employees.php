@@ -12,6 +12,8 @@ class Employees extends Model{
     public $address;
     // 固定給
     public $monthly_charge;
+    // 固定残業代
+    public $overtime_charge;
     // 役職手当
     public $skill_charge;
     // 社員属性
@@ -19,7 +21,7 @@ class Employees extends Model{
     // 職能外部キー
     public $skill_id;
     // 交通費
-    public $Transportation_expenses;
+    public $transportation_expenses;
     // 作成日
     public $created;
     // 更新日
@@ -42,7 +44,6 @@ class Employees extends Model{
 
     public function authorization($username, $password){
         self::findFirst();
-
         $employee = Employees::findfirst([
             "conditions" => "username = :username: and password = :password:",
             bind => [

@@ -60,59 +60,79 @@
 
     <h1 class="title">登録情報</h1>
 
-    {{ form('/employees/edit/check', 'method': 'post') }}
+    {{ form('/employees/edit/check', 'method': 'post', 'class': 'row') }}
 
     {{ form.render('id') }}
 
-    <div class="form-element-wrap">
+    <span class="col-12">
+        <h2 class="subtitle">基本情報管理</h2>
+    </span>
+
+    <div class="form-element-wrap col-3">
         {{ form.label('first_name') }}
         {{ form.render('first_name') }}
         {{ form.messages('first_name') }}
     </div>
 
-    <div class="form-element-wrap">
+    <div class="form-element-wrap col-3">
         {{ form.label('last_name') }}
         {{ form.render('last_name') }}
         {{ form.messages('last_name') }}
     </div>
 
-    <div class="form-element-wrap">
-        {{ form.label('address') }}
-        {{ form.render('address') }}
-        {{ form.messages('address') }}
-    </div>
-
-    <div class="form-element-wrap">
+    <div class="form-element-wrap col-3">
         {{ form.label('employee_type') }}
         {{ form.render('employee_type') }}
         {{ form.messages('employee_type') }}
     </div>
 
-    <div class="form-element-wrap">
-        {{ form.label('monthly_charge') }}
-        {{ form.render('monthly_charge') }}
-        {{ form.messages('monthly_charge') }}
-    </div>
-
-    <div class="form-element-wrap">
-        {{ form.label('skill_charge') }}
-        {{ form.render('skill_charge') }}
-        {{ form.messages('skill_charge') }}
-    </div>
-
-    <div class="form-element-wrap">
+    <div class="form-element-wrap col-3">
         {{ form.label('skill_id') }}
         {{ form.render('skill_id') }}
         {{ form.messages('skill_id') }}
     </div>
 
-    <div class="form-element-wrap">
-        {{ form.label('Transportation_expenses') }}
-        {{ form.render('Transportation_expenses') }}
-        {{ form.messages('Transportation_expenses') }}
+    <div class="form-element-wrap col-12">
+        {{ form.label('address') }}
+        {{ form.render('address') }}
+        {{ form.messages('address') }}
     </div>
 
-    <div class="form-element-wrap">
+    <span class="col-12">
+        <h2 class="subtitle">給与管理 支給</h2>
+    </span>
+
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('monthly_charge') }}
+        {{ form.render('monthly_charge') }}
+        {{ form.messages('monthly_charge') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('overtime_charge') }}
+        {{ form.render('overtime_charge') }}
+        {{ form.messages('overtime_charge') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('skill_charge') }}
+        {{ form.render('skill_charge') }}
+        {{ form.messages('skill_charge') }}
+    </div>
+
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('transportation_expenses') }}
+        {{ form.render('transportation_expenses') }}
+        {{ form.messages('transportation_expenses') }}
+    </div>
+
+    <span class="col-12">
+        <h2 class="subtitle">給与管理 控除</h2>
+    </span>
+
+    <div class="form-element-wrap col-12 text-right mt-3">
         <ul>
             <li><input type="button" value="キャンセル" class="btn-outline-secondary form-control"></li>
             <li>{{ form.render('submit') }}</li>

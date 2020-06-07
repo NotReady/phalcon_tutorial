@@ -92,7 +92,7 @@ class EmployeesForm extends Form
 
 
         // 交通費
-        $transportation_expenses = new Numeric('Transportation_expenses');
+        $transportation_expenses = new Numeric('transportation_expenses');
         $transportation_expenses->setLabel('交通費');
         $transportation_expenses->setAttributes([
             'class' => 'form-control',
@@ -105,7 +105,7 @@ class EmployeesForm extends Form
         ]);
         $this->add($transportation_expenses);
 
-        // 月給
+        // 固定給
         $monthly_charge = new Numeric('monthly_charge');
         $monthly_charge->setLabel('固定給');
         $monthly_charge->setAttributes([
@@ -119,7 +119,22 @@ class EmployeesForm extends Form
         ]);
         $this->add($monthly_charge);
 
-        // 月給
+        // みなし残業代
+        $monthly_charge = new Numeric('overtime_charge');
+        $monthly_charge->setLabel('みなし残業代');
+        $monthly_charge->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => 'みなし残業代を入力してください。'
+        ]);
+        $monthly_charge->addValidators([
+            new PresenceOf([
+                'message' => 'みなし残業代を入力してください。'
+            ])
+        ]);
+        $this->add($monthly_charge);
+
+
+        // 役職手当
         $skill_charge = new Numeric('skill_charge');
         $skill_charge->setLabel('役職手当');
         $skill_charge->setAttributes([
