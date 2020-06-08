@@ -25,6 +25,12 @@ class SalaryController extends Controller
             SalaryHelper::complementTempolarySalary($sarary, $employee);
         }
 
+        // 時間給
+        $reportService = new ReportService($employee_id, $year, $month);
+        $this->view->reports = $reportService->getMonthlyReport();
+        $this->view->days_worked = $reportService->howDaysWorked();
+        $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
+
         $form = new SalaryForm($sarary);
 
         $this->view->employee = $employee;

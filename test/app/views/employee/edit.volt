@@ -80,6 +80,12 @@
         {{ form.messages('last_name') }}
     </div>
 
+    <div class="form-element-wrap col-6">
+        {{ form.label('address') }}
+        {{ form.render('address') }}
+        {{ form.messages('address') }}
+    </div>
+
     <div class="form-element-wrap col-3">
         {{ form.label('employee_type') }}
         {{ form.render('employee_type') }}
@@ -92,14 +98,17 @@
         {{ form.messages('skill_id') }}
     </div>
 
-    <div class="form-element-wrap col-12">
-        {{ form.label('address') }}
-        {{ form.render('address') }}
-        {{ form.messages('address') }}
+    <div class="form-element-wrap col-3">
+        {{ form.label('insurance_type') }}
+        {{ form.render('insurance_type') }}
+        {{ form.messages('insurance_type') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
     </div>
 
     <span class="col-12">
-        <h2 class="subtitle">給与管理 支給</h2>
+        <h2 class="subtitle">給与管理 支給マスタ</h2>
     </span>
 
 
@@ -121,16 +130,104 @@
         {{ form.messages('skill_charge') }}
     </div>
 
-
     <div class="form-element-wrap col-3">
         {{ form.label('transportation_expenses') }}
         {{ form.render('transportation_expenses') }}
         {{ form.messages('transportation_expenses') }}
     </div>
 
+    <div class="form-element-wrap col-3">
+        {{ form.label('transportation_expenses_by_day') }}
+        {{ form.render('transportation_expenses_by_day') }}
+        {{ form.messages('transportation_expenses_by_day') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('transportation_expenses_without_tax') }}
+        {{ form.render('transportation_expenses_without_tax') }}
+        {{ form.messages('transportation_expenses_without_tax') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('communication_charge_without_tax') }}
+        {{ form.render('communication_charge_without_tax') }}
+        {{ form.messages('communication_charge_without_tax') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('house_charge') }}
+        {{ form.render('house_charge') }}
+        {{ form.messages('house_charge') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('bus_charge') }}
+        {{ form.render('bus_charge') }}
+        {{ form.messages('bus_charge') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('officework_charge') }}
+        {{ form.render('officework_charge') }}
+        {{ form.messages('officework_charge') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('etc_charge') }}
+        {{ form.render('etc_charge') }}
+        {{ form.messages('etc_charge') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+    </div>
+
+
     <span class="col-12">
-        <h2 class="subtitle">給与管理 控除</h2>
+        <h2 class="subtitle">給与管理 控除マスタ</h2>
     </span>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('rent_bill') }}
+        {{ form.render('rent_bill') }}
+        {{ form.messages('rent_bill') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('electric_bill') }}
+        {{ form.render('electric_bill') }}
+        {{ form.messages('electric_bill') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('gas_bill') }}
+        {{ form.render('gas_bill') }}
+        {{ form.messages('gas_bill') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('water_bill') }}
+        {{ form.render('water_bill') }}
+        {{ form.messages('water_bill') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('food_bill') }}
+        {{ form.render('food_bill') }}
+        {{ form.messages('food_bill') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('etc_bill') }}
+        {{ form.render('etc_bill') }}
+        {{ form.messages('etc_bill') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+    </div>
+
+    <div class="form-element-wrap col-3">
+    </div>
+
 
     <div class="form-element-wrap col-12 text-right mt-3">
         <ul>

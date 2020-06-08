@@ -46,6 +46,21 @@ class EmployeesForm extends Form
         ]);
         $this->add($employee_type);
 
+        // 社会保険加入
+        $insurance_type = new Select('insurance_type', [
+            'enable' => '加入',
+            'disable' => '非加入'
+        ]);
+        $insurance_type->setLabel('社会保険');
+        $insurance_type->setAttributes([
+            'class' => 'form-control',
+        ]);
+        $insurance_type->addValidators([
+            new PresenceOf([
+                'message' => '社会保険加入を選択してください。'
+            ])
+        ]);
+        $this->add($insurance_type);
 
         // 名字
         $first_name = new Text('first_name');
@@ -91,20 +106,6 @@ class EmployeesForm extends Form
         $this->add($last_name);
 
 
-        // 交通費
-        $transportation_expenses = new Numeric('transportation_expenses');
-        $transportation_expenses->setLabel('交通費');
-        $transportation_expenses->setAttributes([
-            'class' => 'form-control',
-            'placeholder' => '交通費を入力してください。'
-        ]);
-        $transportation_expenses->addValidators([
-            new PresenceOf([
-                'message' => '交通費を入力してください。'
-            ])
-        ]);
-        $this->add($transportation_expenses);
-
         // 固定給
         $monthly_charge = new Numeric('monthly_charge');
         $monthly_charge->setLabel('固定給');
@@ -147,6 +148,203 @@ class EmployeesForm extends Form
             ])
         ]);
         $this->add($skill_charge);
+
+        // 課税交通費
+        $transportation_expenses = new Numeric('transportation_expenses');
+        $transportation_expenses->setLabel('課税交通費');
+        $transportation_expenses->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '課税交通費を入力してください。'
+        ]);
+        $transportation_expenses->addValidators([
+            new PresenceOf([
+                'message' => '課税交通費を入力してください。'
+            ])
+        ]);
+        $this->add($transportation_expenses);
+
+
+        // 日割交通費
+        $transportation_expenses_by_day = new Numeric('transportation_expenses_by_day');
+        $transportation_expenses_by_day->setLabel('日割交通費');
+        $transportation_expenses_by_day->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '日割交通費を入力してください。'
+        ]);
+        $transportation_expenses_by_day->addValidators([
+            new PresenceOf([
+                'message' => '日割交通費を入力してください。'
+            ])
+        ]);
+        $this->add($transportation_expenses_by_day);
+
+        // 非課税交通費
+        $transportation_expenses_without_tax = new Numeric('transportation_expenses_without_tax');
+        $transportation_expenses_without_tax->setLabel('非課税交通費');
+        $transportation_expenses_without_tax->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '非課税交通費を入力してください。'
+        ]);
+        $transportation_expenses_without_tax->addValidators([
+            new PresenceOf([
+                'message' => '非課税交通費を入力してください。'
+            ])
+        ]);
+        $this->add($transportation_expenses_without_tax);
+
+        // 非課税通信費
+        $communication_charge_without_tax = new Numeric('communication_charge_without_tax');
+        $communication_charge_without_tax->setLabel('非課税通信費');
+        $communication_charge_without_tax->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '非課税通信費を入力してください。'
+        ]);
+        $communication_charge_without_tax->addValidators([
+            new PresenceOf([
+                'message' => '非課税通信費を入力してください。'
+            ])
+        ]);
+        $this->add($communication_charge_without_tax);
+
+        // 住宅手当
+        $house_charge = new Numeric('house_charge');
+        $house_charge->setLabel('住宅手当');
+        $house_charge->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '住宅手当を入力してください。'
+        ]);
+        $house_charge->addValidators([
+            new PresenceOf([
+                'message' => '住宅手当を入力してください。'
+            ])
+        ]);
+        $this->add($house_charge);
+
+        // 送迎手当
+        $bus_charge = new Numeric('bus_charge');
+        $bus_charge->setLabel('送迎手当');
+        $bus_charge->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '送迎手当を入力してください。'
+        ]);
+        $bus_charge->addValidators([
+            new PresenceOf([
+                'message' => '送迎手当を入力してください。'
+            ])
+        ]);
+        $this->add($bus_charge);
+
+        // 事務手当
+        $officework_charge = new Numeric('officework_charge');
+        $officework_charge->setLabel('事務手当');
+        $officework_charge->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '事務手当を入力してください。'
+        ]);
+        $officework_charge->addValidators([
+            new PresenceOf([
+                'message' => '事務手当を入力してください。'
+            ])
+        ]);
+        $this->add($officework_charge);
+
+        // その他支給
+        $etc_charge = new Numeric('etc_charge');
+        $etc_charge->setLabel('その他支給');
+        $etc_charge->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => 'その他支給を入力してください。'
+        ]);
+        $etc_charge->addValidators([
+            new PresenceOf([
+                'message' => 'その他支給を入力してください。'
+            ])
+        ]);
+        $this->add($etc_charge);
+
+        // 家賃
+        $rent_bill = new Numeric('rent_bill');
+        $rent_bill->setLabel('家賃');
+        $rent_bill->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '家賃を入力してください。'
+        ]);
+        $rent_bill->addValidators([
+            new PresenceOf([
+                'message' => '家賃を入力してください。'
+            ])
+        ]);
+        $this->add($rent_bill);
+
+        // 電気代
+        $electric_bill = new Numeric('electric_bill');
+        $electric_bill->setLabel('電気代');
+        $electric_bill->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '電気代を入力してください。'
+        ]);
+        $electric_bill->addValidators([
+            new PresenceOf([
+                'message' => '電気代を入力してください。'
+            ])
+        ]);
+        $this->add($electric_bill);
+
+        // ガス代
+        $gas_bill = new Numeric('gas_bill');
+        $gas_bill->setLabel('ガス代');
+        $gas_bill->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => 'ガス代を入力してください。'
+        ]);
+        $gas_bill->addValidators([
+            new PresenceOf([
+                'message' => 'ガス代を入力してください。'
+            ])
+        ]);
+        $this->add($gas_bill);
+
+        // 水道代
+        $water_bill = new Numeric('water_bill');
+        $water_bill->setLabel('水道代');
+        $water_bill->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '水道代を入力してください。'
+        ]);
+        $water_bill->addValidators([
+            new PresenceOf([
+                'message' => '水道代を入力してください。'
+            ])
+        ]);
+        $this->add($water_bill);
+
+        // 弁当代
+        $food_bill = new Numeric('food_bill');
+        $food_bill->setLabel('弁当代');
+        $food_bill->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '弁当代を入力してください。'
+        ]);
+        $food_bill->addValidators([
+            new PresenceOf([
+                'message' => '弁当代を入力してください。'
+            ])
+        ]);
+        $this->add($food_bill);
+
+        // その他控除
+        $etc_bill = new Numeric('etc_bill');
+        $etc_bill->setLabel('その他控除');
+        $etc_bill->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => 'その他控除を入力してください。'
+        ]);
+        $etc_bill->addValidators([
+            new PresenceOf([
+                'message' => 'その他控除を入力してください。'
+            ])
+        ]);
+        $this->add($etc_bill);
 
         // 送信
         $this->add(new Submit('submit', [
