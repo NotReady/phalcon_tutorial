@@ -42,6 +42,7 @@ $di->set(
         /* set filter */
         $volt->getCompiler()->addFilter('strtotime', 'strtotime');
         $volt->getCompiler()->addFilter('number_format', 'number_format');
+        $volt->getCompiler()->addFilter('is_null', 'is_null');
 
         return $volt;
     }

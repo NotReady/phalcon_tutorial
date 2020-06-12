@@ -36,8 +36,11 @@ class Salaries extends Model{
     public $insurance_bill;
     // 厚生年金料
     public $pension_bill;
-    // 雇用保険料
+    // 雇用保険料 従業員負担
     public $employment_insurance_bill;
+    // 雇用保険料 事業主負担
+    public $employment_insurance_owner;
+
     // 所得税
     public $income_tax;
 
@@ -107,5 +110,67 @@ class Salaries extends Model{
         }
 
         return $salary;
+    }
+
+    /**
+     * 支給額の合計を取得します
+     */
+    public function getChargiesSummary(){
+        return $this->base_charge
+                + $this->overtime_charge
+                + $this->skill_charge
+                + $this->transportation_expenses
+                + $this->transportation_expenses_by_day
+                + $this->transportation_expenses_without_tax
+                + $this->communication_charge_without_tax
+                + $this->house_charge
+                + $this->bus_charge
+                + $this->officework_charge
+                + $this->etc_charge;
+    }
+
+    /**
+     * 社会保険料の合計を取得します
+     * @note https://support.yayoi-kk.co.jp/faq_Subcontents.html?page_id=19591
+     */
+    public function getInsuranciesSummary(){
+        return $this->insurance_bill
+                + $this->pension_bill
+                + $this->employment_insurance_bill;
+    }
+
+    /**
+     * 控除の合計を取得します
+     */
+    public function getBillsSummary(){
+        return $this->rent_bill
+                + $this->electric_bill
+                + $this->gas_bill
+                + $this->water_bill
+                + $this->food_bill
+                + $this->etc_bill;
+    }
+
+    /**
+     * 税引対象となる支給額の合計を取得します
+     */
+    public function getSubjectToTaxSummary(){
+        return $this->base_charge
+                + $this->overtime_charge
+                + $this->skill_charge
+                + $this->transportation_expenses
+                + $this->transportation_expenses_by_day
+                + $this->house_charge
+                + $this->bus_charge
+                + $this->officework_charge
+                + $this->etc_charge
+                - $this->getInsuranciesSummary();
+    }
+
+    /**
+     * 税引の合計を取得します
+     */
+    public function getTaxSummary(){
+        return $this->income_tax;
     }
 }

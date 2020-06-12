@@ -109,7 +109,7 @@
                         <td></td>
                         <td></td>
                         <td>{{ summary['timeAll'] }}</td>
-                        <td class="text-right">{% if employee.employee_type === 'pro' %}-{% else %}{{ summary['chargeAll'] | number_format }} 円{% endif %}</td>
+                        <td class="text-right"><span class="highlight-text">{% if employee.employee_type === 'pro' %}-{% else %}{{ summary['chargeAll'] | number_format }} 円{% endif %}</span></td>
                     </tr>
                     </tfoot>
                 </table>
@@ -124,8 +124,7 @@
                     <thead>
                     <th>項目</th>
                     <th>金額</th>
-                    <th></th>
-                    <th></th>
+                    <th></th><th></th>
                     </thead>
                     <tbody>
                         <tr>
@@ -133,12 +132,15 @@
                                 {# 社員 #}
                                 <td>基本給</td>
                                 <td>{{ form.render('base_charge') }} 円</td>
-                                <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                                <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                                <td>
+                                    {% if salary_origin.base_charge is defined %}
+                                        <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                    {% endif %}
+                                </td>
+                                <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                             {% else %}
-                                {# 社員以外は時間給を参照 #}
                                 <td>基本給</td>
-                                <td><input readonly type="number" class="form-control text-right" value="{{ summary['chargeAll'] }}"/> 円</td>
+                                <td><input readonly type="number" class="form-control text-right" value="{{ salary.base_charge }}"/> 円</td>
                                 <td></td>
                                 <td></td>
                             {% endif %}
@@ -146,68 +148,108 @@
                         <tr>
                             <td>みなし残業額</td>
                             <td>{{ form.render('overtime_charge') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.overtime_charge is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"> </td>
                         </tr>
                         <tr>
                             <td>役職手当</td>
                             <td>{{ form.render('skill_charge') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.skill_charge is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>課税交通費</td>
                             <td>{{ form.render('transportation_expenses') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.transportation_expenses is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>日割交通費</td>
                             <td>{{ form.render('transportation_expenses_by_day') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.transportation_expenses_by_day is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>非課税交通費</td>
                             <td>{{ form.render('transportation_expenses_without_tax') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.transportation_expenses_without_tax is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>非課税通信費</td>
                             <td>{{ form.render('communication_charge_without_tax') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.communication_charge_without_tax is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>住宅手当</td>
                             <td>{{ form.render('house_charge') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.house_charge is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>送迎手当</td>
                             <td>{{ form.render('bus_charge') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.bus_charge is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>事務手当</td>
                             <td>{{ form.render('officework_charge') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.officework_charge is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>その他支給</td>
                             <td>{{ form.render('etc_charge') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.officework_charge is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td>合計</td>
-                        <td></td>
+                        <td>支給合計</td>
+                        <td class="text-right"><span class="highlight-text">{{ salary.getChargiesSummary() | number_format }} 円</span></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -216,49 +258,118 @@
             </div>
         </div>
 
-        {% if employee.insurance_type === 'enable' %}
+        <div class="col-12">
             <div class="col-12">
-                <div class="col-12">
-                    <p class="subtitle">社会保険</p>
-                    <table class="table table_statement">
-                        <thead>
-                        <th>項目</th>
-                        <th>金額</th>
-                        <th></th>
-                        <th></th>
-                        </thead>
-                        <tbody>
+                <p class="subtitle">社会保険</p>
+                <table class="table table_statement">
+                    <thead>
+                    <th>項目</th>
+                    <th>金額</th>
+                    <th></th>
+                    <th></th>
+                    </thead>
+                    <tbody>
+
+                        {% if employee.insurance_type === 'enable' %}
                             <tr>
                                 <td>社会保険料</td>
                                 <td>{{ form.render('insurance_bill') }} 円</td>
-                                <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                                <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                                <td>
+                                    {% if salary_origin.insurance_bill is defined %}
+                                        <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                    {% endif %}
+                                </td>
+                                <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                             </tr>
                             <tr>
                                 <td>厚生年金料</td>
                                 <td>{{ form.render('pension_bill') }} 円</td>
-                                <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                                <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                                <td>
+                                    {% if salary_origin.pension_bill is defined %}
+                                        <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                    {% endif %}
+                                </td>
+                                <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>社会保険料</td>
+                                <td class="text-right">未加入</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
-                                <td>雇用保険料</td>
-                                <td>{{ form.render('employment_insurance_bill') }} 円</td>
-                                <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                                <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                                <td>厚生年金料</td>
+                                <td class="text-right">未加入</td>
+                                <td></td>
+                                <td></td>
                             </tr>
-                        </tbody>
-                        <tfoot>
+                        {% endif %}
                         <tr>
-                            <td>合計</td>
-                            <td></td>
+                            <td>雇用保険料</td>
+                            <td>
+                                {{ form.render('employment_insurance_bill') }} 円
+                                <div class="text-right"><small>事業主負担額 {{ salary.employment_insurance_owner | number_format }} 円</small></div>
+                            </td>
+                            <td>
+                                {% if salary_origin.employment_insurance_bill is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td>社会保険合計</td>
+                        <td class="text-right"><span class="highlight-text">{{ salary.getInsuranciesSummary() | number_format }} 円</span></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="col-12">
+                <p class="subtitle">税引</p>
+                <table class="table table_statement">
+                    <thead>
+                    <th>項目</th>
+                    <th>金額</th>
+                    <th></th>
+                    <th></th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>課税対象</td>
+                            <td><input readonly type="number" class="form-control text-right" value="{{ salary.getSubjectToTaxSummary() }}"/> 円</td>
                             <td></td>
                             <td></td>
                         </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                        <tr>
+                            <td>所得税</td>
+                            <td>{{ form.render('income_tax') }} 円</td>
+                            <td>
+                                {% if salary_origin.income_tax is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td>税引合計</td>
+                        <td class="text-right"><span class="highlight-text">{{ salary.getTaxSummary() | number_format }} 円</span></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </tfoot>
+                </table>
             </div>
-        {% endif %}
+        </div>
 
         <div class="col-12">
             <div class="col-12">
@@ -272,53 +383,70 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>所得税</td>
-                            <td>{{ form.render('income_tax') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
-                        </tr>
-
-                        <tr>
                             <td>家賃</td>
                             <td>{{ form.render('rent_bill') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.rent_bill is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>電気代</td>
                             <td>{{ form.render('electric_bill') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.electric_bill is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>ガス代</td>
                             <td>{{ form.render('gas_bill') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.gas_bill is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>水道代</td>
                             <td>{{ form.render('water_bill') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.water_bill is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>弁当代</td>
                             <td>{{ form.render('food_bill') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.food_bill is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                         <tr>
                             <td>その他控除</td>
                             <td>{{ form.render('etc_bill') }} 円</td>
-                            <td><input type="button" class="btn btn-danger" value="元に戻す"> </td>
-                            <td><input type="button" class="btn btn-primary" value="保存する"> </td>
+                            <td>
+                                {% if salary_origin.etc_bill is defined %}
+                                    <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                {% endif %}
+                            </td>
+                            <td><input type="button" class="btn btn-primary btn-update" value="保存する"></td>
                         </tr>
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td>合計</td>
-                        <td></td>
+                        <td>控除合計</td>
+                        <td class="text-right"><span class="highlight-text">{{ salary.getBillsSummary() | number_format }} 円</span></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -335,33 +463,76 @@
 {% block js_include %}
 <script>
 
+    const updateAction = "/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/update";
+    const undoAction = "/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/undo";
+    const method = "POST";
+
     $(function(){
-        $('.asyncForm').submit(function (event) {
+        $(".btn-update").on("click",  function () {
             // ポストキャンセル
             event.preventDefault();
-            const $thisForm = $(this);
-            const $submit = $thisForm.find('.btn-submit');
 
-            // 非同期ポスト実装
+            const $input = $(this).parents("tr").find("input");
+            const key = $input.attr('name');
+            const value = $input.val();
+
             $.ajax({
-                url: $thisForm.attr("action"),
-                type: $thisForm.attr("method"),
-                data: $thisForm.serialize(),
+                url: updateAction,
+                type: method,
+                dataType: "html",
+                data: {
+                    "name" : key,
+                    "value" : value
+                },
                 timeout: 1000 * 10,
                 beforeSend: function(xhr, settings){
-                    $submit.attr("disable", true);
+                    $(this).attr("disable", true);
                 },
                 complete: function(xhr, textStatus){
-                    $submit.attr("disable", false);
+                    $(this).attr("disable", false);
                 },
                 success: function (result, textStatus, xhr) {
                     alert('保存しました。');
+                    location.reload();
                 },
                 error: function(xhr, textStatus, error){
                     alert('失敗しました。');
                 }
             });
         })
+    });
+
+    $(".btn-undo").on("click",  function () {
+        // ポストキャンセル
+        event.preventDefault();
+
+        const $input = $(this).parents("tr").find("input");
+        const key = $input.attr('name');
+        const value = $input.val();
+
+        $.ajax({
+            url: undoAction,
+            type: method,
+            dataType: "html",
+            data: {
+                "name" : key,
+                "value" : value
+            },
+            timeout: 1000 * 10,
+            beforeSend: function(xhr, settings){
+                $(this).attr("disable", true);
+            },
+            complete: function(xhr, textStatus){
+                $(this).attr("disable", false);
+            },
+            success: function (result, textStatus, xhr) {
+                alert('保存しました。');
+                location.reload();
+            },
+            error: function(xhr, textStatus, error){
+                alert('失敗しました。');
+            }
+        });
     });
 
 </script>

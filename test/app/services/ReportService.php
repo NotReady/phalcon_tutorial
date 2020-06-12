@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: notready
- * Date: 2019-10-21
- * Time: 23:57
- */
 
 class ReportService
 {

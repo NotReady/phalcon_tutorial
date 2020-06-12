@@ -17,7 +17,12 @@ $router->add('/report/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['control
 $router->add('/report/save',                    ['controller' => "Report", 'action'=>'save']);
 
 // 給与編集
-$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Salary", 'action'=>'index']);
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}',        ['controller' => "Salary", 'action'=>'index']);
+// 給与保存
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/update', ['controller' => "Api", 'action'=>'updateSalary']);
+// 給与Undo
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/undo', ['controller' => "Api", 'action'=>'undoSalary']);
+
 
 // 従業員
 $router->add('/employees',                      ['controller' => "Employee",  'action'=>'index']);

@@ -1,15 +1,32 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: notready
- * Date: 2019-10-21
- * Time: 23:57
- */
 
 class SalaryHelper
 {
     /**
+     * @note 社会保険料算出のAPIエンドポイント
+     */
+    private const INSURANCE_CALC_API_ENDPOINT_V202003 = 'https://asia-northeast1-tsunagi-all.cloudfunctions.net/getSocialInsurance202003';
+    /**
+     * @note 源泉所得徴収額のAPIエンドポイント
+     */
+    private const TAX_CALC_API_ENDPOINT_V2020 = 'https://asia-northeast1-tsunagi-all.cloudfunctions.net/getIncomeTax2020';
+    /**
+     * @note 雇用保険料率 従業員負担
+     */
+    private const EMPLOYMENT_INSURANCE_PER_EMPLOYEE_V2020 = 0.003;
+    /**
+     * @note 雇用保険料率 事業主負担
+     */
+    private const EMPLOYMENT_INSURANCE_PER_OWNER_V2020 = 0.006;
+    /**
+     * @note 雇用保険料率 小数オフセット
+     */
+    private const EMPLOYMENT_INSURANCE_ROUND_OFFSET = 0.41;
+
+    /**
      * 給与モデルのブランクをマスタで補完します
+     * @param $salary Salaries
+     * @param $employee Employees
      * @return array
      */
     public static function complementTempolarySalary($salary, $employee){
@@ -104,6 +121,70 @@ class SalaryHelper
             $salary->etc_bill = $employee->etc_bill;
         }
 
+
+        if( $employee->insurance_type === 'enable' ){
+            $insurancies = ApiHelper::get(self::INSURANCE_CALC_API_ENDPOINT_V202003, [
+                'salary' => $salary->getChargiesSummary(),
+                'kaigo' => 0
+            ]);
+            // 社会保険料を補完します
+            if( is_null($salary->insurance_bill) === true ){
+                $salary->insurance_bill = $insurancies->insurance->payment;
+            }
+            // 厚生年金量を補完します
+            if( is_null($salary->pension_bill) === true ){
+                $salary->pension_bill = $insurancies->pension->payment;
+            }
+        }else{
+            $salary->insurance_bill = null;
+            $salary->pension_bill = null;
+        }
+
+        // 雇用保険を補完します
+        if( is_null($salary->employment_insurance_bill) === true ){
+            $salary->employment_insurance_bill = self::getEmploymentInsuranceForEmployee($salary->getChargiesSummary());
+            $salary->employment_insurance_owner = self::getEmploymentInsuranceForOwnerIfInputed($salary->employment_insurance_bill);
+        }else{
+            // 所得税が上書き保存されている場合は、入力金額に応じた事業主負担を出す
+            $salary->employment_insurance_owner = self::getEmploymentInsuranceForOwnerIfInputed($salary->employment_insurance_bill);
+        }
+
+        // 所得税を補完します
+        if( is_null($salary->income_tax) === true ){
+            $tax = ApiHelper::get(self::TAX_CALC_API_ENDPOINT_V2020, [
+                'salary' => $salary->getSubjectToTaxSummary(),
+                'numberOfDependents' => 0,
+                'type' => 'a'
+            ]);
+            $salary->income_tax = $tax->total;
+        }
+
+    }
+
+    /**
+     * 従業員の雇用保険負担額を取得します
+     * @note https://www.reloclub.jp/relotimes/article/10320
+     * @note 小数は0.50以下切り捨て
+     */
+    private static function getEmploymentInsuranceForEmployee($value){
+        return floor($value * self::EMPLOYMENT_INSURANCE_PER_EMPLOYEE_V2020 + self::EMPLOYMENT_INSURANCE_ROUND_OFFSET);
+    }
+
+    /**
+     * 事業主の雇用保険負担額を取得します
+     * @note https://www.reloclub.jp/relotimes/article/10320
+     * @note 小数は0.50以下切り捨て
+     */
+    private static function getEmploymentInsuranceForOwner($value){
+        return floor($value * self::EMPLOYMENT_INSURANCE_PER_OWNER_V2020 + self::EMPLOYMENT_INSURANCE_ROUND_OFFSET);
+    }
+
+    /**
+     * 雇用保険を手動で補正された場合の事業主の雇用保険負担額を取得します
+     * @note 利率で
+     */
+    private static function getEmploymentInsuranceForOwnerIfInputed($value){
+        return $value * (self::EMPLOYMENT_INSURANCE_PER_OWNER_V2020 /  self::EMPLOYMENT_INSURANCE_PER_EMPLOYEE_V2020);
     }
 
 }

@@ -7,8 +7,12 @@ class ApiController extends Controller
      * JSONレスポンスヘッダのラッパ
      */
     private function jsonResponse($callble){
-        header("Content-type: text/json; charset=UTF-8");
-        $callble();
+        try{
+            $callble();
+            header("Content-type: text/json; charset=UTF-8");
+        }catch (Exception $e){
+            header("HTTP/1.1 503 Service Unavailable");
+        }
     }
 
     /**
@@ -37,6 +41,42 @@ class ApiController extends Controller
                 'result' => 'success',
                 'loans' => $json,
             ]);
+        });
+    }
+
+    public function updateSalaryAction(){
+        $this->jsonResponse(function (){
+            // パラメタ収集
+            $year = $this->dispatcher->getParam('year');
+            $month = $this->dispatcher->getParam('month');
+            $employee_id = $this->dispatcher->getParam('employee_id');
+            $params = $this->request->getPost();
+
+            $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, "${year}/${month}/01");
+            $sarary->{$params['name']} = $params['value'];
+
+            if( $sarary->save() === false ){
+                throw new Exception();
+            }
+
+        });
+    }
+
+    public function undoSalaryAction(){
+        $this->jsonResponse(function (){
+            // パラメタ収集
+            $year = $this->dispatcher->getParam('year');
+            $month = $this->dispatcher->getParam('month');
+            $employee_id = $this->dispatcher->getParam('employee_id');
+            $params = $this->request->getPost();
+
+            $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, "${year}/${month}/01");
+            $sarary->{$params['name']} = null;
+
+            if( $sarary->save() === false ){
+                throw new Exception();
+            }
+
         });
     }
 }
