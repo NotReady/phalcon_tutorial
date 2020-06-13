@@ -24,7 +24,7 @@ class Loans extends Model
      * @param $employee_id  社員Id
      * @return mixed Loansモデル
      */
-    public function getBook($employee_id){
+    public static function getBook($employee_id){
         return $reports = Loans::find(
             [
                 'conditions' => 'employee_id = :employee_id:',
@@ -40,7 +40,7 @@ class Loans extends Model
      * @param $employee_id
      * @return mixed
      */
-    public function getBookAssosiatePageer($employee_id, $offset=1, $limit=10){
+    public static function getBookAssosiatePageer($employee_id, $offset=1, $limit=10){
         $offset -= 1;
         return $reports = Loans::find(
             [
@@ -58,9 +58,9 @@ class Loans extends Model
      * 貸付残高を取得します
      * @param $employee_id
      */
-    public function getSummary($employee_id){
+    public static function getAmount($employee_id){
         $query = "select
-                    sum(case when lo.io_type = 1 then lo.ammount else 0 end) - sum(case when lo.io_type = 2 then lo.ammount else 0 end) as ammount
+                    0 + sum(case when lo.io_type = 1 then lo.ammount else 0 end) - sum(case when lo.io_type = 2 then lo.ammount else 0 end) as amount
                   from
                     loans lo
                   where lo.employee_id = :employee_id
@@ -72,7 +72,7 @@ class Loans extends Model
                 'employee_id' => $employee_id,
             ]));
 
-        return count($result) == 0 ? false: $result[0];
+        return count($result) == 0 ? false: $result[0]->amount;
 
     }
 

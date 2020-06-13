@@ -240,7 +240,7 @@
 
     <h1 class="title">貸付明細</h1>
 
-    <p class="caption-large">貸付残高　{{ loansAmmount.ammount | number_format }} 円</p>
+    <p class="caption-large">貸付残高　{{ loansAmount | number_format }} 円</p>
 
     <div class="sticky-table mb-3">
     <table class="table-hover table table-main loans">

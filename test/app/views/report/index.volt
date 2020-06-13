@@ -38,11 +38,35 @@
         height: 500px;
     }
 
+    .flex_box{
+        display: flex;
+        align-items: center;
+    }
+
+    .flex_right{
+        justify-content: flex-end;
+    }
+
+
 </style>
 
 <div class="content_root">
 
-    <h1 class="title">{{ "%s %sさん %d年 %d月の勤務レポート" |format(employee.first_name, employee.last_name ,thisyear, thismonth) }}</h1>
+    <h1 class="title row">
+        <div class="col-6 flex_box">
+            <span>
+                <a href="/employee/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
+                {{ "%d年 %d月の勤務レポート" | format(thisyear, thismonth) }}
+            </span>
+        </div>
+        <div class="col-6 flex_box flex_right">
+            <span>
+            <a href="{{ previousUrl }}" class="btn page-link text-dark d-inline-block">＜ 前月</a>
+            <a href="{{ nextUrl }}" class="btn page-link text-dark d-inline-block">翌月 ＞</a>
+            <a href="/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}" class="btn btn-primary">給与編集</a>
+            </span>
+        </div>
+    </h1>
 
     {% set week = ['日','月','火','水','木','金','土'] %}
 
@@ -71,18 +95,16 @@
                         echo $week[date('w',  strtotime("${thisyear}-${day}"))];
                     ?>
                 </td>
-
-
                 <td><select class="form-control" name="nm_site_id"; ?>">
                         <?php foreach($sites as $id => $name): ?>
-                        <option value="{{id}}" <?php if($id==$report->site_id){echo 'selected';}?>>{{name}}</option>
+                        <option value="{{ id }}" {% if id is report.site_id  %}selected{% endif %} >{{ name }}</option>
                         <?php endforeach;?>
                     </select>
                 </td>
                 <td>
                     <select class="form-control" name="nm_wtype_id"; ?>">
                         <?php foreach($wtypes as $id => $name): ?>
-                        <option value="{{id}}" <?php if($id==$report->worktype_id){echo 'selected';}?>>{{name}}</option>
+                        <option value="{{id}}" {% if id is report.worktype_id %}selected{% endif %} >{{ name }}</option>
                         <?php endforeach;?>
                     </select>
                 </td>
@@ -106,7 +128,7 @@
     </table>
     </div>
 
-    <h1 class="title">給与</h1>
+    <h1 class="title">サマリー</h1>
     <div class="row">
 
         <style>
@@ -129,7 +151,6 @@
         </style>
 
         <div class=" col-12">
-            <p class="subtitle">時間給</p>
             <table class="table salary">
                 <thead>
                     <th>現場</th>
@@ -160,78 +181,6 @@
                 </tfoot>
             </table>
         </div>
-
-
-        <div class="col-6">
-            <p class="subtitle">福利厚生</p>
-            <table class="table">
-                <thead>
-                <th>項目</th>
-                <th>数量</th>
-                <th>金額</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>交通費</td>
-                        <td></td>
-                        <td>¥ 10,000</td>
-                    </tr>
-                    <tr>
-                        <td>役職手当</td>
-                        <td></td>
-                        <td>¥ 10,000</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td>合計</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <div class="col-6">
-            <p class="subtitle">控除</p>
-            <table class="table">
-                <thead>
-                <th>項目</th>
-                <th>数量</th>
-                <th>金額</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>寮費</td>
-                        <td></td>
-                        <td>¥ 20,000</td>
-                    </tr>
-                    <tr>
-                        <td>貸付金返済</td>
-                        <td></td>
-                        <td>¥ 30,000</td>
-                    </tr>
-                    <tr>
-                        <td>社会保険</td>
-                        <td></td>
-                        <td>¥ 30,000</td>
-                    </tr>
-                    <tr>
-                        <td>雇用保険</td>
-                        <td></td>
-                        <td>¥ 10,000</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td>合計</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-
     </div>
 
 

@@ -45,10 +45,11 @@ class SalaryController extends Controller
         $this->view->employee = $employee;
         $this->view->salary = $salary_temporary;
         $this->view->salary_origin = $salary_origin;
+        $this->view->total_salary = $salary_temporary->getSalary();
         $this->view->form = $form;
         $this->view->thismonth = $month ;
         $this->view->thisyear = $year ;
-
+        $this->view->activeLoan = Loans::getAmount($employee->id) - $salary_temporary->loan_bill;
     }
 
 }

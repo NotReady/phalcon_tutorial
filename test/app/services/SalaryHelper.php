@@ -22,6 +22,10 @@ class SalaryHelper
      * @note 雇用保険料率 小数オフセット
      */
     private const EMPLOYMENT_INSURANCE_ROUND_OFFSET = 0.41;
+    /**
+     * @note 貸付返済額のデフォルト値
+     */
+    private const REPAY_LOAN_VALUE = 20000;
 
     /**
      * 給与モデルのブランクをマスタで補完します
@@ -39,6 +43,11 @@ class SalaryHelper
             }else{
                 $salary->base_charge = 0;
             }
+        }
+
+        // 賞与を補完します
+        if( is_null($salary->bonus_charge) === true ){
+            $salary->bonus_charge = 0;
         }
 
         // みなし残業代を補完します
@@ -121,6 +130,12 @@ class SalaryHelper
             $salary->etc_bill = $employee->etc_bill;
         }
 
+        // 貸付返済額を補完します
+        if( is_null($salary->loan_bill) === true ){
+            $active_loan_value = Loans::getAmount($employee->id);
+            $active_loan_value = empty($active_loan_value) ? 0 : $active_loan_value;
+            $salary->loan_bill = $active_loan_value < self::REPAY_LOAN_VALUE ? $active_loan_value : self::REPAY_LOAN_VALUE;
+        }
 
         if( $employee->insurance_type === 'enable' ){
             $insurancies = ApiHelper::get(self::INSURANCE_CALC_API_ENDPOINT_V202003, [

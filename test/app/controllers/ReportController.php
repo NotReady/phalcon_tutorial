@@ -36,6 +36,12 @@ class ReportController extends Controller
             $wtypeinfo += [$wtype->id=>$wtype->name];
         }
         $this->view->wtypes = $wtypeinfo;
+
+        date('Y', strtotime('-1 year'));
+
+        $currentYmd = "${year}/${month}/1";
+        $this->view->previousUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' -1 month')) . "/" . date('m', strtotime( $currentYmd.' -1 month'));
+        $this->view->nextUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' +1 month')) . "/" . date('m', strtotime( $currentYmd.' +1 month'));
     }
 
     /**

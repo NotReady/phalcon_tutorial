@@ -28,6 +28,20 @@ class SalaryForm extends Form
         ]);
         $this->add($base_charge);
 
+        // 賞与
+        $bonus_charge = new Numeric('bonus_charge');
+        $bonus_charge->setLabel('賞与');
+        $bonus_charge->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '賞与を入力してください。'
+        ]);
+        $bonus_charge->addValidators([
+            new PresenceOf([
+                'message' => '賞与を入力してください。'
+            ])
+        ]);
+        $this->add($bonus_charge);
+
         // みなし残業額
         $base_charge = new Numeric('overtime_charge');
         $base_charge->setLabel('みなみ残業額');
@@ -307,6 +321,20 @@ class SalaryForm extends Form
             ])
         ]);
         $this->add($etc_bill);
+
+        // 貸付返済
+        $loan_bill = new Numeric('loan_bill');
+        $loan_bill->setLabel('貸付返済額');
+        $loan_bill->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '貸付返済額を入力してください。'
+        ]);
+        $loan_bill->addValidators([
+            new PresenceOf([
+                'message' => '貸付返済額を入力してください。'
+            ])
+        ]);
+        $this->add($loan_bill);
 
         // 送信
         $this->add(new Submit('submit', [

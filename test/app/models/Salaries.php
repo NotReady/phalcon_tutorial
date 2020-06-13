@@ -11,6 +11,8 @@ class Salaries extends Model{
 
     // 基本給(固定給か時間給)
     public $base_charge;
+    // 賞与
+    public $bonus_charge;
     // みなし残業代
     public $overtime_charge;
     // 役職手当
@@ -31,6 +33,8 @@ class Salaries extends Model{
     public $officework_charge;
     // その他支給
     public $etc_charge;
+    // 貸付返済
+    public $loan_bill;
 
     // 社会保険料
     public $insurance_bill;
@@ -92,11 +96,13 @@ class Salaries extends Model{
             $data = array(
                 'employee_id' => $employee_id,
                 'salary_date' => $dateBy,
+                'fixed' => 'temporary'
             );
 
             $cols = array(
                 'employee_id',
                 'salary_date',
+                'fixed'
             );
 
             $salary = new Salaries();
@@ -117,6 +123,7 @@ class Salaries extends Model{
      */
     public function getChargiesSummary(){
         return $this->base_charge
+                + $this->bonus_charge
                 + $this->overtime_charge
                 + $this->skill_charge
                 + $this->transportation_expenses
@@ -148,7 +155,8 @@ class Salaries extends Model{
                 + $this->gas_bill
                 + $this->water_bill
                 + $this->food_bill
-                + $this->etc_bill;
+                + $this->etc_bill
+                + $this->loan_bill;
     }
 
     /**
@@ -156,6 +164,7 @@ class Salaries extends Model{
      */
     public function getSubjectToTaxSummary(){
         return $this->base_charge
+                + $this->bonus_charge
                 + $this->overtime_charge
                 + $this->skill_charge
                 + $this->transportation_expenses
@@ -172,5 +181,12 @@ class Salaries extends Model{
      */
     public function getTaxSummary(){
         return $this->income_tax;
+    }
+
+    /**
+     * 総支給額を取得します
+     */
+    public function getSalary(){
+        return $this->getChargiesSummary() - $this->getBillsSummary() - $this->getInsuranciesSummary() - $this->getTaxSummary();
     }
 }

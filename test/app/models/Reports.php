@@ -29,7 +29,7 @@ class Reports extends Model
     }
 
     // ある年月の勤怠表を取得します。
-    public function getReport($employee_id, $year, $month){
+    public static function getReport($employee_id, $year, $month){
 
         // 日数
         $lastDay = date('t', mktime(0, 0, 0, $month, 1, $year));
