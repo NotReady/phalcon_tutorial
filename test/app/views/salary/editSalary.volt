@@ -63,36 +63,27 @@
         margin-right: 0.6rem;
     }
 
-    .highlight{
-        font-weight: normal;
-        font-size: 1.0rem;
-        margin: 0 1.0rem;
-    }
-
-    .highlight-text{
-        font-weight: 700;
-        font-size: 1.4rem;
-    }
-
-    .btn-wrap{
-        text-align: left;
-    }
-
 </style>
 
 <div class="content_root">
 
-    <h1 class="title">
-        <a href="/employee/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
-        {{ "%d年 %d月の給与編集" | format(thisyear, thismonth) }}
+    <h1 class="title flex_box">
+        <div class="col-8">
+            <a href="/employee/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
+            {{ "%d年 %d月の給与編集" | format(thisyear, thismonth) }}
+        </div>
+        <div class="col-4 text-right">
+            <a href="/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/fix" class="btn btn-primary btn-fix">確定する</a>
+        </div>
     </h1>
 
     <div class="row">
 
         <div class="col-12">
             <div class=" col-12">
-                <p class="subtitle">
+                <p class="subtitle flex_box flex_left">
                     今月のサマリー
+                    <span class="badge-alert highlight">未確定</span>
                     <span class="highlight">総支給額　<span class="highlight-text">{{ total_salary | number_format }}</span> 円</span>
                     <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
                     <span class="highlight">出勤時間　<span class="highlight-text">{{ summary['timeAll'] }}</span></span>

@@ -22,7 +22,10 @@ class ApiController extends Controller
     public function addLoanAction(){
         $this->jsonResponse(function (){
             $params = $this->request->getPost();
-            Loans::createLoan($params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
+            $loan = Loans::createLoan($params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
+            if( $loan->save() === false ){
+                throw new Exception();
+            }
             echo json_encode(['result' => 'success']);
         });
     }
@@ -52,7 +55,7 @@ class ApiController extends Controller
             $employee_id = $this->dispatcher->getParam('employee_id');
             $params = $this->request->getPost();
 
-            $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, "${year}/${month}/01");
+            $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
             $sarary->{$params['name']} = $params['value'];
 
             if( $sarary->save() === false ){
@@ -70,7 +73,7 @@ class ApiController extends Controller
             $employee_id = $this->dispatcher->getParam('employee_id');
             $params = $this->request->getPost();
 
-            $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, "${year}/${month}/01");
+            $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
             $sarary->{$params['name']} = null;
 
             if( $sarary->save() === false ){

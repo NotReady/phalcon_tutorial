@@ -38,16 +38,6 @@
         height: 500px;
     }
 
-    .flex_box{
-        display: flex;
-        align-items: center;
-    }
-
-    .flex_right{
-        justify-content: flex-end;
-    }
-
-
 </style>
 
 <div class="content_root">

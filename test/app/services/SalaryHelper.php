@@ -1,5 +1,8 @@
 <?php
 
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
+use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
+
 class SalaryHelper
 {
     /**
@@ -200,6 +203,84 @@ class SalaryHelper
      */
     private static function getEmploymentInsuranceForOwnerIfInputed($value){
         return $value * (self::EMPLOYMENT_INSURANCE_PER_OWNER_V2020 /  self::EMPLOYMENT_INSURANCE_PER_EMPLOYEE_V2020);
+    }
+
+    /**
+     * 給与を更新します
+     * @param Salaries $salary 給与モデル
+     * @param Employees $employee 社員モデル
+     * @param bool $fixed 確定フラグ
+     * @throws Exception
+     */
+    public static function updateWithComplement($salary, $employee, $fixed = true){
+
+        $transactionManager = new TransactionManager();
+        $transaction = $transactionManager->get();
+
+        try{
+
+            // ブランク属性をマスタから補完して更新します
+            self::complementTempolarySalary($salary, $employee);
+            $salary->fixed = $fixed;
+
+            $salary->setTransaction($transaction);
+            if( $salary->save() === false ){
+                $transaction->rollback();
+            }
+
+            // 貸付返済を登録します
+            if( $salary->loan_bill > 0 ){
+
+                $year = date('Y', strtotime($salary->salary_date));
+                $month = date('m', strtotime($salary->salary_date));
+                $loan = Loans::createLoan($employee->id, date("Y/m/d"), 2, $salary->loan_bill, "${year}年${month}月 給与控除", $salary->salary_id);
+
+                $loan->setTransaction($transaction);
+                if( $loan->save() === false ){
+                    $transaction->rollback();
+                }
+            }
+
+            $transaction->commit();
+
+        }catch (TransactionFailed $e){
+            throw Exception();
+        }
+    }
+
+    /**
+     * 給与確定を取り消します
+     * @param Salaries $salary 給与モデル
+     * @param Employees $employee 社員モデル
+     */
+    public static function cancel($salary, $employee){
+        $transactionManager = new TransactionManager();
+        $transaction = $transactionManager->get();
+
+        try{
+
+            // 給与を未確定状態に更新します
+            $salary->fixed = 'temporary';
+
+            $salary->setTransaction($transaction);
+            if( $salary->save() === false ){
+                $transaction->rollback();
+            }
+
+            // 関連する貸付明細を削除します
+            $loan = Loans::getLoanBySalaryId($salary->salary_id);
+            if( empty($loan) === false ){
+                $loan->setTransaction($transaction);
+                if( $loan->delete() === false ){
+                    $transaction->rollback();
+                }
+            }
+
+            $transaction->commit();
+
+        }catch (TransactionFailed $e){
+            throw Exception();
+        }
     }
 
 }

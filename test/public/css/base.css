@@ -50,6 +50,7 @@ thead tr{
 }
 
 tfoot tr{
+    background-color: #eeeeee;
     font-weight: 700;
 }
 
@@ -105,6 +106,21 @@ h1 {
     font-size: 1.2rem;
 }
 
+.highlight{
+    font-weight: normal;
+    font-size: 1.0rem;
+    margin: 0 1.0rem;
+}
+
+.highlight-text{
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+.btn-wrap{
+    text-align: left;
+}
+
 /* float */
 
 .float-container{
@@ -119,4 +135,41 @@ h1 {
 
 .float-right{
     float: right;
+}
+
+/* flex */
+
+.flex_box{
+    display: flex;
+    align-items: center;
+}
+
+.flex_left{
+    justify-content: flex-start;
+}
+
+.flex_right{
+    justify-content: flex-end;
+}
+
+/* バッジ */
+
+.badge-alert{
+    border: 1px solid red;
+    color: red;
+    background-color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-weight: normal;
+    font-size: 0.8rem !important;
+}
+
+.badge-info{
+    border: 1px solid #28a745;
+    color: #28a745;
+    background-color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-weight: normal;
+    font-size: 0.8rem !important;
 }

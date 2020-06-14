@@ -4,6 +4,9 @@ use Phalcon\Mvc\Model;
 
 class Salaries extends Model{
 
+    // サロゲートID
+    public $salary_id;
+
     // 対象年月
     public $salary_date;
     // 社員Id
@@ -81,12 +84,15 @@ class Salaries extends Model{
     /**
      * 社員の指定月の給与明細を取得します。
      */
-    public static function getSalaryByEmployeeAndDate($employee_id, $dateBy){
+    public static function getSalaryByEmployeeAndDate($employee_id, $year, $month){
+
+        $salatyDate = "${year}/${month}/01";
+
         $salary = Salaries::findfirst([
             'conditions' => 'employee_id = :employee_id: and salary_date = :salary_date:',
             bind => [
                 'employee_id' => $employee_id,
-                'salary_date' => $dateBy,
+                'salary_date' => $salatyDate,
             ]
         ]);
 
@@ -95,7 +101,7 @@ class Salaries extends Model{
 
             $data = array(
                 'employee_id' => $employee_id,
-                'salary_date' => $dateBy,
+                'salary_date' => $salatyDate,
                 'fixed' => 'temporary'
             );
 

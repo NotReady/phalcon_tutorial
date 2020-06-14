@@ -16,13 +16,18 @@ $router->add('/login/check',                    ['controller' => "Login", 'actio
 $router->add('/report/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Report", 'action'=>'index']);
 $router->add('/report/save',                    ['controller' => "Report", 'action'=>'save']);
 
+// 給与閲覧
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Salary", 'action'=>'viewSalary']);
 // 給与編集
-$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}',        ['controller' => "Salary", 'action'=>'index']);
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/edit',        ['controller' => "Salary", 'action'=>'editSalary']);
+// 給与確定
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/fix', ['controller' => "Salary", 'action'=>'fixSalary']);
+// 給与確定取消
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/cancel', ['controller' => "Salary", 'action'=>'cancelSalary']);
 // 給与保存
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/update', ['controller' => "Api", 'action'=>'updateSalary']);
 // 給与Undo
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/undo', ['controller' => "Api", 'action'=>'undoSalary']);
-
 
 // 従業員
 $router->add('/employees',                      ['controller' => "Employee",  'action'=>'index']);
