@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: notready
- * Date: 2019-10-21
- * Time: 23:57
- */
 
 class ReportService
 {
@@ -27,10 +21,31 @@ class ReportService
     }
 
     /**
-     * 月間の作業日数を取得します
+     * 月間の出勤日数を取得します
      * @return int
      */
     public function howDaysWorked(){ return count($this->_reports);}
+
+    /**
+     * 曜日別の出勤日数を取得します
+     * @return int
+     */
+    public function howDaysWorkedOfDay(){
+        $daysWorked = [
+            '平日' => 0,
+            '土曜日' => 0,
+            '日曜日' => 0
+        ];
+        foreach ( $this->_reports as $report ){
+            $week = date('w', strtotime($report->at_day));
+            switch ($week){
+                case 0:     $daysWorked['日曜日'] += 1; break; // 日曜日
+                case 6:     $daysWorked['土曜日'] += 1; break; // 土曜日
+                default:    $daysWorked['平日'] += 1; break;   // 平日
+            }
+        }
+        return $daysWorked;
+    }
 
     /**
      * 月間の勤務表を取得します
@@ -58,7 +73,7 @@ class ReportService
     }
 
     /**
-     * 月間勤務表の時間集計結果を取得します
+     * 月間勤務表の時間集計を取得します
      * @return array
      */
     public function getSummary(){
@@ -85,6 +100,49 @@ class ReportService
             'inTimeAll' => $inTimeCalc->getTimeStr(),
             'outTimeAll' => $outTimeCalc->getTimeStr(),
         ];
-//        return $viewable;
     }
+
+    /**
+     * 月間勤務表の時間集計を取得します
+     * @return array
+     */
+    public function getSummaryBySiteWorkUnit(){
+        $report = new Reports();
+        $summary = $report->getSummaryOfGroupBySiteWorkType($this->_employee_id, $this->_year, $this->_month);
+        $viewable = [];
+
+        // 合計出勤時間計算オブジェクト
+        $timeAll = new TimeUtil();
+        // 平日時間内 / 平日時間外 / 土曜日出勤 / 日曜日出勤　計算オブジェクト
+        $timeUnitObjects = [
+            '平日時間内' => new TimeUtil(),
+            '平日時間外' => new TimeUtil(),
+            '土曜日出勤' => new TimeUtil(),
+            '日曜日出勤' => new TimeUtil(),
+        ];
+        $timeUnitsValue = [];
+        $chargeAll = 0;
+
+        foreach($summary as $row){
+            $hms = explode(':', $row->sum_time);
+            $row->sum_time = "${hms[0]}:${hms[1]}";
+            $timeAll->addTimeStr($row->sum_time);
+            $timeUnitObjects[$row->label]->addTimeStr($row->sum_time);
+            $chargeAll += $row->sum_charge;
+            array_push($viewable, $row);
+        }
+
+        // 平日時間内 / 平日時間外 / 土曜日出勤 / 日曜日出勤　の計算
+        foreach ( $timeUnitObjects as $unitName => $obj ){
+            $timeUnitsValue[$unitName] = $obj->getTimeStr();
+        }
+
+        return [
+            'timeunits' => $timeUnitsValue,
+            'site' => $viewable,
+            'timeAll' => $timeAll->getTimeStr(),
+            'chargeAll' => $chargeAll,
+        ];
+    }
+
 }

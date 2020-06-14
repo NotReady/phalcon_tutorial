@@ -20,7 +20,7 @@
     }
 </style>
 <div class="content_root">
-<h3>現場一覧</h3>
+<h1 class="title">現場一覧</h1>
 <table class="table-hover table">
     <thead>
     <th>現場名</th>

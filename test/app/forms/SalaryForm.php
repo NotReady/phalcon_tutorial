@@ -7,139 +7,60 @@ use \Phalcon\Forms\Element\Hidden;
 use \Phalcon\Forms\Element\Select;
 use \Phalcon\Validation\Validator\PresenceOf;
 
-class EmployeesForm extends Form
+class SalaryForm extends Form
 {
     public function initialize($emtry=null, $options=null){
 
         // id
-        $this->add(new Hidden('id'));
+        $this->add(new Hidden('employee_id'));
 
-        // 雇用タイプ
-        $employee_type = new Select('employee_type', [
-            'pro' => '社員',
-            'part' => 'アルバイト'
+        // 基本給
+        $base_charge = new Numeric('base_charge');
+        $base_charge->setLabel('固定給');
+        $base_charge->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '基本給を入力してください。'
         ]);
-        $employee_type->setLabel('雇用タイプ');
-        $employee_type->setAttributes([
-            'class' => 'form-control',
-        ]);
-        $employee_type->addValidators([
+        $base_charge->addValidators([
             new PresenceOf([
-                'message' => '雇用種別を選択してください。'
+                'message' => '基本給を入力してください。'
             ])
         ]);
-        $this->add($employee_type);
+        $this->add($base_charge);
 
-        // 職能
-        $employee_type = new Select('skill_id', [
-            '1' => '研修中',
-            '2' => '一般職'
+        // 賞与
+        $bonus_charge = new Numeric('bonus_charge');
+        $bonus_charge->setLabel('賞与');
+        $bonus_charge->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '賞与を入力してください。'
         ]);
-        $employee_type->setLabel('職能');
-        $employee_type->setAttributes([
-            'class' => 'form-control',
-        ]);
-        $employee_type->addValidators([
+        $bonus_charge->addValidators([
             new PresenceOf([
-                'message' => '職能を選択してください。'
+                'message' => '賞与を入力してください。'
             ])
         ]);
-        $this->add($employee_type);
+        $this->add($bonus_charge);
 
-        // 社会保険加入
-        $insurance_type = new Select('insurance_type', [
-            'enable' => '加入',
-            'disable' => '非加入'
+        // みなし残業額
+        $base_charge = new Numeric('overtime_charge');
+        $base_charge->setLabel('みなみ残業額');
+        $base_charge->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => 'みなし残業額を入力してください。'
         ]);
-        $insurance_type->setLabel('社会保険');
-        $insurance_type->setAttributes([
-            'class' => 'form-control',
-        ]);
-        $insurance_type->addValidators([
+        $base_charge->addValidators([
             new PresenceOf([
-                'message' => '社会保険加入を選択してください。'
+                'message' => 'みなし残業額を入力してください。'
             ])
         ]);
-        $this->add($insurance_type);
-
-        // 名字
-        $first_name = new Text('first_name');
-        $first_name->setLabel('名字');
-        $first_name->setAttributes([
-            'class' => 'form-control',
-            'placeholder' => '名字を入力してください。',
-        ]);
-        $first_name->addValidators([
-            new PresenceOf([
-                'message' => '名字を入力してください。'
-            ])
-        ]);
-        $this->add($first_name);
-
-
-        // 名前
-        $last_name = new Text('last_name');
-        $last_name->setLabel('名前');
-        $last_name->setAttributes([
-            'class' => 'form-control',
-            'placeholder' => '名前を入力してください。',
-        ]);
-        $last_name->addValidators([
-            new PresenceOf([
-                'message' => '名前を入力してください。'
-            ])
-        ]);
-        $this->add($last_name);
-
-        // 住所
-        $last_name = new Text('address');
-        $last_name->setLabel('住所');
-        $last_name->setAttributes([
-            'class' => 'form-control',
-            'placeholder' => '住所を入力してください。',
-        ]);
-        $last_name->addValidators([
-            new PresenceOf([
-                'message' => '住所を入力してください。'
-            ])
-        ]);
-        $this->add($last_name);
-
-
-        // 固定給
-        $monthly_charge = new Numeric('monthly_charge');
-        $monthly_charge->setLabel('固定給');
-        $monthly_charge->setAttributes([
-            'class' => 'form-control',
-            'placeholder' => '固定給を入力してください。'
-        ]);
-        $monthly_charge->addValidators([
-            new PresenceOf([
-                'message' => '固定給を入力してください。'
-            ])
-        ]);
-        $this->add($monthly_charge);
-
-        // みなし残業代
-        $monthly_charge = new Numeric('overtime_charge');
-        $monthly_charge->setLabel('みなし残業代');
-        $monthly_charge->setAttributes([
-            'class' => 'form-control',
-            'placeholder' => 'みなし残業代を入力してください。'
-        ]);
-        $monthly_charge->addValidators([
-            new PresenceOf([
-                'message' => 'みなし残業代を入力してください。'
-            ])
-        ]);
-        $this->add($monthly_charge);
-
+        $this->add($base_charge);
 
         // 役職手当
         $skill_charge = new Numeric('skill_charge');
         $skill_charge->setLabel('役職手当');
         $skill_charge->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '役職手当を入力してください。'
         ]);
         $skill_charge->addValidators([
@@ -153,7 +74,7 @@ class EmployeesForm extends Form
         $transportation_expenses = new Numeric('transportation_expenses');
         $transportation_expenses->setLabel('課税交通費');
         $transportation_expenses->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '課税交通費を入力してください。'
         ]);
         $transportation_expenses->addValidators([
@@ -163,12 +84,11 @@ class EmployeesForm extends Form
         ]);
         $this->add($transportation_expenses);
 
-
         // 日割交通費
         $transportation_expenses_by_day = new Numeric('transportation_expenses_by_day');
         $transportation_expenses_by_day->setLabel('日割交通費');
         $transportation_expenses_by_day->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '日割交通費を入力してください。'
         ]);
         $transportation_expenses_by_day->addValidators([
@@ -182,7 +102,7 @@ class EmployeesForm extends Form
         $transportation_expenses_without_tax = new Numeric('transportation_expenses_without_tax');
         $transportation_expenses_without_tax->setLabel('非課税交通費');
         $transportation_expenses_without_tax->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '非課税交通費を入力してください。'
         ]);
         $transportation_expenses_without_tax->addValidators([
@@ -196,7 +116,7 @@ class EmployeesForm extends Form
         $communication_charge_without_tax = new Numeric('communication_charge_without_tax');
         $communication_charge_without_tax->setLabel('非課税通信費');
         $communication_charge_without_tax->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '非課税通信費を入力してください。'
         ]);
         $communication_charge_without_tax->addValidators([
@@ -210,7 +130,7 @@ class EmployeesForm extends Form
         $house_charge = new Numeric('house_charge');
         $house_charge->setLabel('住宅手当');
         $house_charge->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '住宅手当を入力してください。'
         ]);
         $house_charge->addValidators([
@@ -224,7 +144,7 @@ class EmployeesForm extends Form
         $bus_charge = new Numeric('bus_charge');
         $bus_charge->setLabel('送迎手当');
         $bus_charge->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '送迎手当を入力してください。'
         ]);
         $bus_charge->addValidators([
@@ -238,7 +158,7 @@ class EmployeesForm extends Form
         $officework_charge = new Numeric('officework_charge');
         $officework_charge->setLabel('事務手当');
         $officework_charge->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '事務手当を入力してください。'
         ]);
         $officework_charge->addValidators([
@@ -252,7 +172,7 @@ class EmployeesForm extends Form
         $etc_charge = new Numeric('etc_charge');
         $etc_charge->setLabel('その他支給');
         $etc_charge->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => 'その他支給を入力してください。'
         ]);
         $etc_charge->addValidators([
@@ -262,11 +182,67 @@ class EmployeesForm extends Form
         ]);
         $this->add($etc_charge);
 
+        // 社会保険料
+        $insurance_bill = new Numeric('insurance_bill');
+        $insurance_bill->setLabel('社会保険料');
+        $insurance_bill->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '社会保険料を入力してください。'
+        ]);
+        $insurance_bill->addValidators([
+            new PresenceOf([
+                'message' => '社会保険料を入力してください。'
+            ])
+        ]);
+        $this->add($insurance_bill);
+
+        // 厚生年金料
+        $pension_bill = new Numeric('pension_bill');
+        $pension_bill->setLabel('厚生年金料');
+        $pension_bill->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '厚生年金料を入力してください。'
+        ]);
+        $pension_bill->addValidators([
+            new PresenceOf([
+                'message' => '厚生年金料を入力してください。'
+            ])
+        ]);
+        $this->add($pension_bill);
+
+        // 雇用保険料
+        $employment_insurance_bill = new Numeric('employment_insurance_bill');
+        $employment_insurance_bill->setLabel('雇用保険料');
+        $employment_insurance_bill->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '雇用保険料を入力してください。'
+        ]);
+        $employment_insurance_bill->addValidators([
+            new PresenceOf([
+                'message' => '雇用保険料を入力してください。'
+            ])
+        ]);
+        $this->add($employment_insurance_bill);
+
+        // 所得税
+        $income_tax = new Numeric('income_tax');
+        $income_tax->setLabel('所得税');
+        $income_tax->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '所得税を入力してください。'
+        ]);
+        $income_tax->addValidators([
+            new PresenceOf([
+                'message' => '所得税を入力してください。'
+            ])
+        ]);
+        $this->add($income_tax);
+
         // 家賃
         $rent_bill = new Numeric('rent_bill');
         $rent_bill->setLabel('家賃');
         $rent_bill->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '家賃を入力してください。'
         ]);
         $rent_bill->addValidators([
@@ -280,7 +256,7 @@ class EmployeesForm extends Form
         $electric_bill = new Numeric('electric_bill');
         $electric_bill->setLabel('電気代');
         $electric_bill->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '電気代を入力してください。'
         ]);
         $electric_bill->addValidators([
@@ -294,7 +270,7 @@ class EmployeesForm extends Form
         $gas_bill = new Numeric('gas_bill');
         $gas_bill->setLabel('ガス代');
         $gas_bill->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => 'ガス代を入力してください。'
         ]);
         $gas_bill->addValidators([
@@ -308,7 +284,7 @@ class EmployeesForm extends Form
         $water_bill = new Numeric('water_bill');
         $water_bill->setLabel('水道代');
         $water_bill->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '水道代を入力してください。'
         ]);
         $water_bill->addValidators([
@@ -322,7 +298,7 @@ class EmployeesForm extends Form
         $food_bill = new Numeric('food_bill');
         $food_bill->setLabel('弁当代');
         $food_bill->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => '弁当代を入力してください。'
         ]);
         $food_bill->addValidators([
@@ -336,7 +312,7 @@ class EmployeesForm extends Form
         $etc_bill = new Numeric('etc_bill');
         $etc_bill->setLabel('その他控除');
         $etc_bill->setAttributes([
-            'class' => 'form-control',
+            'class' => 'form-control text-right',
             'placeholder' => 'その他控除を入力してください。'
         ]);
         $etc_bill->addValidators([
@@ -345,6 +321,20 @@ class EmployeesForm extends Form
             ])
         ]);
         $this->add($etc_bill);
+
+        // 貸付返済
+        $loan_bill = new Numeric('loan_bill');
+        $loan_bill->setLabel('貸付返済額');
+        $loan_bill->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '貸付返済額を入力してください。'
+        ]);
+        $loan_bill->addValidators([
+            new PresenceOf([
+                'message' => '貸付返済額を入力してください。'
+            ])
+        ]);
+        $this->add($loan_bill);
 
         // 送信
         $this->add(new Submit('submit', [

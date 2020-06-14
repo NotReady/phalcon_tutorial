@@ -13,7 +13,13 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/sites">現場一覧</a>
                 </li>
-
+                <li class="nav-item">
+<?php
+$headerYear = date('Y');
+$headerMonth = date('m');
+?>
+                    <a class="nav-link" href="/report/{{ headerYear }}/{{ headerMonth }}">今月の勤務表</a>
+                </li>
             </ul>
             <form class="form-inline my-2 my-md-0">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="location.href='/login'">ログアウト</button>

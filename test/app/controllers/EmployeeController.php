@@ -37,7 +37,7 @@ class EmployeeController extends Controller
         $this->view->form = $form;
         $l = Loans::getBookAssosiatePageer($employee->id);
         $this->view->loans = Loans::getBook($employee->id);
-        $this->view->loansAmmount = Loans::getSummary($employee->id);
+        $this->view->loansAmount = Loans::getAmount($employee->id);
     }
 
     /**
