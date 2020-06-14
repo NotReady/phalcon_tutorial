@@ -12,8 +12,11 @@ $router->add('/',                               ['controller' => "Root", 'action
 $router->add('/login',                          ['controller' => "Login", 'action'=>'index',]);
 $router->add('/login/check',                    ['controller' => "Login", 'action'=>'loginCheck',]);
 
-// 勤務表
-$router->add('/report/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Report", 'action'=>'index']);
+// 勤務表一覧
+$router->add('/report/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Report", 'action'=>'index']);
+// 勤務表編集
+$router->add('/report/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/edit', ['controller' => "Report", 'action'=>'editReport']);
+// 勤務表保存
 $router->add('/report/save',                    ['controller' => "Report", 'action'=>'save']);
 
 // 給与閲覧

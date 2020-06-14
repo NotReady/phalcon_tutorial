@@ -550,7 +550,7 @@
                 <h2 class="subtitle flex_box flex_bottom">
                     <div class="col-6">現場別 出勤内訳</div>
                     <div class="col-6 text-right">
-                        <a href="/report/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}" class="btn btn-primary btn-fix" target="_blank">勤務表を開く</a>
+                        <a href="/report/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/edit" class="btn btn-primary btn-fix" target="_blank">勤務表を開く</a>
                     </div>
                 </h2>
                 <table class="table table_timedetail">

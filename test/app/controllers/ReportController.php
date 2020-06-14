@@ -4,9 +4,31 @@ use Phalcon\Mvc\Controller;
 class ReportController extends Controller
 {
     /**
+     * 勤務表一覧アクション
+     */
+    public function indexAction()
+    {
+        // routeで展開されたパラメタはdispatcherが握っている
+        $year = $this->dispatcher->getParam('year');
+        $month = $this->dispatcher->getParam('month');
+
+        // 従業員一覧
+        $employees = Employees::getEmployeesReportList($year, $month);
+
+        // viewパラメタ
+        $this->view->year = $year;
+        $this->view->month = $month;
+        $this->view->employees = $employees;
+
+        $currentYmd = "${year}/${month}/1";
+        $this->view->previousUrl = '/report/' . date('Y', strtotime( $currentYmd.' -1 month')) . '/' . date('m', strtotime( $currentYmd.' -1 month'));
+        $this->view->nextUrl = '/report/' . date('Y', strtotime( $currentYmd.' +1 month')) . '/' . date('m', strtotime( $currentYmd.' +1 month'));
+    }
+
+    /**
      * 勤怠リスト要求アクション
      */
-    public function indexAction(){
+    public function editReportAction(){
 
         // routeで展開されたパラメタはdispatcherが握っている
         $year = $this->dispatcher->getParam('year');
@@ -39,8 +61,10 @@ class ReportController extends Controller
         $this->view->wtypes = $wtypeinfo;
 
         $currentYmd = "${year}/${month}/1";
-        $this->view->previousUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' -1 month')) . "/" . date('m', strtotime( $currentYmd.' -1 month'));
-        $this->view->nextUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' +1 month')) . "/" . date('m', strtotime( $currentYmd.' +1 month'));
+        $this->view->previousUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' -1 month')) .
+            '/' . date('m', strtotime( $currentYmd.' -1 month')) . '/edit';
+        $this->view->nextUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' +1 month')) .
+            '/' . date('m', strtotime( $currentYmd.' +1 month')) . '/edit';
     }
 
     /**

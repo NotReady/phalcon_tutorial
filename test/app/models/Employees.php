@@ -86,6 +86,62 @@ class Employees extends Model{
         return $employee;
     }
 
+    public static function getEmployeesReportList($year, $month){
+
+        $lastDay = date('t', mktime(0,0,0,$month, 1, $year));
+        $date_from = date('Y-m-d', mktime(0, 0, 0, $month, 1, $year));
+        $date_to = date('Y-m-d', mktime(0,0,0,$month, $lastDay, $year));
+
+        $query = '
+                select
+                    e.id as employee_id,
+                    concat(e.first_name, " ", e.last_name) as employee_name,
+                    (
+                        case when r.days_worked is null then 0
+                        else r.days_worked end
+                    ) as days_worked,
+                    max(r.at_day) as last_worked_day,
+                    (
+                        case when s.fixed is null then "temporary"
+                        else s.fixed end
+                    ) as salary_fixed
+                from
+                    employees e
+                left outer join
+                (
+                    select
+                        max(reports.at_day) as at_day,
+                        count(reports.at_day) as days_worked,
+                        reports.employee_id
+                    from
+                        reports
+                    where
+                        reports.at_day between :date_from and :date_to
+                    group by employee_id
+                ) r on r.employee_id = e.id
+                left outer join
+                (
+                    select
+                        salaries.employee_id,
+                        salaries.fixed
+                    from
+                        salaries
+                    where
+                        salaries.salary_date between :date_from and :date_to
+                ) s on s.employee_id = e.id
+                group by
+                e.id, s.fixed';
+
+        $mo = new Employees();
+        $employees = new \Phalcon\Mvc\Model\Resultset\Simple(null, $mo,
+            $mo->getReadConnection()->query($query, [
+                'date_from' => $date_from,
+                'date_to' => $date_to
+            ]));
+
+        return $employees;
+    }
+
     public function getEmployeesWithLatestInput(){
         $query = new \Phalcon\Mvc\Model\Query(
             'select
