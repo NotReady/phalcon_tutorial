@@ -67,56 +67,19 @@
 
         <div class="col-12">
             <div class=" col-12">
-                <p class="subtitle flex_box flex_left">
+                <h2 class="subtitle flex_box flex_left">
                     今月のサマリー
                     <span class="badge-info highlight">確定済</span>
                     <span class="highlight">総支給額　<span class="highlight-text">{{ total_salary | number_format }}</span> 円</span>
                     <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
                     <span class="highlight">出勤時間　<span class="highlight-text">{{ summary['timeAll'] }}</span></span>
-                </p>
+                </h2>
             </div>
-        </div>
-
-        <div class="col-12">
-
-            <div class=" col-12">
-                <p class="subtitle">時間内訳</p>
-                <table class="table table_timedetail">
-                    <thead>
-                    <th>現場</th>
-                    <th>作業</th>
-                    <th></th>
-                    <th>時間計</th>
-                    <th>金額</th>
-                    </thead>
-                    <tbody>
-                    {% for row in summary['site'] %}
-                        <tr>
-                            <td>{{ row.sitename }}</td>
-                            <td>{{ row.worktype_name }}</td>
-                            <td class="{% if row.label == '時間外' %}text-danger{% endif %}" >{{ row.label }}</td>
-                            <td>{{ row.sum_time }}</td>
-                            <td class="text-right">{% if employee.employee_type === 'pro' %}-{% else %}{{ row.sum_charge | number_format }} 円{% endif %}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td>合計</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{ summary['timeAll'] }}</td>
-                        <td class="text-right"><span class="highlight-text">{% if employee.employee_type === 'pro' %}-{% else %}{{ summary['chargeAll'] | number_format }} 円{% endif %}</span></td>
-                    </tr>
-                    </tfoot>
-                </table>
-            </div>
-
         </div>
 
         <div class="col-12">
             <div class="col-12">
-            <p class="subtitle">支給</p>
+            <h2 class="subtitle">支給</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -185,7 +148,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <p class="subtitle">社会保険</p>
+                <h2 class="subtitle">社会保険</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -220,7 +183,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <p class="subtitle">税引</p>
+                <h2 class="subtitle">税引</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -248,7 +211,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <p class="subtitle">控除</p>
+                <h2 class="subtitle">控除</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -297,87 +260,83 @@
                 </table>
             </div>
         </div>
+
+        <div class="col-12">
+            <div class="col-12">
+                <h2 class="subtitle flex_box flex_left">
+                    <span>出勤統計</span>
+                    <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
+                    (
+                    {% for unitname, time in howDaysWorkedOfDay %}
+                        <span class="highlight">{{ unitname }}　<span class="highlight-text">{{ time }}</span> 日</span>
+                    {% endfor %}
+                    )
+                </h2>
+                <table class="table table_statement">
+                    <thead>
+                    <th>項目</th>
+                    <th>時間</th>
+                    </thead>
+                    <tbody>
+                    {% for categoryName, time in summary['timeunits'] %}
+                        <tr>
+                            <td>{{ categoryName }}</td>
+                            <td>{{ time }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td>出勤時間合計</td>
+                        <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class=" col-12">
+            <div class="col-12">
+                <h2 class="subtitle flex_box flex_bottom">
+                    <div class="col-6">現場別 出勤内訳</div>
+                    <div class="col-6 text-right">
+                        <a href="/report/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}" class="btn btn-primary btn-fix" target="_blank">勤務表を開く</a>
+                    </div>
+                </h2>
+                <table class="table table_timedetail">
+                    <thead>
+                    <th>現場</th>
+                    <th>作業</th>
+                    <th></th>
+                    <th>時間計</th>
+                    <th>金額</th>
+                    </thead>
+                    <tbody>
+                    {% for row in summary['site'] %}
+                        <tr>
+                            <td>{{ row.sitename }}</td>
+                            <td>{{ row.worktype_name }}</td>
+                            <td class="{% if row.label == '時間外' %}text-danger{% endif %}" >{{ row.label }}</td>
+                            <td>{{ row.sum_time }}</td>
+                            <td class="text-right">{% if employee.employee_type === 'pro' %}-{% else %}{{ row.sum_charge | number_format }} 円{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td>合計</td>
+                        <td></td>
+                        <td></td>
+                        <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
+                        <td class="text-right"><span class="highlight-text">{% if employee.employee_type === 'pro' %}-{% else %}{{ summary['chargeAll'] | number_format }} 円{% endif %}</span></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
     </div>
-
-
 </div>
 {% endblock %}
 
 {% block js_include %}
-<script>
-
-    const updateAction = "/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/update";
-    const undoAction = "/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/undo";
-    const method = "POST";
-
-    $(function(){
-        $(".btn-update").on("click",  function () {
-            // ポストキャンセル
-            event.preventDefault();
-
-            const $input = $(this).parents("tr").find("input");
-            const key = $input.attr('name');
-            const value = $input.val();
-
-            $.ajax({
-                url: updateAction,
-                type: method,
-                dataType: "html",
-                data: {
-                    "name" : key,
-                    "value" : value
-                },
-                timeout: 1000 * 10,
-                beforeSend: function(xhr, settings){
-                    $(this).attr("disable", true);
-                },
-                complete: function(xhr, textStatus){
-                    $(this).attr("disable", false);
-                },
-                success: function (result, textStatus, xhr) {
-                    alert('保存しました。');
-                    location.reload();
-                },
-                error: function(xhr, textStatus, error){
-                    alert('失敗しました。');
-                }
-            });
-        })
-    });
-
-    $(".btn-undo").on("click",  function () {
-        // ポストキャンセル
-        event.preventDefault();
-
-        const $input = $(this).parents("tr").find("input");
-        const key = $input.attr('name');
-        const value = $input.val();
-
-        $.ajax({
-            url: undoAction,
-            type: method,
-            dataType: "html",
-            data: {
-                "name" : key,
-                "value" : value
-            },
-            timeout: 1000 * 10,
-            beforeSend: function(xhr, settings){
-                $(this).attr("disable", true);
-            },
-            complete: function(xhr, textStatus){
-                $(this).attr("disable", false);
-            },
-            success: function (result, textStatus, xhr) {
-                alert('保存しました。');
-                location.reload();
-            },
-            error: function(xhr, textStatus, error){
-                alert('失敗しました。');
-            }
-        });
-    });
-
-</script>
-
 {% endblock %}

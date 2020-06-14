@@ -27,7 +27,8 @@ class SalaryController extends Controller
         $reportService = new ReportService($employee_id, $year, $month);
         $this->view->reports = $reportService->getMonthlyReport();
         $this->view->days_worked = $reportService->howDaysWorked();
-        $this->view->summary = $summary = $reportService->getSummaryBySiteWorkUnit();
+        $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
+        $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
 
         // 給与モデルを取得します
         $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
@@ -59,6 +60,7 @@ class SalaryController extends Controller
         $reportService = new ReportService($employee_id, $year, $month);
         $this->view->reports = $reportService->getMonthlyReport();
         $this->view->days_worked = $reportService->howDaysWorked();
+        $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
         $this->view->summary = $summary = $reportService->getSummaryBySiteWorkUnit();
 
         // 給与モデルを取得します
@@ -155,7 +157,7 @@ class SalaryController extends Controller
             $reportService = new ReportService($employee_id, $year, $month);
             $this->view->reports = $reportService->getMonthlyReport();
             $this->view->days_worked = $reportService->howDaysWorked();
-            $this->view->summary = $summary = $reportService->getSummaryBySiteWorkUnit();
+            $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
 
             // 給与モデルを取得します
             $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);

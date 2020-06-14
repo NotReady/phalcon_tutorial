@@ -63,6 +63,24 @@
         margin-right: 0.6rem;
     }
 
+    /* 時間内訳テーブル */
+    .table_timeunit td:nth-of-type(1),
+    .table_timeunit th:nth-of-type(1)
+    {width: 50%;}
+    .table_timeunit td:nth-of-type(2),
+    .table_timeunit th:nth-of-type(2)
+    {width: 50%;}
+
+    /* 支給控除明細テーブル */
+    .table_timeunit td:nth-of-type(1){
+        text-align: right;
+    }
+
+    /* 支給控除明細テーブル */
+    .table_timeunit td:nth-of-type(2){
+        text-align: left;
+    }
+
 </style>
 
 <div class="content_root">
@@ -81,56 +99,19 @@
 
         <div class="col-12">
             <div class=" col-12">
-                <p class="subtitle flex_box flex_left">
+                <h2 class="subtitle flex_box flex_left">
                     今月のサマリー
                     <span class="badge-alert highlight">未確定</span>
                     <span class="highlight">総支給額　<span class="highlight-text">{{ total_salary | number_format }}</span> 円</span>
                     <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
                     <span class="highlight">出勤時間　<span class="highlight-text">{{ summary['timeAll'] }}</span></span>
-                </p>
+                </h2>
             </div>
-        </div>
-
-        <div class="col-12">
-
-            <div class=" col-12">
-                <p class="subtitle">時間内訳</p>
-                <table class="table table_timedetail">
-                    <thead>
-                    <th>現場</th>
-                    <th>作業</th>
-                    <th></th>
-                    <th>時間計</th>
-                    <th>金額</th>
-                    </thead>
-                    <tbody>
-                    {% for row in summary['site'] %}
-                        <tr>
-                            <td>{{ row.sitename }}</td>
-                            <td>{{ row.worktype_name }}</td>
-                            <td class="{% if row.label == '時間外' %}text-danger{% endif %}" >{{ row.label }}</td>
-                            <td>{{ row.sum_time }}</td>
-                            <td class="text-right">{% if employee.employee_type === 'pro' %}-{% else %}{{ row.sum_charge | number_format }} 円{% endif %}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td>合計</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{ summary['timeAll'] }}</td>
-                        <td class="text-right"><span class="highlight-text">{% if employee.employee_type === 'pro' %}-{% else %}{{ summary['chargeAll'] | number_format }} 円{% endif %}</span></td>
-                    </tr>
-                    </tfoot>
-                </table>
-            </div>
-
         </div>
 
         <div class="col-12">
             <div class="col-12">
-            <p class="subtitle">支給</p>
+            <h2 class="subtitle">支給</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -308,7 +289,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <p class="subtitle">社会保険</p>
+                <h2 class="subtitle">社会保険</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -383,7 +364,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <p class="subtitle">税引</p>
+                <h2 class="subtitle">税引</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -422,7 +403,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <p class="subtitle">控除</p>
+                <h2 class="subtitle">控除</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -528,6 +509,83 @@
                 </table>
             </div>
         </div>
+
+
+        <div class="col-12">
+            <div class="col-12">
+                <h2 class="subtitle flex_box flex_left">
+                    <span>出勤統計</span>
+                    <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
+                    (
+                    {% for unitname, time in howDaysWorkedOfDay %}
+                        <span class="highlight">{{ unitname }}　<span class="highlight-text">{{ time }}</span> 日</span>
+                    {% endfor %}
+                    )
+                </h2>
+                <table class="table table_timeunit">
+                    <thead>
+                    <th>項目</th>
+                    <th>時間</th>
+                    </thead>
+                    <tbody>
+                    {% for categoryName, time in summary['timeunits'] %}
+                        <tr>
+                            <td>{{ categoryName }}</td>
+                            <td>{{ time }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td>出勤時間合計</td>
+                        <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class=" col-12">
+            <div class="col-12">
+                <h2 class="subtitle flex_box flex_bottom">
+                    <div class="col-6">現場別 出勤内訳</div>
+                    <div class="col-6 text-right">
+                        <a href="/report/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}" class="btn btn-primary btn-fix" target="_blank">勤務表を開く</a>
+                    </div>
+                </h2>
+                <table class="table table_timedetail">
+                    <thead>
+                    <th>現場</th>
+                    <th>作業</th>
+                    <th></th>
+                    <th>時間計</th>
+                    <th>金額</th>
+                    </thead>
+                    <tbody>
+                    {% for row in summary['site'] %}
+                        <tr>
+                            <td>{{ row.sitename }}</td>
+                            <td>{{ row.worktype_name }}</td>
+                            <td class="{% if row.label == '時間外' %}text-danger{% endif %}" >{{ row.label }}</td>
+                            <td>{{ row.sum_time }}</td>
+                            <td class="text-right">{% if employee.employee_type === 'pro' %}-{% else %}{{ row.sum_charge | number_format }} 円{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td>合計</td>
+                        <td></td>
+                        <td></td>
+                        <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
+                        <td class="text-right"><span class="highlight-text">{% if employee.employee_type === 'pro' %}-{% else %}{{ summary['chargeAll'] | number_format }} 円{% endif %}</span></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
     </div>
 
 

@@ -9,12 +9,46 @@
 
 <style>
 
-    .content_root .table-main tr td:nth-of-type(n+4):nth-of-type(-n+7){width: 75px;}
-    .content_root .table-main tr td:nth-of-type(1){width: 55px;}
-    .content_root .table-main tr td:nth-of-type(2){width: 40px;}
-    .content_root .table-main tr td:nth-of-type(3){width: 150px;}
-    .content_root .table-main tr td:nth-of-type(4){width: 130px;}
-    .content_root .table-main tr td:nth-of-type(8){width: 50px;}
+    /* 出勤テーブル */
+    .table-main tr td:nth-of-type(n+4):nth-of-type(-n+7){width: 75px;}
+    .table-main tr td:nth-of-type(1){width: 55px;}
+    .table-main tr td:nth-of-type(2){width: 40px;}
+    .table-main tr td:nth-of-type(3){width: 150px;}
+    .table-main tr td:nth-of-type(4){width: 130px;}
+    .table-main tr td:nth-of-type(8){width: 50px;}
+
+    /* 時間内訳テーブル */
+    .table_timeunit td:nth-of-type(1),
+    .table_timeunit th:nth-of-type(1)
+    {width: 50%;}
+    .table_timeunit td:nth-of-type(2),
+    .table_timeunit th:nth-of-type(2)
+    {width: 50%;}
+
+    .table_timeunit td:nth-of-type(1){
+        text-align: right;
+    }
+
+    .table_timeunit td:nth-of-type(2){
+        text-align: left;
+    }
+
+    /* 現場別 出勤内訳 */
+    table_timedetail td:nth-of-type(1),
+    table_timedetail th:nth-of-type(1)
+    {width: 25%;}
+    table_timedetail td:nth-of-type(2),
+    table_timedetail th:nth-of-type(2)
+    {width: 25%;}
+    table_timedetail td:nth-of-type(3),
+    table_timedetail th:nth-of-type(3)
+    {width: 15%;}
+    table_timedetail td:nth-of-type(4),
+    table_timedetail th:nth-of-type(4)
+    {width: 15%;}
+    table_timedetail td:nth-of-type(5),
+    table_timedetail th:nth-of-type(5)
+    {width: 20%;}
 
     .timeinput {
         width: 100%;
@@ -43,18 +77,18 @@
 <div class="content_root">
 
     <h1 class="title row">
-        <div class="col-6 flex_box">
+        <div class="col-8 flex_box">
             <span>
                 <a href="/employee/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
                 {{ "%d年 %d月の勤務レポート" | format(thisyear, thismonth) }}
             </span>
-        </div>
-        <div class="col-6 flex_box flex_right">
-            <span>
-            <a href="{{ previousUrl }}" class="btn page-link text-dark d-inline-block">＜ 前月</a>
-            <a href="{{ nextUrl }}" class="btn page-link text-dark d-inline-block">翌月 ＞</a>
-            <a href="/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}" class="btn btn-primary">給与編集</a>
+            <span class="highlight">
+                <a href="{{ previousUrl }}" class="btn page-link text-dark d-inline-block">＜ 前月</a>
+                <a href="{{ nextUrl }}" class="btn page-link text-dark d-inline-block">翌月 ＞</a>
             </span>
+        </div>
+        <div class="col-4 flex_box flex_right">
+            <a href="/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}" class="btn btn-primary">給与を確認する</a>
         </div>
     </h1>
 
@@ -118,30 +152,44 @@
     </table>
     </div>
 
-    <h1 class="title">サマリー</h1>
+    <h2 class="title flex_box flex_left">
+        <span>出勤統計</span>
+        <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
+        (
+        {% for unitname, time in howDaysWorkedOfDay %}
+            <span class="highlight">{{ unitname }}　<span class="highlight-text">{{ time }}</span> 日</span>
+        {% endfor %}
+        )
+    </h2>
     <div class="row">
+        <div class="col-12">
+            <table class="table table_timeunit">
+                <thead>
+                <th>項目</th>
+                <th>時間</th>
+                </thead>
+                <tbody>
+                {% for categoryName, time in summary['timeunits'] %}
+                    <tr>
+                        <td>{{ categoryName }}</td>
+                        <td>{{ time }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>出勤時間合計</td>
+                    <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 
-        <style>
-            table.salary td:nth-of-type(1),
-            table.salary th:nth-of-type(1)
-            {width: 25%;}
-            table.salary td:nth-of-type(2),
-            table.salary th:nth-of-type(2)
-            {width: 25%;}
-            table.salary td:nth-of-type(3),
-            table.salary th:nth-of-type(3)
-            {width: 15%;}
-            table.salary td:nth-of-type(4),
-            table.salary th:nth-of-type(4)
-            {width: 15%;}
-            table.salary td:nth-of-type(5),
-            table.salary th:nth-of-type(5)
-            {width: 20%;}
-
-        </style>
-
+    <h2 class="title">現場別 出勤内訳</h2>
+    <div class="row">
         <div class=" col-12">
-            <table class="table salary">
+            <table class="table table_timedetail">
                 <thead>
                     <th>現場</th>
                     <th>作業</th>
@@ -165,8 +213,8 @@
                     <td>合計</td>
                     <td></td>
                     <td></td>
-                    <td>{{ summary['timeAll'] }}</td>
-                    <td class="text-right">{{ summary['chargeAll'] | number_format }} 円</td>
+                    <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
+                    <td class="text-right"><span class="highlight-text">{{ summary['chargeAll'] | number_format }} 円</span></td>
                 </tr>
                 </tfoot>
             </table>
