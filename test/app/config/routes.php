@@ -36,8 +36,11 @@ $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/undo', ['co
 $router->add('/employees',                      ['controller' => "Employee",  'action'=>'index']);
 $router->add('/employees/edit/{employee_id}',   ['controller' => "Employee", 'action'=>'edit']);
 $router->add('/employees/edit/check',           ['controller' => "Employee", 'action'=>'editCheck']);
-$router->add('/employees/loan/add',             ['controller' => "Api", 'action'=>'addLoan']);
-$router->add('/employees/loan/get',             ['controller' => "Api", 'action'=>'getLoan']);
+$router->add('/employees/loan/create',          ['controller' => "Api", 'action'=>'createLoan']);
+$router->add('/employees/loan/update',          ['controller' => "Api", 'action'=>'updateLoan']);
+$router->add('/employees/loan/delete',          ['controller' => "Api", 'action'=>'deleteLoan']);
+$router->add('/employees/loan/get/member',      ['controller' => "Api", 'action'=>'getLoanWithMember']);
+$router->add('/employees/loan/get/id',          ['controller' => "Api", 'action'=>'getLoanWithId']);
 
 // 現場
 $router->add('/sites',                          ['controller' => "Site", 'action'=>'index']);
