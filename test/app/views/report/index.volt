@@ -51,7 +51,7 @@
             <td>{{ employee.days_worked }} 日</td>
             <td>
                 {% if employee.last_worked_day is not empty %}
-                    {{ date('n月d日', employee.last_worked_day | strtotime) }}
+                    {{ date('n月j日', employee.last_worked_day | strtotime) }}
                 {% endif %}
             </td>
             <td><a class="btn btn-outline-primary" href="/report/{{ employee.employee_id }}/{{ year }}/{{ month }}/edit" role="button">移動する</a></td>

@@ -19,21 +19,70 @@ class ApiController extends Controller
      * 貸付の登録アクション
      * @todo 過去日付については給与明細の変更が発生するかもしれない
      */
-    public function addLoanAction(){
+    public function createLoanAction(){
         $this->jsonResponse(function (){
-            $params = $this->request->getPost();
-            $loan = Loans::createLoan($params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
-            if( $loan->save() === false ){
-                throw new Exception();
+            try{
+                $params = $this->request->getPost();
+                $loan = Loans::createLoan($params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
+                if( $loan->save() === false ){
+                    throw new Exception("作成に失敗しました");
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
             }
-            echo json_encode(['result' => 'success']);
+        });
+    }
+
+    /**
+     * 貸付の更新アクション
+     * @todo 過去日付については給与明細の変更が発生するかもしれない
+     */
+    public function updateLoanAction(){
+        $this->jsonResponse(function (){
+
+            try{
+                $params = $this->request->getPost();
+                $loan = Loans::updateLoan($params['loan_id'], $params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
+                if( $loan->save() === false ){
+                    throw new Exception("更新に失敗しました");
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
+     * 貸付の削除アクション
+     * @todo 過去日付については給与明細の変更が発生するかもしれない
+     */
+    public function deleteLoanAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                Loans::deleteLoan($params['loan_id']);
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e) {
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
         });
     }
 
     /**
      * 明細の取得アクション
      */
-    public function getLoanAction(){
+    public function getLoanWithMemberAction(){
         $this->jsonResponse(function (){
             $params = $this->request->getPost();
             $eid = $params['employee_id'];
@@ -43,6 +92,21 @@ class ApiController extends Controller
             echo json_encode([
                 'result' => 'success',
                 'loans' => $json,
+            ]);
+        });
+    }
+
+    /**
+     * 明細の取得アクション
+     */
+    public function getLoanWithIdAction(){
+        $this->jsonResponse(function (){
+            $params = $this->request->getPost();
+            $loanId = $params['loan_id'];
+            $loan = Loans::getLoanByLoanId($loanId);
+            echo json_encode([
+                'result' => 'success',
+                'loan' => $loan,
             ]);
         });
     }

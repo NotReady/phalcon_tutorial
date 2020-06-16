@@ -29,7 +29,7 @@
 
     table.loans tr th:nth-of-type(1),
     table.loans tr td:nth-of-type(1)
-    {width: 25%;}
+    {width: 20%;}
     table.loans tr th:nth-of-type(2),
     table.loans tr td:nth-of-type(2)
     {width: 15%;}
@@ -38,15 +38,19 @@
     {width: 15%;}
     table.loans tr th:nth-of-type(4),
     table.loans tr td:nth-of-type(4)
-    {width: 45%;}
+    {width: 40%;}
+    table.loans tr th:nth-of-type(5),
+    table.loans tr td:nth-of-type(5)
+    {width: 10%;}
 
     /* cells text-align */
 
     table.loans tr td:nth-of-type(2),
-    table.loans tr td:nth-of-type(3)
+    table.loans tr td:nth-of-type(3),
+    table.loans tr td:nth-of-type(5)
     {text-align: center;}
     table.loans tr td:nth-of-type(4)
-    {text-align: left;}
+    {text-align: left; padding-left: 1rem;}
 
     /* table option */
 
@@ -249,18 +253,19 @@
             <th>貸付金額</th>
             <th>返済金額</th>
             <th>コメント</th>
+            <th>変更</th>
         </thead>
-        <tbody id="id-loans-body"></tbody>
+        <tbody id="id-loans-body">{# load ajax response #}</tbody>
     </table>
     </div>
 
-    {# pager #}
     <div class="float-container clearfix">
         <button type="button" class="float-right btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">新規登録する</button>
+        {# pager #}
         <ul id="id_pager" class="float-right m0 mr-3 mb-0"></ul>
     </div>
 
-    <!-- モーダルの設定 -->
+    {# モーダルウインドウ #}
     <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -273,6 +278,7 @@
                 <div class="modal-body">
                     <form>
                         <input type="hidden" name="nm-employee-id" value="{{ employee_id }}">
+                        <input type="hidden" name="loan-id">
                         <ul>
                             <li class="form-element-wrap">
                                 <label for="loan-date">登録日付</label>
@@ -309,7 +315,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-                    <button type="button" class="btn btn-primary" id="id-regist-loan">登録</button>
+                    <span class="loan-modify-method">
+                        <button type="button" class="btn btn-danger" id="id-delete-loan" data-method="delete">削除する</button>
+                        <button type="button" class="btn btn-primary" id="id-update-loan" data-method="update">変更する</button>
+                    </span>
+                    <span class="loan-add-method">
+                        <button type="button" class="btn btn-primary" id="id-create-loan" data-method="create">登録する</button>
+                    </span>
                 </div>
             </div>
         </div>
@@ -324,10 +336,10 @@ $(function() {
     $('#id_pager').twbsPagination({
         startPage : 1,
         totalPages: <?= ceil( count($loans) / 10); ?>,
-        first: '最初',
-        prev : '前',
-        next : '次',
-        last : '最後',
+        first: "最初",
+        prev : "前",
+        next : "次",
+        last : "最後",
         // これつけないと onPageClick の関数が初期表示時に実行されるアホ不具合がある。
         initiateStartPageClick: false,
         onPageClick: function (event, pageNum) {
@@ -341,7 +353,7 @@ $(function() {
     function refreshLoansByPage(page){
         $.post({
 
-            url: "/employees/loan/get",
+            url: "/employees/loan/get/member",
             dataType: 'json',
             // フォーム要素の内容をハッシュ形式に変換
             data: {
@@ -355,13 +367,21 @@ $(function() {
                     $("#id-loans-body").empty();
 
                     $.each(JSON.parse(data['loans']), function(idx, l) {
-                        $("<tr />").appendTo($("#id-loans-body"))
+
+                    $("<tr />").appendTo($("#id-loans-body"))
                             .append($("<td />").text(function(){
-                                d = new Date(l.regist_date);
-                                return `${d.getFullYear()}/${("00"+(d.getMonth()+1)).slice(-2)}/${("00" + d.getDate()).slice(-2)}` }))
-                            .append($("<td />").text(function(){if( l.io_type == 1 ) return "+" + l.ammount;}()))
-                            .append($("<td />").text(function(){if( l.io_type == 2 ) return "-" + l.ammount;}()))
-                            .append($("<td />").text(l.comment));
+                                const d = new Date(l.regist_date);
+                                return `${d.getFullYear()}年${("00"+(d.getMonth()+1)).slice(-2)}月${("00" + d.getDate()).slice(-2)}日` }))
+                            .append($("<td />").text(function(){if( l.io_type == 1 ) return "+ " + l.amount + " 円";}()))
+                            .append($("<td />").text(function(){if( l.io_type == 2 ) return "- " + l.amount + " 円";}()))
+                            .append($("<td />").text(l.comment))
+                            .append(
+                                $("<td />").append(
+                                    $(`<button class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop" data-loan-id="${l.loan_id}"
+                                    data-loan-date="${function(){const d = new Date(l.regist_date);return `${d.getFullYear()}-${("00"+(d.getMonth()+1)).slice(-2)}-${("00" + d.getDate()).slice(-2)}`}()}"
+                                    data-loan-type="${l.io_type}" data-loan-amount="${l.amount}" data-loan-comment="${l.comment}">変更</button>`)
+                                )
+                            );
                         console.log(l);
                     });
                 },
@@ -373,14 +393,54 @@ $(function() {
 
     {# モーダルの表示イベント #}
     $("#staticBackdrop").on("show.bs.modal", function (e) {
-        $("input[name='loan-date']").val("");
-        $("input[name='loan-amount']").val("");
-        $("input[name='loan-comment']").val("");
-        $("input[name='loan-type']:eq(0)").prop("checked", true);
+        const loan_id = $(e.relatedTarget).data("loan-id");
+        const loan_date = $(e.relatedTarget).data("loan-date");
+        const loan_type = $(e.relatedTarget).data("loan-type")
+        const loan_amount = $(e.relatedTarget).data("loan-amount");
+        const loan_comment = $(e.relatedTarget).data("loan-comment");
+        const radio = loan_type ? loan_type-1 : 0;
+        $("input[name='loan-id']").val(loan_id);
+        $("input[name='loan-date']").val(loan_date);
+        $(`input[name='loan-type']:eq(${radio})`).prop("checked", true);
+        $("input[name='loan-amount']").val(loan_amount);
+        $("input[name='loan-comment']").val(loan_comment);
+
+        if( loan_id ){
+            $(".modal-title").text("明細を編集します");
+            $(".loan-add-method").hide();
+            $(".loan-modify-method").show();
+        }
+        else{
+            $(".modal-title").text("明細を追加します");
+            $(".loan-add-method").show();
+            $(".loan-modify-method").hide();
+        }
+
     })
 
-    {# 貸付登録 #}
-    $("#id-regist-loan").on("click", function(){
+    function getLoan(loanId) {
+        $.post({
+            url: "/employees/loan/get/id",
+            dataType: 'json',
+            // フォーム要素の内容をハッシュ形式に変換
+            data: {
+                "loan_id" : loanId
+            },
+            timeout: 1000 * 30,
+        })
+            .then(
+                function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    $loan = JSON.parse(data);
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                }
+            );
+    }
+
+    {# 貸付編集 #}
+    $("#id-create-loan, #id-update-loan, #id-delete-loan").on("click", function(){
 
         if( date = $("input[name='loan-date']").val() ){
             $("#id-warn-loan-date").addClass("d-none");
@@ -401,12 +461,14 @@ $(function() {
         }
 
         const type = $("input[name='loan-type']:checked").val();
-        employee_id = $("input[name='nm-employee-id']").val();
+        const employee_id = $("input[name='nm-employee-id']").val();
+        const loan_id = $("input[name='loan-id']").val();
+        const method = $(this).data("method");
 
         if( !( date && amount && comment && type && employee_id) ){return;}
 
         $.post({
-            url: '/employees/loan/add',
+            url: `/employees/loan/${method}`,
             dataType: 'json',
             // フォーム要素の内容をハッシュ形式に変換
             data: {
@@ -414,7 +476,9 @@ $(function() {
                 "type" : type,
                 "amount" : amount,
                 "comment" : comment,
-                "employee_id" : employee_id
+                "employee_id" : employee_id,
+                "loan_id" : loan_id,
+                "method" : method
             },
             timeout: 1000 * 30,
         })
@@ -424,6 +488,9 @@ $(function() {
                 if( data['result'] ){
                     if( data['result'] == "success" ) {
                         location.reload();
+                    }
+                    if( data['result'] == "failure" ) {
+                        alert(data['message']);
                     }
                 }
             },

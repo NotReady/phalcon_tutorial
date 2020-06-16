@@ -14,7 +14,7 @@ class Loans extends Model
     /**
      * @var 金額
      */
-    public $ammount;
+    public $amount;
     /**
      * @var 1:貸付 / 2:返済
      */
@@ -42,6 +42,21 @@ class Loans extends Model
                 'created',
             ]
         );
+    }
+
+    /**
+     * サロゲートキーから貸付明細を取得します
+     * @param integer $loan_id サロゲートキー
+     * @return Loans 貸付モデル
+     */
+    public static function getLoanByLoanId($loan_id){
+        return $reports = Loans::findFirst(
+            [
+                'conditions' => 'loan_id = :loan_id:',
+                "bind" => [
+                    'loan_id' => $loan_id,
+                ]
+            ]);
     }
 
     /**
@@ -100,7 +115,7 @@ class Loans extends Model
      */
     public static function getAmount($employee_id){
         $query = "select
-                    0 + sum(case when lo.io_type = 1 then lo.ammount else 0 end) - sum(case when lo.io_type = 2 then lo.ammount else 0 end) as amount
+                    0 + sum(case when lo.io_type = 1 then lo.amount else 0 end) - sum(case when lo.io_type = 2 then lo.amount else 0 end) as amount
                   from
                     loans lo
                   where lo.employee_id = :employee_id
@@ -129,12 +144,64 @@ class Loans extends Model
 
         $loan = new Loans();
         $loan->employee_id = $employee_id;
-        $loan->ammount = $amount;
+        $loan->amount = $amount;
         $loan->io_type = $type;
         $loan->comment = $comment;
         $loan->regist_date = $regist_date;
         $loan->salary_id = $salary_id;
+        return $loan;
+    }
+
+    /**
+     * 新規に貸付明細を更新します
+     * @param integer   $loan_id      貸付モデルサロゲートキー
+     * @param integer   $employee_id  社員id
+     * @param date      $date         明細日付
+     * @param integer   $type         1:貸付/2:返済
+     * @param integer   $amount       金額
+     * @param string    $comment      明細コメント
+     * @return Loans 貸付モデル
+     */
+    public static function updateLoan($loan_id, $employee_id, $regist_date, $type, $amount, $comment){
+
+        $loan = Loans::getLoanByLoanId($loan_id);
+
+        if( empty($loan) === true ){
+            throw new Exception('貸付が存在しません');
+        }
+
+        if( empty($loan->salary_id) === false ){
+            throw new Exception('確定済みの給与明細が存在するため、削除できません');
+        }
+
+        $loan->employee_id = $employee_id;
+        $loan->amount = $amount;
+        $loan->io_type = $type;
+        $loan->comment = $comment;
+        $loan->regist_date = $regist_date;
 
         return $loan;
+    }
+
+    /**
+     * 新規に貸付明細を削除します
+     * @param integer   $loan_id      貸付モデルサロゲートキー
+     * @return none
+     */
+    public static function deleteLoan($loan_id){
+
+        $loan = Loans::getLoanByLoanId($loan_id);
+        if( empty($loan) === true ){
+            throw new Exception('貸付が存在しません');
+        }
+
+        if( empty($loan->salary_id) === false ){
+            throw new Exception('確定済みの給与明細が存在するため、削除できません');
+        }
+
+        if( $loan->delete() === false ){
+            throw new Exception('削除に失敗しました');
+        }
+
     }
 }
