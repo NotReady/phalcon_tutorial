@@ -130,13 +130,13 @@ class Reports extends Model
             in_time.sitename,
             in_time.worktype_name,
             '平日時間内' as label,
-            sec_to_time(sum(time_to_sec(timediff( in_time.worktime , timediff(in_time.worktime, in_time.overtime))))) as sum_time,
-            ceil(sum(time_to_sec(timediff( in_time.worktime , timediff(in_time.worktime, in_time.overtime)))) * h.value / 3600) as sum_charge
+            sec_to_time(sum(time_to_sec(in_time.worktime))) as sum_time,
+            ceil(sum(time_to_sec(in_time.worktime) * h.value / 3600)) as sum_charge
         from
             (
                 select
-                    timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) as worktime,
-                    timediff(timediff(s.time_to, s.time_from), timediff(s.breaktime_to, s.breaktime_from)) as overtime,
+                    case when timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) > '08:00:00' then '08:00:00'
+                    else timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) end as worktime,
                     rp.site_id,
                     s.sitename,
                     w.id as worktype_id,
@@ -167,13 +167,13 @@ class Reports extends Model
             out_time.sitename,
             out_time.worktype_name,
             '平日時間外' as label,
-            sec_to_time(sum(time_to_sec(timediff(out_time.worktime, out_time.overtime)))) as sum_time,
-            ceil(sum(time_to_sec(timediff(out_time.worktime, out_time.overtime))) * ( h.value* 1.25 ) / 3600) as sum_charge
+            sec_to_time(sum(time_to_sec(out_time.worktime))) as sum_time,
+            ceil(sum(time_to_sec(out_time.worktime) * ( h.value* 1.25 ) / 3600)) as sum_charge
         from
             (
                 select
-                    timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) as worktime,
-                    timediff(timediff(s.time_to, s.time_from), timediff(s.breaktime_to, s.breaktime_from)) as overtime,
+                    case when timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) <= '08:00:00' then '08:00:00'
+                    else timediff(timediff(timediff(rp.time_to, rp.time_from), rp.breaktime), '08:00:00' ) end as worktime,
                     rp.site_id,
                     s.sitename,
                     w.id as worktype_id,
@@ -284,6 +284,17 @@ class Reports extends Model
             ]));
 
         return $summaryReports;
+    }
+
+    public static function getReportByEmployeeAndDay($employeeId, $day){
+        $report = Reports::findfirst([
+            "conditions" => "employee_id = ?1 and at_day = ?2",
+            bind => [
+                1 => $employeeId,
+                2 => $day,
+            ]
+        ]);
+        return $report;
     }
 
     public function updateOneReport($employeeId, $day, $report){

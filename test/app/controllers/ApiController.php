@@ -203,4 +203,32 @@ class ApiController extends Controller
             }
         });
     }
+
+    /**
+     * 勤務表の削除アクション
+     */
+    public function deleteReportAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $employeeId = $params['nm_employee_id'];
+                $date = $params['nm_date'];
+                $report = Reports::getReportByEmployeeAndDay($employeeId, $date);
+
+                if( empty($report) === true ){
+                    throw new Exception("データが存在しません。");
+                }
+
+                if( $report->delete() === false ){
+                    throw new Exception("削除に失敗しました。");
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
 }
