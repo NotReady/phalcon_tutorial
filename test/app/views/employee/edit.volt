@@ -443,8 +443,6 @@ $(function() {
     {# 貸付編集 #}
     $("#id-create-loan, #id-update-loan, #id-delete-loan").on("click", function(){
 
-        $(document).triggerHandler('ajaxStart');
-
         if( date = $("input[name='loan-date']").val() ){
             $("#id-warn-loan-date").addClass("d-none");
         }else{
@@ -485,11 +483,14 @@ $(function() {
                 "method" : method
             },
             timeout: 1000 * 30,
+            beforeSend: function(xhr, settings){
+                $(document).triggerHandler('ajaxStart');
+            },
+
         })
         .then(
             function(data, textStatus, jqXHR) {
                 console.log(data);
-
                 if( data['result'] ){
                     if( data['result'] == "success" ) {
                         location.reload();
@@ -498,10 +499,13 @@ $(function() {
                     if( data['result'] == "failure" ) {
                         $(document).triggerHandler('ajaxStop', [ false, data['message']]);
                     }
+                }else{
+                    $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
                 }
             },
             function(jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
+                $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
             }
         );
 

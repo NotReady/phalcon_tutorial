@@ -171,7 +171,7 @@ class Loans extends Model
         }
 
         if( empty($loan->salary_id) === false ){
-            throw new Exception('確定済みの給与明細が存在するため、削除できません');
+            throw new Exception('確定済みの給与に登録されているため削除できません');
         }
 
         $loan->employee_id = $employee_id;
@@ -196,7 +196,7 @@ class Loans extends Model
         }
 
         if( empty($loan->salary_id) === false ){
-            throw new Exception('確定済みの給与明細が存在するため、削除できません');
+            throw new Exception('確定済みの給与に登録されているため削除できません');
         }
 
         if( $loan->delete() === false ){

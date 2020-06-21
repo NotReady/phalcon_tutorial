@@ -8,11 +8,11 @@
 <style>
 
     /* 出勤テーブル */
-    .table-main tr td:nth-of-type(n+4):nth-of-type(-n+7){width: 75px;}
     .table-main tr td:nth-of-type(1){width: 55px;}
     .table-main tr td:nth-of-type(2){width: 40px;}
     .table-main tr td:nth-of-type(3){width: 150px;}
     .table-main tr td:nth-of-type(4){width: 130px;}
+    .table-main tr td:nth-of-type(n+4):nth-of-type(-n+7){width: 75px;}
     .table-main tr td:nth-of-type(8){width: 50px;}
 
     /* 時間内訳テーブル */
@@ -221,6 +221,7 @@
 
 
 </div>
+{% include "includes/spinner.volt" %}
 {% endblock %}
 
 {% block js_include %}
@@ -238,21 +239,31 @@
                 url: $thisForm.attr("action"),
                 type: $thisForm.attr("method"),
                 data: $thisForm.serialize(),
+                global: false,
                 timeout: 1000 * 10,
                 beforeSend: function(xhr, settings){
-                    $submit.attr("disable", true);
+                    $(document).triggerHandler('ajaxStart');
                 },
-                complete: function(xhr, textStatus){
-                    $submit.attr("disable", false);
+            }).then(
+                function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    if( data['result'] ){
+                        if( data['result'] == "success" ) {
+                            location.reload();
+                        }
+                        if( data['result'] == "failure" ) {
+                            $(document).triggerHandler('ajaxStop', [ false, data['message']]);
+                        }
+                    }else{
+                        $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
+                    }
                 },
-                success: function (result, textStatus, xhr) {
-                    alert('保存しました。');
-                    location.reload();
-                },
-                error: function(xhr, textStatus, error){
-                    alert('失敗しました。');
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
                 }
-            });
+            );
+            
         })
     });
 
