@@ -1,9 +1,7 @@
 {% extends "layout/template_in_service.volt" %}
 
 {% block title %}給与登録{% endblock %}
-{% block css_include %}
-    <link rel="stylesheet" type="text/css" href="/css/base.css" />
-{% endblock %}
+{% block css_include %}{% endblock %}
 {% block js_include %}{% endblock %}
 {% block content_body %}
 
@@ -590,16 +588,18 @@
 
 
 </div>
+{% include "includes/spinner.volt" %}
 {% endblock %}
 
 {% block js_include %}
 <script>
 
-    const updateAction = "/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/update";
-    const undoAction = "/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/undo";
-    const method = "POST";
-
     $(function(){
+
+        const updateAction = "/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/update";
+        const undoAction = "/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/undo";
+        const method = "POST";
+
         $(".btn-update").on("click",  function () {
             // ポストキャンセル
             event.preventDefault();
@@ -611,61 +611,77 @@
             $.ajax({
                 url: updateAction,
                 type: method,
-                dataType: "html",
+                data: {
+                    "name" : key,
+                    "value" : value
+                },
+                timeout: 1000 * 10,
+                global: false,
+                beforeSend: function(xhr, settings){
+                    $(document).triggerHandler('ajaxStart');
+                }}).then(
+                function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    if( data['result'] ){
+                        if( data['result'] == "success" ) {
+                            location.reload();
+                        }
+                        if( data['result'] == "failure" ) {
+                            $(document).triggerHandler('ajaxStop', [ false, data['message']]);
+                        }
+                    }else{
+                        $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
+                    }
+                },
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
+                }
+            );
+        });
+
+        $(".btn-undo").on("click",  function () {
+            // ポストキャンセル
+            event.preventDefault();
+
+            const $input = $(this).parents("tr").find("input");
+            const key = $input.attr('name');
+            const value = $input.val();
+
+            $.ajax({
+                url: undoAction,
+                type: method,
                 data: {
                     "name" : key,
                     "value" : value
                 },
                 timeout: 1000 * 10,
                 beforeSend: function(xhr, settings){
-                    $(this).attr("disable", true);
+                    $(document).triggerHandler('ajaxStart');
+                }}).then(
+                function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    if( data['result'] ){
+                        if( data['result'] == "success" ) {
+                            location.reload();
+                        }
+                        if( data['result'] == "failure" ) {
+                            $(document).triggerHandler('ajaxStop', [ false, data['message']]);
+                        }
+                    }else{
+                        $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
+                    }
                 },
-                complete: function(xhr, textStatus){
-                    $(this).attr("disable", false);
-                },
-                success: function (result, textStatus, xhr) {
-                    alert('保存しました。');
-                    location.reload();
-                },
-                error: function(xhr, textStatus, error){
-                    alert('失敗しました。');
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
                 }
-            });
-        })
-    });
 
-    $(".btn-undo").on("click",  function () {
-        // ポストキャンセル
-        event.preventDefault();
-
-        const $input = $(this).parents("tr").find("input");
-        const key = $input.attr('name');
-        const value = $input.val();
-
-        $.ajax({
-            url: undoAction,
-            type: method,
-            dataType: "html",
-            data: {
-                "name" : key,
-                "value" : value
-            },
-            timeout: 1000 * 10,
-            beforeSend: function(xhr, settings){
-                $(this).attr("disable", true);
-            },
-            complete: function(xhr, textStatus){
-                $(this).attr("disable", false);
-            },
-            success: function (result, textStatus, xhr) {
-                alert('保存しました。');
-                location.reload();
-            },
-            error: function(xhr, textStatus, error){
-                alert('失敗しました。');
-            }
+            );
         });
+
     });
+
 
 </script>
 

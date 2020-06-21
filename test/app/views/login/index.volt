@@ -1,9 +1,7 @@
 {% extends "layout/template_out_service.volt" %}
 
 {% block title %}ログイン{% endblock %}
-{% block css_include %}
-<link rel="stylesheet" type="text/css" href="/css/base.css" />
-{% endblock %}
+{% block css_include %}{% endblock %}
 {% block js_include %}{% endblock %}
 {% block content_body %}
 

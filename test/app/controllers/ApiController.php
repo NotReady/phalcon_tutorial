@@ -16,6 +16,18 @@ class ApiController extends Controller
     }
 
     /**
+     * プレーンテキストレスポンスヘッダのラッパ
+     */
+    private function textResponse($callble){
+        try{
+            $callble();
+            header("Content-type: text/plain; charset=UTF-8");
+        }catch (Exception $e){
+            header("HTTP/1.1 503 Service Unavailable");
+        }
+    }
+
+    /**
      * 貸付の登録アクション
      * @todo 過去日付については給与明細の変更が発生するかもしれない
      */
@@ -113,37 +125,82 @@ class ApiController extends Controller
 
     public function updateSalaryAction(){
         $this->jsonResponse(function (){
-            // パラメタ収集
-            $year = $this->dispatcher->getParam('year');
-            $month = $this->dispatcher->getParam('month');
-            $employee_id = $this->dispatcher->getParam('employee_id');
-            $params = $this->request->getPost();
+            try{
+                // パラメタ収集
+                $year = $this->dispatcher->getParam('year');
+                $month = $this->dispatcher->getParam('month');
+                $employee_id = $this->dispatcher->getParam('employee_id');
+                $params = $this->request->getPost();
 
-            $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
-            $sarary->{$params['name']} = $params['value'];
+                $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
+                $sarary->{$params['name']} = $params['value'];
 
-            if( $sarary->save() === false ){
-                throw new Exception();
+                if( $sarary->save() === false ){
+                    throw new Exception('更新に失敗しました。');
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+
             }
-
         });
     }
 
     public function undoSalaryAction(){
         $this->jsonResponse(function (){
-            // パラメタ収集
-            $year = $this->dispatcher->getParam('year');
-            $month = $this->dispatcher->getParam('month');
-            $employee_id = $this->dispatcher->getParam('employee_id');
-            $params = $this->request->getPost();
+            try{
+                // パラメタ収集
+                $year = $this->dispatcher->getParam('year');
+                $month = $this->dispatcher->getParam('month');
+                $employee_id = $this->dispatcher->getParam('employee_id');
+                $params = $this->request->getPost();
 
-            $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
-            $sarary->{$params['name']} = null;
+                $sarary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
+                $sarary->{$params['name']} = null;
 
-            if( $sarary->save() === false ){
-                throw new Exception();
+                if( $sarary->save() === false ){
+                    throw new Exception('更新に失敗しました。');
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+
             }
+        });
+    }
 
+    /**
+     * 勤務表の保存アクション
+     */
+    public function saveReportAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $report = new Reports();
+                $report->employee_id = $params['nm_employee_id'];
+                $report->at_day = $params['nm_date'];
+                $report->site_id = $params['nm_site_id'];
+                $report->worktype_id = $params['nm_wtype_id'];
+                $report->time_from = $params['nm_timefrom'];
+                $report->time_to = $params['nm_timeto'];
+                $report->breaktime = $params['nm_breaktime'];
+
+                if( $report->save() === false ){
+                    throw new Exception('更新に失敗しました。');
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
         });
     }
 }
