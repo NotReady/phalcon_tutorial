@@ -2,11 +2,8 @@
 
 {% block title %}従業員編集{% endblock %}
 {% block css_include %}
-<link rel="stylesheet" type="text/css" href="/css/base.css" />
 {% endblock %}
-{% block js_include %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
-{% endblock %}
+
 {% block content_body %}
 
 <style>
@@ -327,12 +324,16 @@
         </div>
     </div>
 </div>
+{% include "includes/spinner.volt" %}
+{% endblock %}
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+{% block js_include %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
 <script>
+
 $(function() {
 
-    {# ページャ #}
+        {# ページャ #}
     $('#id_pager').twbsPagination({
         startPage : 1,
         totalPages: <?= ceil( count($loans) / 10); ?>,
@@ -442,6 +443,8 @@ $(function() {
     {# 貸付編集 #}
     $("#id-create-loan, #id-update-loan, #id-delete-loan").on("click", function(){
 
+        $(document).triggerHandler('ajaxStart');
+
         if( date = $("input[name='loan-date']").val() ){
             $("#id-warn-loan-date").addClass("d-none");
         }else{
@@ -470,6 +473,7 @@ $(function() {
         $.post({
             url: `/employees/loan/${method}`,
             dataType: 'json',
+            global: false,
             // フォーム要素の内容をハッシュ形式に変換
             data: {
                 "date" : date,
@@ -485,12 +489,14 @@ $(function() {
         .then(
             function(data, textStatus, jqXHR) {
                 console.log(data);
+
                 if( data['result'] ){
                     if( data['result'] == "success" ) {
                         location.reload();
+                        $(document).triggerHandler('ajaxStop', [true]);
                     }
                     if( data['result'] == "failure" ) {
-                        alert(data['message']);
+                        $(document).triggerHandler('ajaxStop', [ false, data['message']]);
                     }
                 }
             },
