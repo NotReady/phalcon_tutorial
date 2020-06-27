@@ -10,9 +10,10 @@ class EmployeeController extends Controller
 
         // 従業員一覧
         $employees = new Employees();
-        $resultset = $employees->getEmployeesWithLatestInput();
+        $employeesCreateForm = new EmployeesCreateForm($employees);
+        $this->view->form = $employeesCreateForm;
 
-        // viewパラメタ
+        $resultset = $employees->getEmployeesWithLatestInput();
         $this->view->employee_info = $resultset;
     }
 
@@ -21,23 +22,22 @@ class EmployeeController extends Controller
      */
     public function editAction()
     {
+        $employee_id = $this->dispatcher->getParam('employee_id');
+        $this->view->setVar('employee_id', $employee_id);
+
         $employee = null;
-        if( $this->session->has('editable') === true ){
-            $employee = $this->session->get('editable');
-            $this->session->remove('editable');
-            $form = $employee;
+
+        if( $this->session->has('employee_edit_form') === true ){
+            $form = $this->session->get('employee_edit_form');
+            $this->session->remove('employee_edit_form');
         }else{
-            $employee_id = $this->dispatcher->getParam('employee_id');
             $employee = Employees::findfirst($employee_id);
             $form = new EmployeesForm($employee);
         }
 
-        $this->view->setVar('employee_id', $employee->id);
-
         $this->view->form = $form;
-        $l = Loans::getBookAssosiatePageer($employee->id);
-        $this->view->loans = Loans::getBook($employee->id);
-        $this->view->loansAmount = Loans::getAmount($employee->id);
+        $this->view->loans = Loans::getBook($employee_id);
+        $this->view->loansAmount = Loans::getAmount($employee_id);
     }
 
     /**
@@ -51,31 +51,23 @@ class EmployeeController extends Controller
         $params = $this->request->getPost();
         $form->bind($params, $employee);
 
-        // バリデーションガード
-        if( $form->isValid() === false )
-        {
-            $this->session->set('editable', $form);
-            return $this->dispatcher->forward([
-                'controller' => 'Employee',
-                'action' => 'edit'
-            ]);
+        try{
+            // バリデーションガード
+            if( $form->isValid() === false )
+            {
+                throw new Exception();
+            }
+
+            if( $employee->save() === false )
+            {
+                throw new Exception();
+            }
+
+        }catch (Exception $e){
+            $this->session->set('employee_edit_form', $form);
         }
 
-        if( $employee->save() === false )
-        {
-            $this->session->set('editable', $form);
-            return $this->dispatcher->forward([
-                'controller' => 'Employee',
-                'action' => 'edit'
-            ]);
-
-        }
-
-        return $this->dispatcher->forward([
-            'controller' => 'Employee',
-            'action' => 'index'
-        ]);
-
+        return $this->response->redirect("/employees/edit/{$employee->id}");
     }
 
     /**

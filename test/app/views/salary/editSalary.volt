@@ -85,7 +85,7 @@
 
     <h1 class="title flex_box">
         <div class="col-8">
-            <a href="/employee/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
+            <a href="/employees/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
             {{ "%d年 %d月の給与編集" | format(thisyear, thismonth) }}
         </div>
         <div class="col-4 text-right">

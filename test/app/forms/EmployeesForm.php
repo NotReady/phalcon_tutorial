@@ -5,6 +5,7 @@ use \Phalcon\Forms\Element\Submit;
 use \Phalcon\Forms\Element\Numeric;
 use \Phalcon\Forms\Element\Hidden;
 use \Phalcon\Forms\Element\Select;
+use \Phalcon\Forms\Element\Date;
 use \Phalcon\Validation\Validator\PresenceOf;
 
 class EmployeesForm extends Form
@@ -13,6 +14,60 @@ class EmployeesForm extends Form
 
         // id
         $this->add(new Hidden('id'));
+
+        // 社員番号
+        $employee_no = new Numeric('employee_no');
+        $employee_no->setLabel('社員番号');
+        $employee_no->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '社員番号を入力してください。'
+        ]);
+        $employee_no->addValidators([
+            new PresenceOf([
+                'message' => '社員番号を入力してください。'
+            ])
+        ]);
+        $this->add($employee_no);
+
+        // 入社日
+        $hire_date = new Date('hire_date');
+        $hire_date->setLabel('入社日');
+        $hire_date->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '入社日を入力してください。',
+        ]);
+        $hire_date->addValidators([
+            new PresenceOf([
+                'message' => '入社日を入力してください。'
+            ])
+        ]);
+        $this->add($hire_date);
+
+        // 退社日
+        $leave_date = new Date('leave_date');
+        $leave_date->setLabel('退社日');
+        $leave_date->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '退社日を入力してください。',
+        ]);
+        $this->add($leave_date);
+
+        // 雇用状態
+        $employee_status = new Select('employee_status', [
+            'active' => '雇用中',
+            'dismiss' => '解雇済',
+            'suspend' => '休職中'
+        ]);
+        $employee_status->setLabel('雇用状態');
+        $employee_status->setAttributes([
+            'class' => 'form-control',
+        ]);
+        $employee_status->addValidators([
+            new PresenceOf([
+                'message' => '雇用状態を選択してください。'
+            ])
+        ]);
+        $this->add($employee_status);
 
         // 雇用タイプ
         $employee_type = new Select('employee_type', [

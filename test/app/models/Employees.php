@@ -3,7 +3,17 @@
 use Phalcon\Mvc\Model;
 
 class Employees extends Model{
+
+    // サロゲートキー
     public $id;
+    // 社員番号
+    public $employee_no;
+    // 雇用状態
+    public $employee_status;
+    // 入社日
+    public $hire_date;
+    // 退社日
+    public $leave_date;
     // 性
     public $first_name;
     // 名
@@ -71,6 +81,41 @@ class Employees extends Model{
                 'updated',
             ]
         );
+    }
+
+    /**
+     * 退社日のセッター
+     * Date型テーブルなので、ブランクの場合はnullに置き換える
+     * @param $leaveDate
+     */
+    public function setLeaveDate($leaveDate){
+        $this->leave_date = empty($leaveDate) ? null : $leaveDate;
+    }
+
+    /**
+     * 社員番号のセッター
+     * int型テーブルなので、0パディングを数字化する
+     * @param $employeeNo
+     */
+    public function setEmployeeNo($employeeNo){
+        $this->employee_no = intval($employeeNo);
+    }
+
+    /**
+     * 社員番号のゲッター
+     * int型テーブルなので、0パディングする
+     * @return 0埋めした社員番号
+     */
+    public function getEmployeeNo(){
+        return empty($this->employee_no) ? "" :  str_pad($this->employee_no, 5, 0, STR_PAD_LEFT);
+    }
+
+    public static function createEmployee($employeeNo, $firstName, $lastName){
+        $employee = new Employees();
+        $employee->employee_no = $employeeNo;
+        $employee->first_name = $firstName;
+        $employee->last_name = $lastName;
+        return $employee;
     }
 
     public function authorization($username, $password){
@@ -143,9 +188,17 @@ class Employees extends Model{
     }
 
     public function getEmployeesWithLatestInput(){
+
+        return Employees::find();
+
+        /*
         $query = new \Phalcon\Mvc\Model\Query(
             'select
               e.id as employee_id,
+              e.employee_status,
+              e.employee_no,
+              e.hire_date,
+              e.employee_type,
               e.first_name,
               e.last_name,
               e.created,
@@ -158,8 +211,9 @@ class Employees extends Model{
             $this->getDI()
         );
 
+
         $rows =  $query->execute();
         return $rows;
-
+        */
     }
 }

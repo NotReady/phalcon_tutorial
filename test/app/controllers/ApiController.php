@@ -28,6 +28,48 @@ class ApiController extends Controller
     }
 
     /**
+     * 社員の登録アクション
+     */
+    public function createEmployeeAction(){
+        $this->jsonResponse(function (){
+            try{
+                //$employee = Employees::createEmployee($params['employee_no'], $params['first_name'], $params['last_name']);
+
+                $params = $this->request->getPost();
+                $employee = new Employees();
+
+                $form = new EmployeesCreateForm();
+                $form->bind($params, $employee);
+
+                 // バリデーション
+                if( $form->isValid() === false )
+                {
+                    $invalidMessages = $form->getMessages();
+                    $raiseMessages = [];
+                    foreach ($invalidMessages as $message) {
+                        $raiseMessages[] = $message->getMessage();
+                    }
+                    throw new KVSExtendedException($raiseMessages);
+                }
+
+                if( $employee->save() === false ){ throw new Exception("登録に失敗しました"); }
+                echo json_encode(['result' => 'success']);
+
+            }catch (KVSExtendedException $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'messages' => $e->getKVSStore()
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
      * 貸付の登録アクション
      * @todo 過去日付については給与明細の変更が発生するかもしれない
      */

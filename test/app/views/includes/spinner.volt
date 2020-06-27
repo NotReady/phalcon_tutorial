@@ -116,7 +116,8 @@ $(function () {
             setTimeout(
                 function () {
                     if( status === false ){
-                        $("#id-txt-fail").text(message);
+                        if( Array.isArray(message) ) message = function(message){var invalMsg=""; $.each(message, function(idx,elm){invalMsg+=(elm+"<br />")}); return invalMsg;}(message);
+                        $("#id-txt-fail").html( message );
                         $("#id-loader-fail-content").show();
                     }else{
                         $("#spinner-base").hide();

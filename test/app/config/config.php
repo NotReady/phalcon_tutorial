@@ -10,6 +10,7 @@ return new Config(
             'formsDir' => '/app/forms/',
             'servicesDir' => '/app/services/',
             'helpersDir' => '/app/helpers/',
+            'exceptionsDir' => '/app/exceptions/',
             'cacheDir' => '/app/cache/',
         ]
     ]

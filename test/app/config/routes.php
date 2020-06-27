@@ -36,6 +36,7 @@ $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/undo', ['co
 
 // 従業員
 $router->add('/employees',                      ['controller' => "Employee",  'action'=>'index']);
+$router->add('/employees/create',               ['controller' => "Api",       'action'=>'createEmployee']);
 $router->add('/employees/edit/{employee_id}',   ['controller' => "Employee", 'action'=>'edit']);
 $router->add('/employees/edit/check',           ['controller' => "Employee", 'action'=>'editCheck']);
 $router->add('/employees/loan/create',          ['controller' => "Api", 'action'=>'createLoan']);

@@ -174,7 +174,7 @@ h1 {
     font-size: 0.8rem !important;
 }
 
-.badge-info{
+.badge-success{
     border: 1px solid #28a745;
     color: #28a745;
     background-color: white;
@@ -182,4 +182,34 @@ h1 {
     border-radius: 5px;
     font-weight: normal;
     font-size: 0.8rem !important;
+}
+
+.badge-info{
+    border: 1px solid #0088ff;
+    color: #0088ff;
+    background-color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-weight: normal;
+    font-size: 0.8rem !important;
+}
+
+.badge-disable{
+    border: 1px solid #4c4c4c;
+    color: #4c4c4c;
+    background-color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-weight: normal;
+    font-size: 0.8rem !important;
+}
+
+/* form */
+
+.form-label{
+    font-size: 0.8rem;
+    border-left: 4px solid #0088ff;
+    padding-left: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
 }
