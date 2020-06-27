@@ -40,7 +40,7 @@
         <tr>
             <td>
                 {% if employee.salary_fixed is 'fixed'%}
-                    <span class="badge-info">確定済</span>
+                    <span class="badge-success">確定済</span>
                 {% else %}
                     <span class="badge-alert">未確定</span>
                 {% endif %}

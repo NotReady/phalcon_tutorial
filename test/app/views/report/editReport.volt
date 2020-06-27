@@ -88,7 +88,7 @@
     <h1 class="title row">
         <div class="col-8 flex_box">
             <span>
-                <a href="/employee/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
+                <a href="/employees/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
                 {{ "%d年 %d月の勤務レポート" | format(thisyear, thismonth) }}
             </span>
             <span class="highlight">

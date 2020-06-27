@@ -55,6 +55,10 @@
         height: 400px;
     }
 
+    .errorMessage{
+        color: red;
+    }
+
 </style>
 
 <div class="content_root">
@@ -70,37 +74,77 @@
     </span>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('first_name') }}
+        {{ form.label('first_name', ['class' : 'form-label']) }}
         {{ form.render('first_name') }}
         {{ form.messages('first_name') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('last_name') }}
+        {{ form.label('last_name', ['class' : 'form-label']) }}
         {{ form.render('last_name') }}
         {{ form.messages('last_name') }}
     </div>
 
+    <div class="form-element-wrap col-3">
+        {#blank#}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {#blank#}
+    </div>
+
     <div class="form-element-wrap col-6">
-        {{ form.label('address') }}
+        {{ form.label('address', ['class' : 'form-label']) }}
         {{ form.render('address') }}
         {{ form.messages('address') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('employee_type') }}
+        {#blank#}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {#blank#}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('employee_no', ['class' : 'form-label']) }}
+        {{ form.render('employee_no') }}
+        {{ form.messages('employee_no') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('employee_status', ['class' : 'form-label']) }}
+        {{ form.render('employee_status') }}
+        {{ form.messages('employee_status') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('hire_date', ['class' : 'form-label']) }}
+        {{ form.render('hire_date') }}
+        {{ form.messages('hire_date') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('leave_date', ['class' : 'form-label']) }}
+        {{ form.render('leave_date') }}
+        {{ form.messages('leave_date') }}
+    </div>
+
+    <div class="form-element-wrap col-3">
+        {{ form.label('employee_type', ['class' : 'form-label']) }}
         {{ form.render('employee_type') }}
         {{ form.messages('employee_type') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('skill_id') }}
+        {{ form.label('skill_id', ['class' : 'form-label']) }}
         {{ form.render('skill_id') }}
         {{ form.messages('skill_id') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('insurance_type') }}
+        {{ form.label('insurance_type', ['class' : 'form-label']) }}
         {{ form.render('insurance_type') }}
         {{ form.messages('insurance_type') }}
     </div>
@@ -114,67 +158,67 @@
 
 
     <div class="form-element-wrap col-3">
-        {{ form.label('monthly_charge') }}
+        {{ form.label('monthly_charge', ['class' : 'form-label']) }}
         {{ form.render('monthly_charge') }}
         {{ form.messages('monthly_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('overtime_charge') }}
+        {{ form.label('overtime_charge', ['class' : 'form-label']) }}
         {{ form.render('overtime_charge') }}
         {{ form.messages('overtime_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('skill_charge') }}
+        {{ form.label('skill_charge', ['class' : 'form-label']) }}
         {{ form.render('skill_charge') }}
         {{ form.messages('skill_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses') }}
+        {{ form.label('transportation_expenses', ['class' : 'form-label']) }}
         {{ form.render('transportation_expenses') }}
         {{ form.messages('transportation_expenses') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses_by_day') }}
+        {{ form.label('transportation_expenses_by_day', ['class' : 'form-label']) }}
         {{ form.render('transportation_expenses_by_day') }}
         {{ form.messages('transportation_expenses_by_day') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses_without_tax') }}
+        {{ form.label('transportation_expenses_without_tax', ['class' : 'form-label']) }}
         {{ form.render('transportation_expenses_without_tax') }}
         {{ form.messages('transportation_expenses_without_tax') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('communication_charge_without_tax') }}
+        {{ form.label('communication_charge_without_tax', ['class' : 'form-label']) }}
         {{ form.render('communication_charge_without_tax') }}
         {{ form.messages('communication_charge_without_tax') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('house_charge') }}
+        {{ form.label('house_charge', ['class' : 'form-label']) }}
         {{ form.render('house_charge') }}
         {{ form.messages('house_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('bus_charge') }}
+        {{ form.label('bus_charge', ['class' : 'form-label']) }}
         {{ form.render('bus_charge') }}
         {{ form.messages('bus_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('officework_charge') }}
+        {{ form.label('officework_charge', ['class' : 'form-label']) }}
         {{ form.render('officework_charge') }}
         {{ form.messages('officework_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('etc_charge') }}
+        {{ form.label('etc_charge', ['class' : 'form-label']) }}
         {{ form.render('etc_charge') }}
         {{ form.messages('etc_charge') }}
     </div>
@@ -188,37 +232,37 @@
     </span>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('rent_bill') }}
+        {{ form.label('rent_bill', ['class' : 'form-label']) }}
         {{ form.render('rent_bill') }}
         {{ form.messages('rent_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('electric_bill') }}
+        {{ form.label('electric_bill', ['class' : 'form-label']) }}
         {{ form.render('electric_bill') }}
         {{ form.messages('electric_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('gas_bill') }}
+        {{ form.label('gas_bill', ['class' : 'form-label']) }}
         {{ form.render('gas_bill') }}
         {{ form.messages('gas_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('water_bill') }}
+        {{ form.label('water_bill', ['class' : 'form-label']) }}
         {{ form.render('water_bill') }}
         {{ form.messages('water_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('food_bill') }}
+        {{ form.label('food_bill', ['class' : 'form-label']) }}
         {{ form.render('food_bill') }}
         {{ form.messages('food_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('etc_bill') }}
+        {{ form.label('etc_bill', ['class' : 'form-label']) }}
         {{ form.render('etc_bill') }}
         {{ form.messages('etc_bill') }}
     </div>
@@ -330,10 +374,10 @@
 {% block js_include %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
 <script>
-
 $(function() {
 
-        {# ページャ #}
+    {# ページャ #}
+    <?php if( count($loans) > 0 ): ?>
     $('#id_pager').twbsPagination({
         startPage : 1,
         totalPages: <?= ceil( count($loans) / 10); ?>,
@@ -391,6 +435,7 @@ $(function() {
                 }
             );
     }
+    <?php endif; ?>
 
     {# モーダルの表示イベント #}
     $("#staticBackdrop").on("show.bs.modal", function (e) {

@@ -53,7 +53,7 @@
 
     <h1 class="title flex_box">
         <div class="col-8">
-            <a href="/employee/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
+            <a href="/employees/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
             {{ "%d年 %d月の給与" | format(thisyear, thismonth) }}
         </div>
         <div class="col-4 text-right">
@@ -67,7 +67,7 @@
             <div class=" col-12">
                 <h2 class="subtitle flex_box flex_left">
                     今月のサマリー
-                    <span class="badge-info highlight">確定済</span>
+                    <span class="badge-success highlight">確定済</span>
                     <span class="highlight">総支給額　<span class="highlight-text">{{ total_salary | number_format }}</span> 円</span>
                     <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
                     <span class="highlight">出勤時間　<span class="highlight-text">{{ summary['timeAll'] }}</span></span>
