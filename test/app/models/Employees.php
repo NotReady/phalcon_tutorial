@@ -110,14 +110,6 @@ class Employees extends Model{
         return empty($this->employee_no) ? "" :  str_pad($this->employee_no, 5, 0, STR_PAD_LEFT);
     }
 
-    public static function createEmployee($employeeNo, $firstName, $lastName){
-        $employee = new Employees();
-        $employee->employee_no = $employeeNo;
-        $employee->first_name = $firstName;
-        $employee->last_name = $lastName;
-        return $employee;
-    }
-
     public function authorization($username, $password){
         self::findFirst();
         $employee = Employees::findfirst([
