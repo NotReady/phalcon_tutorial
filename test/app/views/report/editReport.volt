@@ -8,12 +8,10 @@
 <style>
 
     /* 出勤テーブル */
-    .table-main tr td:nth-of-type(1){width: 55px;}
-    .table-main tr td:nth-of-type(2){width: 40px;}
-    .table-main tr td:nth-of-type(3){width: 150px;}
-    .table-main tr td:nth-of-type(4){width: 130px;}
-    .table-main tr td:nth-of-type(n+4):nth-of-type(-n+7){width: 75px;}
-    .table-main tr td:nth-of-type(8){width: 50px;}
+    .table-main th:nth-of-type(1) {width: 55px;}
+    .table-main th:nth-of-type(2) {width: 10px;}
+    .table-main th:nth-of-type(n+3):nth-of-type(-n+7){width: 75px;}
+    .table-main th:nth-of-type(8){width: 75px;}
 
     /* 時間内訳テーブル */
     .table_timeunit td:nth-of-type(1),
@@ -70,6 +68,19 @@
         height: 500px;
     }
 
+    .sat-decoration{
+        border-radius: 50%;
+        padding: 8px 9px;
+        background-color: dodgerblue;
+        color: #ffffff;
+    }
+
+    .sun-decoration{
+        border-radius: 50%;
+        padding: 8px 9px;
+        background-color: crimson;
+        color: #ffffff;
+    }
 </style>
 
 <div class="content_root">
@@ -104,18 +115,21 @@
         <th>休憩時間</th>
         <th>保存</th>
         </thead>
-        <tbody>
 
         <?php foreach($reports as $day => $report): ?>
+        <?php $windex = date('w',  strtotime("${thisyear}-${day}")); ?>
         <tr>
+
             <form method="post" action="/report/save" class="asyncForm">
                 <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
                 <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
                 <td class="cell">{{day}}</td>
                 <td>
+                    <span class="{% if windex is 6 %}sat-decoration{% elseif windex is 0 %}sun-decoration{% endif %}">
                     <?php
                         echo $week[date('w',  strtotime("${thisyear}-${day}"))];
                     ?>
+                    </span>
                 </td>
                 <td><select class="form-control" name="nm_site_id"; ?>">
                         <?php foreach($sites as $id => $name): ?>
@@ -141,7 +155,10 @@
                     <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
                 {% endif %}
 
-                <td><input class="btn btn-primary btn-submit" type="submit" value="保存"></td>
+                <td>
+                    <input class="btn btn-primary btn-submit" type="button" value="保存" data-report-method="update">
+                    <input class="btn btn-danger btn-submit" type="button" value="削除" data-report-method="delete">
+                </td>
 
             </form>
         </tr>
@@ -228,17 +245,32 @@
 <script>
 
     $(function(){
-        $('.asyncForm').submit(function (event) {
+        $(".btn-submit").on("click", function (event) {
             // ポストキャンセル
             event.preventDefault();
-            const $thisForm = $(this);
-            const $submit = $thisForm.find('.btn-submit');
+            const $row = $(this).parents("tr");
+            const date = $row.find("input[name='nm_date']").val();
+            const employee_id = $row.find("input[name='nm_employee_id']").val();
+            const site_id = $row.find("select[name='nm_site_id']").val();
+            const wtype_id = $row.find("select[name='nm_wtype_id']").val();
+            const timefrom = $row.find("input[name='nm_timefrom']").val();
+            const timeto = $row.find("input[name='nm_timeto']").val();
+            const breaktime = $row.find("input[name='nm_breaktime']").val();
+            const action = $(this).data('report-method');
 
             // 非同期ポスト実装
             $.ajax({
-                url: $thisForm.attr("action"),
-                type: $thisForm.attr("method"),
-                data: $thisForm.serialize(),
+                url: `/report/${action}`,
+                type: "POST",
+                data: {
+                    nm_date: date,
+                    nm_employee_id: employee_id,
+                    nm_site_id: site_id,
+                    nm_wtype_id: wtype_id,
+                    nm_timefrom: timefrom,
+                    nm_timeto: timeto,
+                    nm_breaktime: breaktime
+                },
                 global: false,
                 timeout: 1000 * 10,
                 beforeSend: function(xhr, settings){
