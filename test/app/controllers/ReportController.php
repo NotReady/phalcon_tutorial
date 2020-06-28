@@ -46,6 +46,7 @@ class ReportController extends Controller
         $this->view->thismonth = $month ;
         $this->view->thisyear = $year ;
 
+        // todo 見直し
         $sites = Sites::find();
         $siteinfo = [''=>''];
         foreach ($sites as $site) {
@@ -53,6 +54,7 @@ class ReportController extends Controller
         }
         $this->view->sites = $siteinfo;
 
+        // todo 見直し
         $wtypes = Worktypes::find();
         $wtypeinfo = [''=>''];
         foreach ($wtypes as $wtype) {
