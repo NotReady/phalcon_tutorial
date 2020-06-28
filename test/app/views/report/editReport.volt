@@ -8,10 +8,12 @@
 <style>
 
     /* 出勤テーブル */
-    .table-main th:nth-of-type(1) {width: 55px;}
-    .table-main th:nth-of-type(2) {width: 10px;}
-    .table-main th:nth-of-type(n+3):nth-of-type(-n+7){width: 75px;}
-    .table-main th:nth-of-type(8){width: 75px;}
+    .table-main th:nth-of-type(1) {width: 10%;}
+    .table-main th:nth-of-type(2) {width: 5%;}
+    .table-main th:nth-of-type(3) {width: 20%;}
+    .table-main th:nth-of-type(4) {width: 20%;}
+    .table-main th:nth-of-type(n+5):nth-of-type(-n+7){width: 10%;}
+    .table-main th:nth-of-type(8) {width: 20%;}
 
     /* 時間内訳テーブル */
     .table_timeunit td:nth-of-type(1),
@@ -133,26 +135,29 @@
                 </td>
                 <td><select class="form-control" name="nm_site_id"; ?>">
                         <?php foreach($sites as $id => $name): ?>
-                        <option value="{{ id }}" {% if id is report.site_id  %}selected{% endif %} >{{ name }}</option>
+                            <option value="{{ id }}" {% if id is report.site_id  %}selected{% endif %} >{{ name }}</option>
                         <?php endforeach;?>
                     </select>
                 </td>
                 <td>
                     <select class="form-control" name="nm_wtype_id"; ?>">
+                        <?php
+                            $worktypes = Worktypes::getWorkTypesByEmployeeAtSite($employee->id, $report->site_id);
+                        ?>
                         <?php foreach($wtypes as $id => $name): ?>
-                        <option value="{{id}}" {% if id is report.worktype_id %}selected{% endif %} >{{ name }}</option>
+                            <option value="{{id}}" {% if id is report.worktype_id %}selected{% endif %} >{{ name }}</option>
                         <?php endforeach;?>
                     </select>
                 </td>
 
                 {% if report is empty %}
-                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text"></td>
-                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text"></td>
-                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text"></td>
+                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="time"></td>
+                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="time"></td>
+                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="time"></td>
                 {% else %}
-                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="text" value="{{date('H:i', report.time_from | strtotime)}}"></td>
-                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="text" value="{{date('H:i', report.time_to | strtotime)}}"></td>
-                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="text" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
+                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="time" value="{{date('H:i', report.time_from | strtotime)}}"></td>
+                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="time" value="{{date('H:i', report.time_to | strtotime)}}"></td>
+                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="time" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
                 {% endif %}
 
                 <td>
@@ -245,9 +250,83 @@
 <script>
 
     $(function(){
-        $(".btn-submit").on("click", function (event) {
+
+        {# 現場の選択イベント 有効な作業分類を取得する #}
+        $("select[name='nm_site_id']").on("change", function (event) {
+
             // ポストキャンセル
             event.preventDefault();
+
+            const siteId = $(this).val();
+            const employeeId = $(this).parents("tr").find("input[name='nm_employee_id']").val();
+            const $workTypeSelectForm = $(this).parents("tr").find("select[name='nm_wtype_id']");
+            const $timeFromForm = $(this).parents("tr").find("input[name='nm_timefrom']");
+            const $timeToForm = $(this).parents("tr").find("input[name='nm_timeto']");
+            const $breaktimeForm = $(this).parents("tr").find("input[name='nm_breaktime']");
+
+            // フォームをクリア
+            $workTypeSelectForm.empty();
+            $timeFromForm.val("");
+            $timeToForm.val("");
+            $breaktimeForm.val("");
+
+            $.ajax({
+                url: "/report/list/worktype",
+                type: "POST",
+                global: false,
+                data: {
+                    employee_id: employeeId,
+                    site_id: siteId,
+                },
+                beforeSend: $(document).triggerHandler('ajaxStart')
+            })
+            .then(function(data, textStatus, jqXHR) {
+
+                console.log(data);
+
+                // ステータスが無い
+                if( !data["result"] ){
+                    throw new Error("システムエラーです");
+                }
+
+                // 失敗
+                if( data["result"] === "failure"){
+                    if( data["message"] ) {
+                        throw new Error(data['message']);
+                    }
+                    throw new Error("システムエラーです");
+                }
+
+                // ステータスが無い
+                if( !data["worktypes"] ){
+                    throw new Error("システムエラーです");
+                }
+
+                $workTypeSelectForm.append(`<option value="">選択してください</option>`);
+                if( data['worktypes'] ){
+                    $.each(data['worktypes'], function(idx, w) {
+                        $workTypeSelectForm
+                            .append(`<option value="${w['worktype_id']}">${w['name']}</option>`)
+
+                        $timeFromForm.val(w["time_from"]);
+                        $timeToForm.val(w["time_to"]);
+                        $breaktimeForm.val(w["breaktime"]);
+                    });
+                }
+
+                $(document).triggerHandler('ajaxStop', [ true ]);
+            })
+            .catch(function(jqXHR, textStatus, errorThrown){
+                console.log(jqXHR);
+                $(document).triggerHandler('ajaxStop', [ false, jqXHR]);
+            });
+        });
+
+        $(".btn-submit").on("click", function (event) {
+
+            // ポストキャンセル
+            event.preventDefault();
+
             const $row = $(this).parents("tr");
             const date = $row.find("input[name='nm_date']").val();
             const employee_id = $row.find("input[name='nm_employee_id']").val();
@@ -289,12 +368,11 @@
                     }else{
                         $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
                     }
-                },
+            }).catch(
                 function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
                     $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
-                }
-            );
+            });
             
         })
     });

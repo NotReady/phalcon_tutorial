@@ -123,7 +123,7 @@ $(function () {
                         $("#spinner-base").hide();
                     }
                 }
-                ,1000);
+                ,0);
         });
 
     $("#id-btn-loader-close").on("click", function () {

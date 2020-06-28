@@ -4,15 +4,43 @@ use Phalcon\Mvc\Model\Query as phQuery;
 
 class Reports extends Model
 {
+    /**
+     * @var 社員ID
+     */
     public $employee_id;
+
+    /**
+     * @var 出勤日
+     */
     public $at_day;
+
+    /**
+     * @var 業務開始時間
+     */
     public $time_from;
+
+    /**
+     * @var 業務終了時間
+     */
     public $time_to;
+
+    /**
+     * @var 休憩時間
+     */
     public $breaktime;
+
+    /**
+     * @var 現場ID
+     */
+    public $site_id;
+
+    /**
+     * @var 作業分類ID
+     */
+    public $worktype_id;
+
     public $created;
     public $updated;
-    public $site_id;
-    public $worktype_id;
 
     public function initialize(){
         $this->belongsTo('employee_id', 'Employees', 'id');

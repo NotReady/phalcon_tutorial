@@ -314,4 +314,33 @@ class ApiController extends Controller
             }
         });
     }
+
+    /**
+     * 勤務表の作業分類取得
+     */
+    public function getWorkTypeListAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $employee_id = $params['employee_id'];
+                $site_id = $params['site_id'];
+
+                $worktypes = Worktypes::getWorkTypesByEmployeeAtSite($employee_id, $site_id);
+
+                if( empty($worktypes) === true ){
+                    throw new Exception("登録作業がありません");
+                }
+
+                echo json_encode([
+                    'result' => 'success',
+                    'worktypes' => $worktypes
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
 }

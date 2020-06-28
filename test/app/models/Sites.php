@@ -3,13 +3,41 @@ use Phalcon\Mvc\Model;
 
 class Sites extends Model
 {
+    /**
+     * @var サロゲートキー
+     */
     public $id;
+
+    /**
+     * @var 顧客ID
+     */
     public $customer_id;
+
+    /**
+     * @var 現場名
+     */
     public $sitename;
+
+    /**
+     * @var 業務開始時間
+     */
     public $time_from;
+
+    /**
+     * @var 業務終了時間
+     */
     public $time_to;
+
+    /**
+     * @var 休憩開始時間
+     */
     public $breaktime_from;
+
+    /**
+     * @var 休憩終了時間
+     */
     public $breaktime_to;
+
     public $created;
     public $updated;
 
