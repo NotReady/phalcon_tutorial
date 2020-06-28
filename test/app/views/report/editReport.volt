@@ -144,8 +144,8 @@
                         <?php
                             $worktypes = Worktypes::getWorkTypesByEmployeeAtSite($employee->id, $report->site_id);
                         ?>
-                        <?php foreach($wtypes as $id => $name): ?>
-                            <option value="{{id}}" {% if id is report.worktype_id %}selected{% endif %} >{{ name }}</option>
+                        <?php foreach($worktypes as $worktype): ?>
+                            <option value="{{ worktype['worktype_id'] }}" {% if worktype['worktype_id'] is report.worktype_id %}selected{% endif %} >{{ worktype["name"] }}</option>
                         <?php endforeach;?>
                     </select>
                 </td>
