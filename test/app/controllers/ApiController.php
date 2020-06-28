@@ -70,6 +70,47 @@ class ApiController extends Controller
     }
 
     /**
+     * 現場の登録アクション
+     */
+    public function createSiteAction(){
+        $this->jsonResponse(function (){
+            try{
+
+                $params = $this->request->getPost();
+                $site = new Sites();
+
+                $form = new SitesCreateForm();
+                $form->bind($params, $site);
+
+                // バリデーション
+                if( $form->isValid() === false )
+                {
+                    $invalidMessages = $form->getMessages();
+                    $raiseMessages = [];
+                    foreach ($invalidMessages as $message) {
+                        $raiseMessages[] = $message->getMessage();
+                    }
+                    throw new KVSExtendedException($raiseMessages);
+                }
+
+                if( $site->save() === false ){ throw new Exception("登録に失敗しました"); }
+                echo json_encode(['result' => 'success']);
+
+            }catch (KVSExtendedException $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'messages' => $e->getKVSStore()
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
      * 貸付の登録アクション
      * @todo 過去日付については給与明細の変更が発生するかもしれない
      */

@@ -72,6 +72,7 @@ class EmployeesCreateForm extends Form
 
         // 雇用状態
         $employee_status = new Select('employee_status', [
+            '' => '',
             'active' => '雇用中',
             'dismiss' => '解雇済',
             'suspend' => '休職中'
@@ -89,6 +90,7 @@ class EmployeesCreateForm extends Form
 
         // 雇用タイプ
         $employee_type = new Select('employee_type', [
+            '' => '',
             'pro' => '社員',
             'part' => 'アルバイト'
         ]);
@@ -105,6 +107,7 @@ class EmployeesCreateForm extends Form
 
         // 職能
         $employee_type = new Select('skill_id', [
+            '' => '',
             '1' => '研修中',
             '2' => '一般職'
         ]);
@@ -118,12 +121,6 @@ class EmployeesCreateForm extends Form
             ])
         ]);
         $this->add($employee_type);
-
-        // 送信
-        $this->add(new Submit('submit', [
-            'class' => 'btn btn-primary',
-            'value' => '登録'
-        ]));
 
     }
 

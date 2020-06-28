@@ -47,5 +47,6 @@ $router->add('/employees/loan/get/id',          ['controller' => "Api", 'action'
 
 // 現場
 $router->add('/sites',                          ['controller' => "Site", 'action'=>'index']);
+$router->add('/sites/create',                   ['controller' => "Api",       'action'=>'createSite']);
 
 $router->handle();

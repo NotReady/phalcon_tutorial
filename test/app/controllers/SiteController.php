@@ -8,12 +8,15 @@ class SiteController extends Controller
      */
     public function indexAction(){
 
-        // 従業員一覧
+        // 現場一覧
         $site = new Sites();
         $resultSet = $site->getSitesWithCustomer();
-
-        // viewパラメタ
         $this->view->site_info = $resultSet;
+
+        // 現場登録フォーム
+        $sites = new Sites();
+        $sitesCreateForm = new SitesCreateForm($sites);
+        $this->view->form = $sitesCreateForm;
     }
 
     /**
