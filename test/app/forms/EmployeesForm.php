@@ -53,11 +53,9 @@ class EmployeesForm extends Form
         $this->add($leave_date);
 
         // 雇用状態
-        $employee_status = new Select('employee_status', [
-            'active' => '雇用中',
-            'dismiss' => '解雇済',
-            'suspend' => '休職中'
-        ]);
+        $employee_status = new Select('employee_status',
+            [''=>'雇用状態を選択してください'] + Employees::EMPLOYEE_STATUS_MAP
+        );
         $employee_status->setLabel('雇用状態');
         $employee_status->setAttributes([
             'class' => 'form-control',
@@ -69,11 +67,10 @@ class EmployeesForm extends Form
         ]);
         $this->add($employee_status);
 
-        // 雇用タイプ
-        $employee_type = new Select('employee_type', [
-            'pro' => '社員',
-            'part' => 'アルバイト'
-        ]);
+        // 雇用種別
+        $employee_type = new Select('employee_type',
+            [''=>'雇用種別を選択してください'] + Employees::EMPLOYEE_TYPE_MAP
+        );
         $employee_type->setLabel('雇用タイプ');
         $employee_type->setAttributes([
             'class' => 'form-control',
@@ -86,20 +83,19 @@ class EmployeesForm extends Form
         $this->add($employee_type);
 
         // 職能
-        $employee_type = new Select('skill_id', [
-            '1' => '研修中',
-            '2' => '一般職'
-        ]);
-        $employee_type->setLabel('職能');
-        $employee_type->setAttributes([
+        $skill_id = new Select('skill_id',
+            [''=>'職能を選択してください'] + Employees::EMPLOYEE_SKILL_MAP
+        );
+        $skill_id->setLabel('職能');
+        $skill_id->setAttributes([
             'class' => 'form-control',
         ]);
-        $employee_type->addValidators([
+        $skill_id->addValidators([
             new PresenceOf([
                 'message' => '職能を選択してください。'
             ])
         ]);
-        $this->add($employee_type);
+        $this->add($skill_id);
 
         // 社会保険加入
         $insurance_type = new Select('insurance_type', [
