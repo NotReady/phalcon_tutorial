@@ -70,7 +70,7 @@ class SalaryController extends Controller
         // 未確定段階ではブランク属性をマスタで補完します
         if( $salary_temporary->fixed === 'temporary' ){
 
-            // アルバイトに時間給をセット
+            // パートに時間給をセット
             if( $employee->employee_type !== 'pro' ){
                 $salary_temporary->base_charge = $summary['chargeAll'];
             }
@@ -121,7 +121,7 @@ class SalaryController extends Controller
                 throw new Exception();
             }
 
-            // アルバイトに時間給をセット
+            // パートに時間給をセット
             if( $employee->employee_type !== 'pro' ){
                 $salary->base_charge = $summary['chargeAll'];
             }

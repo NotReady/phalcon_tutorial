@@ -4,6 +4,8 @@ use Phalcon\Mvc\Model;
 
 class Employees extends Model{
 
+    /**************** properties ****************/
+
     // サロゲートキー
     public $id;
     // 社員番号
@@ -71,6 +73,27 @@ class Employees extends Model{
     public $username;
     // ログインパスワード
     public $password;
+
+    const EMPLOYEE_STATUS_MAP = [
+        'active' => '雇用中',
+        'dismiss' => '解雇済',
+        'suspend' => '休職中',
+    ];
+
+    const EMPLOYEE_TYPE_MAP = [
+        'pro' => '社員',
+        'part' => 'パートアルバイト',
+    ];
+
+    const EMPLOYEE_SKILL_MAP = [
+        '1' => '研修中',
+        '2' => '一般職',
+        '3' => '上級職',
+        '4' => '管理職',
+        '5' => '専門職',
+    ];
+
+    /**************** methods ****************/
 
     public function initialize(){
         $this->hasMany('id', 'Reports', 'employee_id');
