@@ -54,14 +54,6 @@ class ReportController extends Controller
         }
         $this->view->sites = $siteinfo;
 
-        // todo 見直し
-        $wtypes = Worktypes::find();
-        $wtypeinfo = [''=>''];
-        foreach ($wtypes as $wtype) {
-            $wtypeinfo += [$wtype->id=>$wtype->name];
-        }
-        $this->view->wtypes = $wtypeinfo;
-
         $currentYmd = "${year}/${month}/1";
         $this->view->previousUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' -1 month')) .
             '/' . date('m', strtotime( $currentYmd.' -1 month')) . '/edit';

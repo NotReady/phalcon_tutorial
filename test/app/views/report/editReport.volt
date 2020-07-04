@@ -133,7 +133,8 @@
                     ?>
                     </span>
                 </td>
-                <td><select class="form-control" name="nm_site_id"; ?>">
+                <td>
+                    <select class="form-control" name="nm_site_id"; ?>">
                         <?php foreach($sites as $id => $name): ?>
                             <option value="{{ id }}" {% if id is report.site_id  %}selected{% endif %} >{{ name }}</option>
                         <?php endforeach;?>
