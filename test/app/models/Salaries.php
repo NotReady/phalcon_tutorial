@@ -4,72 +4,147 @@ use Phalcon\Mvc\Model;
 
 class Salaries extends Model{
 
-    // サロゲートID
+    /**
+     * @var サロゲートID
+     */
     public $salary_id;
 
-    // 対象年月
+    /**
+     * @var 対象年月
+     */
     public $salary_date;
-    // 社員Id
+
+    /**
+     * @var 社員ID
+     */
     public $employee_id;
 
-    // 基本給(固定給か時間給)
+    /**
+     * @var 基本給(固定給か時間給)
+     */
     public $base_charge;
-    // 賞与
+
+    /**
+     * @var 賞与
+     */
     public $bonus_charge;
-    // みなし残業代
+
+    /**
+     * @var みなし残業代
+     */
     public $overtime_charge;
-    // 役職手当
+
+    /**
+     * @var 役職手当
+     */
     public $skill_charge;
-    // 課税交通費
+
+    /**
+     * @var 課税交通費
+     */
     public $transportation_expenses;
-    // 日割交通費
+
+    /**
+     * @var 日割交通費
+     */
     public $transportation_expenses_by_day;
-    // 非課税交通費
+
+    /**
+     * @var 非課税交通費
+     */
     public $transportation_expenses_without_tax;
-    // 非課税通信費
+
+    /**
+     * @var 非課税通信費
+     */
     public $communication_charge_without_tax;
-    // 住宅手当
+
+    /**
+     * @var 住宅手当
+     */
     public $house_charge;
-    // 送迎手当
+
+    /**
+     * @var 送迎手当
+     */
     public $bus_charge;
-    // 事務手当
+
+    /**
+     * @var 事務手当
+     */
     public $officework_charge;
-    // その他支給
+
+    /**
+     * @var その他支給
+     */
     public $etc_charge;
-    // 貸付返済
+
+    /**
+     * @var 貸付返済
+     */
     public $loan_bill;
 
-    // 社会保険料
+    /**
+     * @var 社会保険料
+     */
     public $insurance_bill;
-    // 厚生年金料
+
+    /**
+     * @var 厚生年金料
+     */
     public $pension_bill;
-    // 雇用保険料 従業員負担
+
+    /**
+     * @var 雇用保険料 従業員負担
+     */
     public $employment_insurance_bill;
-    // 雇用保険料 事業主負担
+
+    /**
+     * @var 雇用保険料 事業主負担
+     */
     public $employment_insurance_owner;
 
-    // 所得税
+    /**
+     * @var 所得税
+     */
     public $income_tax;
 
-    // 家賃
+    /**
+     * @var 家賃
+     */
     public $rent_bill;
-    // 電気代
+
+    /**
+     * @var 電気代
+     */
     public $electric_bill;
-    // ガス代
+
+    /**
+     * @var ガス代
+     */
     public $gas_bill;
-    // 水道代
+
+    /**
+     * @var 水道代
+     */
     public $water_bill;
-    // 弁当代
+
+    /**
+     * @var 弁当代
+     */
     public $food_bill;
-    // その他控除
+
+    /**
+     * @var その他控除
+     */
     public $etc_bill;
 
-
-    // 確定フラグ
+    /**
+     * @var 確定フラグ
+     */
     public $fixed;
-    // 作成日
+
     public $created;
-    // 更新日
     public $updated;
 
     public function initialize(){

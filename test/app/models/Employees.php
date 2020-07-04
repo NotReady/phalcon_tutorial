@@ -6,73 +6,158 @@ class Employees extends Model{
 
     /**************** properties ****************/
 
-    // サロゲートキー
+    /**
+     * @var サロゲートキー
+     */
     public $id;
-    // 社員番号
+
+    /**
+     * @var 社員番号
+     */
     public $employee_no;
-    // 雇用状態
+
+    /**
+     * @var 雇用状態
+     */
     public $employee_status;
-    // 入社日
+
+    /**
+     * @var 入社日
+     */
     public $hire_date;
-    // 退社日
+
+    /**
+     * @var 退社日
+     */
     public $leave_date;
-    // 性
+
+    /**
+     * @var 名字
+     */
     public $first_name;
-    // 名
+
+    /**
+     * @var 名前
+     */
     public $last_name;
-    // 住所
+
+    /**
+     * @var 住所
+     */
     public $address;
-    // 社員属性
+
+    /**
+     * @var 社員属性
+     */
     public $employee_type;
-    // 職能外部キー
+
+    /**
+     * @var 職能外部キー
+     */
     public $skill_id;
-    // 社会保険加入
+
+    /**
+     * @var 社会保険加入
+     */
     public $insurance_type;
 
-    // 固定給
+    /**
+     * @var 固定給
+     */
     public $monthly_charge;
-    // 固定残業代
+
+    /**
+     * @var 固定残業代
+     */
     public $overtime_charge;
-    // 役職手当
+
+    /**
+     * @var 役職手当
+     */
     public $skill_charge;
-    // 課税交通費
+
+    /**
+     * @var 課税交通費
+     */
     public $transportation_expenses;
-    // 日割交通費
+
+    /**
+     * @var 日割交通費
+     */
     public $transportation_expenses_by_day;
-    // 非課税交通費
+
+    /**
+     * @var 非課税交通費
+     */
     public $transportation_expenses_without_tax;
-    // 非課税通信費
+
+    /**
+     * @var 非課税通信費
+     */
     public $communication_charge_without_tax;
-    // 住宅手当
+
+    /**
+     * @var 住宅手当
+     */
     public $house_charge;
-    // 送迎手当
+
+    /**
+     * @var 送迎手当
+     */
     public $bus_charge;
-    // 事務手当
+
+    /**
+     * @var 事務手当
+     */
     public $officework_charge;
-    // その他支給
+
+    /**
+     * @var その他支給
+     */
     public $etc_charge;
 
-    // 家賃
+    /**
+     * @var 家賃
+     */
     public $rent_bill;
-    // 電気代
+
+    /**
+     * @var 電気代
+     */
     public $electric_bill;
-    // ガス代
+
+    /**
+     * @var ガス代
+     */
     public $gas_bill;
-    // 水道代
+
+    /**
+     * @var 水道代
+     */
     public $water_bill;
-    // 弁当代
+
+    /**
+     * @var 弁当代
+     */
     public $food_bill;
-    // その他控除
+
+    /**
+     * @var その他控除
+     */
     public $etc_bill;
 
-    // 作成日
-    public $created;
-    // 更新日
-    public $updated;
-    // ログインユーザ
+    /**
+     * @var ログインユーザ
+     */
     public $username;
-    // ログインパスワード
+
+    /**
+     * @var ログインパスワード
+     */
     public $password;
+
+    public $created;
+    public $updated;
 
     const EMPLOYEE_STATUS_MAP = [
         'active' => '雇用中',

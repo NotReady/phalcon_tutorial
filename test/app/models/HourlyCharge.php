@@ -1,17 +1,29 @@
 <?php
 use Phalcon\Mvc\Model;
 
-class Customers extends Model
+class HourlyCharge extends Model
 {
-    /**
-     * @var サロゲートキー
-     */
-    public $id;
+    /**************** properties ****************/
 
     /**
-     * @var 顧客名
+     * @var 現場ID
      */
-    public $name;
+    public $site_id;
+
+    /**
+     * @var 作業分類ID
+     */
+    public $worktype_id;
+
+    /**
+     * @var 職能ID
+     */
+    public $skill_id;
+
+    /**
+     * @var 時給
+     */
+    public $value;
 
     public $created;
     public $updated;
@@ -26,5 +38,4 @@ class Customers extends Model
             ]
         );
     }
-
 }

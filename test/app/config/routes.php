@@ -20,6 +20,8 @@ $router->add('/report/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/edit', ['co
 $router->add('/report/update',                    ['controller' => "Api", 'action'=>'saveReport']);
 // 勤務表削除
 $router->add('/report/delete',                    ['controller' => "Api", 'action'=>'deleteReport']);
+// 作業分類の取得
+$router->add('/report/list/worktype',             ['controller' => "Api", 'action'=>'getWorkTypeList']);
 
 // 給与閲覧
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Salary", 'action'=>'viewSalary']);
