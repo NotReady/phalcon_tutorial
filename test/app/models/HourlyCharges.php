@@ -53,17 +53,13 @@ class HourlyCharges extends Model
                 from
                     skills
                 join
-                    sites
-                join
-                    worktypes wt
+                    site_rel_worktypes srw
+                    on srw.site_id = :site_id and srw.worktype_id = :work_id
                 left outer join
                     hourlycharges hc
-                    on hc.site_id = sites.id
-                        and wt.id = hc.worktype_id
-                        and skills.skill_id = hc.skill_id
-                where
-                    sites.id = :site_id
-                    and wt.id = :work_id
+                        on hc.site_id = srw.site_id
+                       and hc.worktype_id = srw.worktype_id
+                       and hc.skill_id = skills.skill_id
                 order by
                     skills.skill_id asc';
 

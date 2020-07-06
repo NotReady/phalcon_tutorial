@@ -27,6 +27,7 @@ class SiteRelWorktypes extends Model
     public static function getWorktypesBySite($site_id){
         $query = '
                 select
+                    srw.site_id,
                     srw.worktype_id,
                     w.name
                 from

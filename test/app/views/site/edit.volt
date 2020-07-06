@@ -109,27 +109,27 @@
         {# nav contents #}
         <div class="col-3">
             <div class="nav flex-column nav-pills" id="id-hourly-charge-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link active" id="v-pills-1-tab" data-toggle="pill" href="#v-charge-1" role="tab" aria-controls="v-charge-1" aria-selected="true" data-site-id="1" data-work-id="1">一般作業</a>
-                <a class="nav-link" id="v-pills-2-tab" data-toggle="pill" href="#v-charge-2" role="tab" aria-controls="v-charge-2" aria-selected="false">フォークリフト</a>
-                <a class="nav-link" id="v-pills-3-tab" data-toggle="pill" href="#v-charge-3" role="tab" aria-controls="v-charge-3" aria-selected="false">特殊作業</a>
+                {% for worktype in work_types %}
+                <a class="nav-link {% if loop.first is true %}active{% endif %}" id="v-pills-{{ worktype.worktype_id }}-tab" data-toggle="pill"href="#v-charge-{{ worktype.worktype_id }}"
+                   role="tab" aria-controls="v-charge-{{ worktype.worktype_id }}" aria-selected="true" data-site-id="{{ worktype.site_id }}"
+                   data-work-id="{{ worktype.worktype_id }}">{{ worktype.name }}</a>
+                {% endfor %}
             </div>
         </div>
         <div class="col-9">
             <div class="tab-content" id="id-hourly-charge-content">
-
-                {# 現場 - 時給ボディ #}
-                <div class="tab-pane fade show active" id="v-charge-1" role="tabpanel" aria-labelledby="v-pills-1-tab">
-                    {# title #}
-                    <h2 class="table-title">一般作業の時給一覧</h2>
-                    <table class="table tbl-hourly-charge">
-                        <tbody class="cls-hourly-charge-body">
-                        {# ajaxでローディング #}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="tab-pane fade" id="v-charge-2" role="tabpanel" aria-labelledby="v-pills-2-tab">...</div>
-                <div class="tab-pane fade" id="v-charge-3" role="tabpanel" aria-labelledby="v-pills-3-tab">...</div>
+                {% for worktype in work_types %}
+                    {# 現場 - 時給ボディ #}
+                    <div class="tab-pane fade {% if loop.first is true %}show active{% endif %}" id="v-charge-{{ worktype.worktype_id }}" role="tabpanel" aria-labelledby="v-pills-{{ worktype.worktype_id }}-tab">
+                        {# title #}
+                        <h2 class="table-title">{{ worktype.name }}の時給一覧</h2>
+                        <table class="table tbl-hourly-charge">
+                            <tbody class="cls-hourly-charge-body">
+                            {# ajaxでローディング #}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
