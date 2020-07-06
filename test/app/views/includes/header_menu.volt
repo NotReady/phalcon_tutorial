@@ -14,6 +14,9 @@
                     <a class="nav-link" href="/sites">現場一覧</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/customers">顧客一覧</a>
+                </li>
+                <li class="nav-item">
 <?php
 $headerYear = date('Y');
 $headerMonth = date('m');

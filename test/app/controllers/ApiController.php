@@ -111,6 +111,47 @@ class ApiController extends Controller
     }
 
     /**
+     * 顧客の登録アクション
+     */
+    public function updateCustomerAction(){
+        $this->jsonResponse(function (){
+            try{
+
+                $params = $this->request->getPost();
+                $customer = new Customers();
+
+                $form = new CustomerForm();
+                $form->bind($params, $customer);
+
+                // バリデーション
+                if( $form->isValid() === false )
+                {
+                    $invalidMessages = $form->getMessages();
+                    $raiseMessages = [];
+                    foreach ($invalidMessages as $message) {
+                        $raiseMessages[] = $message->getMessage();
+                    }
+                    throw new KVSExtendedException($raiseMessages);
+                }
+
+                if( $customer->save() === false ){ throw new Exception("登録に失敗しました"); }
+                echo json_encode(['result' => 'success']);
+
+            }catch (KVSExtendedException $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'messages' => $e->getKVSStore()
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
      * 貸付の登録アクション
      * @todo 過去日付については給与明細の変更が発生するかもしれない
      */
@@ -343,4 +384,69 @@ class ApiController extends Controller
             }
         });
     }
+
+    public function getHourlyChargeAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $siteId = $params['site_id'];
+                $workId = $params['work_id'];
+
+                $hourlyCharges = HourlyCharges::getHourlyChargeBySiteWork($siteId, $workId);
+                $arraiable = $hourlyCharges->toArray();
+                echo json_encode([
+                    'result' => 'success',
+                    'hourly_charge' => $arraiable
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    public function updateHourlyChargeAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $siteId = $params['site_id'];
+                $workId = $params['work_id'];
+                $skillId = $params['skill_id'];
+                HourlyCharges::updateHourlyCharge($siteId, $workId, $skillId);
+
+                echo json_encode([
+                    'result' => 'success',
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    public function deleteHourlyChargeAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $siteId = $params['site_id'];
+                $workId = $params['work_id'];
+                $skillId = $params['skill_id'];
+                HourlyCharges::deleteHourlyCharge($siteId, $workId, $skillId);
+
+                echo json_encode([
+                    'result' => 'success',
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
 }

@@ -104,6 +104,13 @@ class SitesCreateForm extends Form
         ]);
         $this->add($breaktime_to);
 
+        // 送信
+        $this->add(new Submit('submit', [
+            'class' => 'form-control btn-primary',
+            'value' => '保存'
+        ]));
+
+
     }
 
 

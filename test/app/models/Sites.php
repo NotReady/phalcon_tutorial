@@ -50,6 +50,25 @@ class Sites extends Model
         );
     }
 
+    /**
+     * サイトエンティティを取得します
+     * @param $site_id
+     * @return mixed
+     */
+    public static function getSiteById($site_id){
+        return $reports = self::findFirst(
+            [
+                'conditions' => 'id = :site_id:',
+                "bind" => [
+                    'site_id' => $site_id,
+                ]
+            ]);
+    }
+
+    /**
+     * サイトとカスタマーの結合エンティティを取得します
+     * @return mixed
+     */
     public function getSitesWithCustomer(){
         $query = new \Phalcon\Mvc\Model\Query(
             'select

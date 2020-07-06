@@ -128,7 +128,6 @@ class Loans extends Model
             ]));
 
         return count($result) == 0 ? false: $result[0]->amount;
-
     }
 
     /**

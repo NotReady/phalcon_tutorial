@@ -29,7 +29,7 @@ class Worktypes extends Model
                 from
                     employees e
                 join
-                    hourlycharge h on h.skill_id = e.skill_id
+                    hourlycharges h on h.skill_id = e.skill_id
                 join
                     worktypes w on w.id = h.worktype_id
                 join
