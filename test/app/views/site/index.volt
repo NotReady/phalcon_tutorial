@@ -47,8 +47,7 @@
                     <td class="cell">{{ date('H:i', site.time_to | strtotime) }}</td>
                     <td class="cell">{{ date('H:i', site.breaktime_from | strtotime) }}</td>
                     <td class="cell">{{ date('H:i', site.breaktime_to | strtotime) }}</td>
-                    <td class="cell"><button class="btn btn-primary cls-site-update"
-                                             data-toggle="modal" data-target="#staticBackdrop" data-site-id="{{ site.site_id }}" data-customer-id="{{ site.customer_id }}">編集する</button></td>
+                    <td class="cell"><a href="/sites/edit/{{ site.site_id }}" class="btn btn-primary">編集</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

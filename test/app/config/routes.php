@@ -17,11 +17,11 @@ $router->add('/report/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Repor
 // 勤務表編集
 $router->add('/report/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/edit', ['controller' => "Report", 'action'=>'editReport']);
 // 勤務表保存
-$router->add('/report/update',                    ['controller' => "Api", 'action'=>'saveReport']);
+$router->add('/report/update',                  ['controller' => "Api", 'action'=>'saveReport']);
 // 勤務表削除
-$router->add('/report/delete',                    ['controller' => "Api", 'action'=>'deleteReport']);
+$router->add('/report/delete',                  ['controller' => "Api", 'action'=>'deleteReport']);
 // 作業分類の取得
-$router->add('/report/list/worktype',             ['controller' => "Api", 'action'=>'getWorkTypeList']);
+$router->add('/report/list/worktype',           ['controller' => "Api", 'action'=>'getWorkTypeList']);
 
 // 給与閲覧
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "Salary", 'action'=>'viewSalary']);
@@ -37,18 +37,30 @@ $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/update', ['
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/undo', ['controller' => "Api", 'action'=>'undoSalary']);
 
 // 従業員
-$router->add('/employees',                      ['controller' => "Employee",  'action'=>'index']);
-$router->add('/employees/create',               ['controller' => "Api",       'action'=>'createEmployee']);
+$router->add('/employees',                      ['controller' => "Employee", 'action'=>'index']);
+$router->add('/employees/create',               ['controller' => "Api",      'action'=>'createEmployee']);
 $router->add('/employees/edit/{employee_id}',   ['controller' => "Employee", 'action'=>'edit']);
 $router->add('/employees/edit/check',           ['controller' => "Employee", 'action'=>'editCheck']);
-$router->add('/employees/loan/create',          ['controller' => "Api", 'action'=>'createLoan']);
-$router->add('/employees/loan/update',          ['controller' => "Api", 'action'=>'updateLoan']);
-$router->add('/employees/loan/delete',          ['controller' => "Api", 'action'=>'deleteLoan']);
-$router->add('/employees/loan/get/member',      ['controller' => "Api", 'action'=>'getLoanWithMember']);
-$router->add('/employees/loan/get/id',          ['controller' => "Api", 'action'=>'getLoanWithId']);
+$router->add('/employees/loan/create',          ['controller' => "Api",      'action'=>'createLoan']);
+$router->add('/employees/loan/update',          ['controller' => "Api",      'action'=>'updateLoan']);
+$router->add('/employees/loan/delete',          ['controller' => "Api",      'action'=>'deleteLoan']);
+$router->add('/employees/loan/get/member',      ['controller' => "Api",      'action'=>'getLoanWithMember']);
+$router->add('/employees/loan/get/id',          ['controller' => "Api",      'action'=>'getLoanWithId']);
 
 // 現場
-$router->add('/sites',                          ['controller' => "Site", 'action'=>'index']);
-$router->add('/sites/create',                   ['controller' => "Api",       'action'=>'createSite']);
+$router->add('/sites',                          ['controller' => "Site",     'action'=>'index']);
+$router->add('/sites/edit/{site_id}',           ['controller' => "Site",     'action'=>'edit']);
+$router->add('/sites/edit/check',               ['controller' => "Site",     'action'=>'editCheck']);
+$router->add('/sites/create',                   ['controller' => "Api",      'action'=>'createSite']);
+$router->add('/sites/associate',                ['controller' => "Api",      'action'=>'associateWork']);
+
+// 顧客
+$router->add('/customers',                      ['controller' => "Customer", 'action'=>'index']);
+$router->add('/customers/update',               ['controller' => "Api",      'action'=>'updateCustomer']);
+
+// 時給
+$router->add('/hourlycharges/get',              ['controller' => "Api",      'action'=>'getHourlyCharge']);
+$router->add('/hourlycharges/update',           ['controller' => "Api",      'action'=>'updateHourlyCharge']);
+$router->add('/hourlycharges/delete',           ['controller' => "Api",      'action'=>'deleteHourlyCharge']);
 
 $router->handle();

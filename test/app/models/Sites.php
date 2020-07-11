@@ -50,6 +50,10 @@ class Sites extends Model
         );
     }
 
+    /**
+     * サイトとカスタマーの結合エンティティを取得します
+     * @return mixed
+     */
     public function getSitesWithCustomer(){
         $query = new \Phalcon\Mvc\Model\Query(
             'select

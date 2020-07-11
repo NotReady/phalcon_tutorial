@@ -219,7 +219,6 @@ class Employees extends Model{
     }
 
     public function authorization($username, $password){
-        self::findFirst();
         $employee = Employees::findfirst([
             "conditions" => "username = :username: and password = :password:",
             bind => [

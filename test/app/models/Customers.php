@@ -27,4 +27,15 @@ class Customers extends Model
         );
     }
 
+    /**
+     * 顧客一覧
+     * @return mixed
+     */
+    public static function getCustomers()
+    {
+        return $reports = self::find(
+            [
+                "order" => "name asc",
+            ]);
+    }
 }

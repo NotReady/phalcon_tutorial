@@ -184,7 +184,7 @@ class Reports extends Model
         join
              employees e on e.id = in_time.employee_id
         join
-             hourlycharge h on h.skill_id = e.skill_id and
+             hourlycharges h on h.skill_id = e.skill_id and
              h.site_id = in_time.site_id and
              h.worktype_id = in_time.worktype_id
         group by in_time.site_id, in_time.worktype_id
@@ -221,7 +221,7 @@ class Reports extends Model
         join
              employees e on e.id = out_time.employee_id
         join
-             hourlycharge h on h.skill_id = e.skill_id and
+             hourlycharges h on h.skill_id = e.skill_id and
              h.site_id = out_time.site_id and
              h.worktype_id = out_time.worktype_id
         group by out_time.site_id, out_time.worktype_id
@@ -258,7 +258,7 @@ class Reports extends Model
         join
              employees e on e.id = sat_time.employee_id
         join
-             hourlycharge h on h.skill_id = e.skill_id and
+             hourlycharges h on h.skill_id = e.skill_id and
              h.site_id = sat_time.site_id and
              h.worktype_id = sat_time.worktype_id
         group by sat_time.site_id, sat_time.worktype_id
@@ -294,7 +294,7 @@ class Reports extends Model
         join
              employees e on e.id = sun_time.employee_id
         join
-             hourlycharge h on h.skill_id = e.skill_id and
+             hourlycharges h on h.skill_id = e.skill_id and
              h.site_id = sun_time.site_id and
              h.worktype_id = sun_time.worktype_id
         group by sun_time.site_id, sun_time.worktype_id

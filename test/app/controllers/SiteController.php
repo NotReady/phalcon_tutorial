@@ -20,58 +20,59 @@ class SiteController extends Controller
     }
 
     /**
-     * 従業員属性編集アクション
+     * 現場編集アクション
      */
     public function editAction()
     {
-        if( $this->session->has('editable') === true ){
-            $employee = $this->session->get('editable');
-            $this->session->remove('editable');
-            $form = $employee;
-        }else{
-            $employee_id = $this->dispatcher->getParam('employee_id');
-            $employee = Employees::findfirst($employee_id);
-            $form = new EmployeesForm($employee);
-        }
+        $site_id = $this->dispatcher->getParam('site_id');
 
+        // site_id
+        $this->view->site_id = $site_id;
+
+        // フォーム
+        if( $this->session->has('site_edit_form') === true ) {
+            $form = $this->session->get('site_edit_form');
+            $this->session->remove('site_edit_form');
+        }else{
+            $site = Sites::findFirst($site_id);
+            $form = new SitesCreateForm($site);
+        }
         $this->view->form = $form;
+
+        // 登録作業
+        $workTypes = SiteRelWorktypes::getWorktypesBySite($site_id);
+        $this->view->work_types = $workTypes;
+
+        // 未登録作業
+        $addWorkTypes = SiteRelWorktypes::getNotAssignWorktypesBySite($site_id);
+        $this->view->add_work_types = $addWorkTypes;
     }
 
     /**
-     * 従業員属性変更要求アクション
+     * 現場の更新
      */
-    public function editCheckAction()
-    {
-        $form = new EmployeesForm();
-        $employee = new Employees();
-
+    public function editCheckAction(){
         $params = $this->request->getPost();
-        $form->bind($params, $employee);
+        $form = new SitesCreateForm();
+        $site = new Sites();
+        $form->bind($params, $site);
 
-        // バリデーションガード
-        if( $form->isValid() === false )
-        {
-            $this->session->set('editable', $form);
-            return $this->dispatcher->forward([
-                'controller' => 'Employee',
-                'action' => 'edit'
-            ]);
+        try{
+            // バリデーション
+            if( $form->isValid() === false )
+            {
+                throw new Exception();
+            }
+
+            if( $site->save() === false )
+            {
+                throw new Exception();
+            }
+
+        }catch (Exception $e){
+            $this->session->set('site_edit_form', $form);
         }
 
-        if( $employee->save() === false )
-        {
-            $this->session->set('editable', $form);
-            return $this->dispatcher->forward([
-                'controller' => 'Employee',
-                'action' => 'edit'
-            ]);
-
-        }
-
-        return $this->dispatcher->forward([
-            'controller' => 'Employee',
-            'action' => 'index'
-        ]);
-
+        return $this->response->redirect("/sites/edit/{$site->id}");
     }
 }
