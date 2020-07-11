@@ -50,7 +50,9 @@ $router->add('/employees/loan/get/id',          ['controller' => "Api",      'ac
 // 現場
 $router->add('/sites',                          ['controller' => "Site",     'action'=>'index']);
 $router->add('/sites/edit/{site_id}',           ['controller' => "Site",     'action'=>'edit']);
+$router->add('/sites/edit/check',               ['controller' => "Site",     'action'=>'editCheck']);
 $router->add('/sites/create',                   ['controller' => "Api",      'action'=>'createSite']);
+$router->add('/sites/associate',                ['controller' => "Api",      'action'=>'associateWork']);
 
 // 顧客
 $router->add('/customers',                      ['controller' => "Customer", 'action'=>'index']);

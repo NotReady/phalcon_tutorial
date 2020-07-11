@@ -414,7 +414,8 @@ class ApiController extends Controller
                 $siteId = $params['site_id'];
                 $workId = $params['work_id'];
                 $skillId = $params['skill_id'];
-                HourlyCharges::updateHourlyCharge($siteId, $workId, $skillId);
+                $charge = $params['charge'];
+                HourlyCharges::updateHourlyCharge($siteId, $workId, $skillId, $charge);
 
                 echo json_encode([
                     'result' => 'success',
@@ -436,6 +437,27 @@ class ApiController extends Controller
                 $workId = $params['work_id'];
                 $skillId = $params['skill_id'];
                 HourlyCharges::deleteHourlyCharge($siteId, $workId, $skillId);
+
+                echo json_encode([
+                    'result' => 'success',
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    public function associateWorkAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $siteId = $params['site_id'];
+                $workId = $params['work_id'];
+
+                SiteRelWorktypes::createEntity($siteId, $workId);
 
                 echo json_encode([
                     'result' => 'success',

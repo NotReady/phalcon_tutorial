@@ -30,6 +30,7 @@ class HourlyCharges extends Model
 
     /**************** methods ****************/
 
+
     public function initialize(){
         $this->skipAttributes(
             [
@@ -37,6 +38,11 @@ class HourlyCharges extends Model
                 'updated',
             ]
         );
+    }
+
+    public function getSource()
+    {
+        return "hourlycharges";
     }
 
     /**

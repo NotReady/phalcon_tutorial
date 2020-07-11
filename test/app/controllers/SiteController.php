@@ -25,13 +25,54 @@ class SiteController extends Controller
     public function editAction()
     {
         $site_id = $this->dispatcher->getParam('site_id');
-        $site = Sites::getSiteById($site_id);
-        $form = new SitesCreateForm($site);
+
+        // site_id
+        $this->view->site_id = $site_id;
+
+        // フォーム
+        if( $this->session->has('site_edit_form') === true ) {
+            $form = $this->session->get('site_edit_form');
+            $this->session->remove('site_edit_form');
+        }else{
+            $site = Sites::findFirst($site_id);
+            $form = new SitesCreateForm($site);
+        }
         $this->view->form = $form;
 
         // 登録作業
-        $worktypes = SiteRelWorktypes::getWorktypesBySite($site_id);
-        $this->view->work_types = $worktypes;
+        $workTypes = SiteRelWorktypes::getWorktypesBySite($site_id);
+        $this->view->work_types = $workTypes;
+
+        // 未登録作業
+        $addWorkTypes = SiteRelWorktypes::getNotAssignWorktypesBySite($site_id);
+        $this->view->add_work_types = $addWorkTypes;
     }
 
+    /**
+     * 現場の更新
+     */
+    public function editCheckAction(){
+        $params = $this->request->getPost();
+        $form = new SitesCreateForm();
+        $site = new Sites();
+        $form->bind($params, $site);
+
+        try{
+            // バリデーション
+            if( $form->isValid() === false )
+            {
+                throw new Exception();
+            }
+
+            if( $site->save() === false )
+            {
+                throw new Exception();
+            }
+
+        }catch (Exception $e){
+            $this->session->set('site_edit_form', $form);
+        }
+
+        return $this->response->redirect("/sites/edit/{$site->id}");
+    }
 }

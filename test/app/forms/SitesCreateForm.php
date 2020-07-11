@@ -113,7 +113,6 @@ class SitesCreateForm extends Form
 
     }
 
-
     public function messages($nameControl)
     {
         if ($this->hasMessagesFor($nameControl)) {
