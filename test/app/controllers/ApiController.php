@@ -307,18 +307,28 @@ class ApiController extends Controller
             try{
                 $params = $this->request->getPost();
                 $report = new Reports();
-                $report->employee_id = $params['nm_employee_id'];
-                $report->at_day = $params['nm_date'];
-                $report->site_id = $params['nm_site_id'];
-                $report->worktype_id = $params['nm_wtype_id'];
-                $report->time_from = $params['nm_timefrom'];
-                $report->time_to = $params['nm_timeto'];
-                $report->breaktime = $params['nm_breaktime'];
+
+                $form = new ReportForm();
+                $form->bind($params, $report);
+
+                if( $form->isValid() === false ){
+                    $invalidMessages = $form->getMessages();
+                    $raiseMessages = [];
+                    foreach ($invalidMessages as $message) {
+                        $raiseMessages[] = $message->getMessage();
+                    }
+                    throw new KVSExtendedException($raiseMessages);
+                }
 
                 if( $report->save() === false ){
                     throw new Exception('更新に失敗しました。');
                 }
                 echo json_encode(['result' => 'success']);
+            }catch (KVSExtendedException $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getKVSStore()
+                ]);
             }catch (Exception $e){
                 echo json_encode([
                     'result' => 'failure',

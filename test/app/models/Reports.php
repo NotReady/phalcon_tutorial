@@ -15,6 +15,19 @@ class Reports extends Model
     public $at_day;
 
     /**
+     * @var 勤怠
+     */
+    public $attendance;
+
+    const ATTENDANCE_MAP = [
+        'attendance' => '出勤',
+        'absenteeism' => '欠勤',
+        'holidays' => '有給',
+        'be_late' => '遅刻',
+        'Leave_early' => '早退',
+    ];
+
+    /**
      * @var 業務開始時間
      */
     public $time_from;

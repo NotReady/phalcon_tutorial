@@ -36,7 +36,22 @@ class ReportController extends Controller
         $employee_id = $this->dispatcher->getParam('employee_id');
 
         $reportService = new ReportService($employee_id, $year, $month);
-        $this->view->reports = $reportService->getMonthlyReport();
+
+        $arr = $reportService->getMonthlyReport();
+        $formarr = [];
+        foreach ($arr as $key => $item) {
+            if( empty($item) === false  ){
+                $form = new ReportForm($item);
+                $formarr[$key] = $form;
+            }else{
+                $entity = new Reports();
+                $entity->at_day = $key;
+                $entity->employee_id = $employee_id;
+                $formarr[$key] = new ReportForm($entity);
+            }
+        }
+
+        $this->view->reports = $formarr;
         $this->view->days_worked = $reportService->howDaysWorked();
         $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
         $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
@@ -46,18 +61,14 @@ class ReportController extends Controller
         $this->view->thismonth = $month ;
         $this->view->thisyear = $year ;
 
-        // todo 見直し
-        $sites = Sites::find();
-        $siteinfo = [''=>''];
-        foreach ($sites as $site) {
-            $siteinfo += [$site->id=>$site->sitename];
-        }
-        $this->view->sites = $siteinfo;
-
         $currentYmd = "${year}/${month}/1";
         $this->view->previousUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' -1 month')) .
             '/' . date('m', strtotime( $currentYmd.' -1 month')) . '/edit';
         $this->view->nextUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' +1 month')) .
             '/' . date('m', strtotime( $currentYmd.' +1 month')) . '/edit';
+
+        $entity = new Reports();
+        $form = new ReportForm();
+        $this->view->form = $form;
     }
 }

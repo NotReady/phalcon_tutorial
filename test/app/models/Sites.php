@@ -50,6 +50,14 @@ class Sites extends Model
         );
     }
 
+    public static function getSerializeFormData(){
+        $selectable = [];
+        foreach ( self::find(['columns' => 'id, sitename']) as $site) {
+            $selectable[$site->id] = $site->sitename;
+        }
+        return $selectable;
+    }
+
     /**
      * サイトとカスタマーの結合エンティティを取得します
      * @return mixed

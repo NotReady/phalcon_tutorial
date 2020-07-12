@@ -10,10 +10,11 @@
     /* 出勤テーブル */
     .table-main th:nth-of-type(1) {width: 10%;}
     .table-main th:nth-of-type(2) {width: 5%;}
-    .table-main th:nth-of-type(3) {width: 20%;}
-    .table-main th:nth-of-type(4) {width: 20%;}
-    .table-main th:nth-of-type(n+5):nth-of-type(-n+7){width: 10%;}
-    .table-main th:nth-of-type(8) {width: 20%;}
+    .table-main th:nth-of-type(3) {width: 10%;}
+    .table-main th:nth-of-type(4) {width: 15%;}
+    .table-main th:nth-of-type(5) {width: 15%;}
+    .table-main th:nth-of-type(n+6):nth-of-type(-n+8){width: 10%;}
+    .table-main th:nth-of-type(9) {width: 20%;}
 
     /* 時間内訳テーブル */
     .table_timeunit td:nth-of-type(1),
@@ -110,6 +111,7 @@
         <thead>
         <th>日付</th>
         <th>曜日</th>
+        <th>勤怠</th>
         <th>勤務先</th>
         <th>作業分類</th>
         <th>開始時間</th>
@@ -118,57 +120,39 @@
         <th>保存</th>
         </thead>
 
-        <?php foreach($reports as $day => $report): ?>
+        {% for day, report in reports %}
         <?php $windex = date('w',  strtotime("${thisyear}-${day}")); ?>
         <tr>
-
-            <form method="post" action="/report/save" class="asyncForm">
-                <input type="hidden" name="nm_date" value="{{thisyear}}-{{day}}" />
-                <input type="hidden" name="nm_employee_id" value="{{employee.id}}" />
-                <td class="cell">{{day}}</td>
-                <td>
-                    <span class="{% if windex is 6 %}sat-decoration{% elseif windex is 0 %}sun-decoration{% endif %}">
+            <input type="hidden" name="at_day" value="{{ report.getValue('at_day') }}" />
+            <input type="hidden" name="employee_id" value="{{report.getValue('employee_id') }}" />
+            <td class="cell">{{day}}</td>
+            <td>
+                <span class="{% if windex is 6 %}sat-decoration{% elseif windex is 0 %}sun-decoration{% endif %}">
+                    <?= $week[date('w',  strtotime("${thisyear}-${day}"))]; ?>
+                </span>
+            </td>
+            <td class="cell">{{ report.render('attendance') }}</td>
+            <td>{{ report.render('site_id') }}</td>
+            <td>
+                <select class="form-control" name="worktype_id"; ?>">
+                    {# 現場選択がある場合のみ選択可能な作業を補完する #}
                     <?php
-                        echo $week[date('w',  strtotime("${thisyear}-${day}"))];
+                        $worktypes = Worktypes::getWorkTypesByEmployeeAtSite( $report->getValue('employee_id'), $report->getValue('site_id'));
                     ?>
-                    </span>
-                </td>
-                <td>
-                    <select class="form-control" name="nm_site_id"; ?>">
-                        <?php foreach($sites as $id => $name): ?>
-                            <option value="{{ id }}" {% if id is report.site_id  %}selected{% endif %} >{{ name }}</option>
-                        <?php endforeach;?>
-                    </select>
-                </td>
-                <td>
-                    <select class="form-control" name="nm_wtype_id"; ?>">
-                        <?php
-                            $worktypes = Worktypes::getWorkTypesByEmployeeAtSite($employee->id, $report->site_id);
-                        ?>
-                        <?php foreach($worktypes as $worktype): ?>
-                            <option value="{{ worktype['worktype_id'] }}" {% if worktype['worktype_id'] is report.worktype_id %}selected{% endif %} >{{ worktype["name"] }}</option>
-                        <?php endforeach;?>
-                    </select>
-                </td>
-
-                {% if report is empty %}
-                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="time"></td>
-                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="time"></td>
-                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="time"></td>
-                {% else %}
-                    <td><input class="form-control" name="nm_timefrom" class="timeinput" type="time" value="{{date('H:i', report.time_from | strtotime)}}"></td>
-                    <td><input class="form-control" name="nm_timeto" class="timeinput" type="time" value="{{date('H:i', report.time_to | strtotime)}}"></td>
-                    <td><input class="form-control" name="nm_breaktime" class="timeinput" type="time" value="{{date('H:i', report.breaktime | strtotime)}}"></td>
-                {% endif %}
-
-                <td>
-                    <input class="btn btn-primary btn-submit" type="button" value="保存" data-report-method="update">
-                    <input class="btn btn-danger btn-submit" type="button" value="削除" data-report-method="delete">
-                </td>
-
-            </form>
+                    <?php foreach($worktypes as $worktype): ?>
+                        <option value="{{ worktype['worktype_id'] }}" {% if worktype['worktype_id'] is report.getValue('worktype_id') %}selected{% endif %} >{{ worktype["name"] }}</option>
+                    <?php endforeach;?>
+                </select>
+            </td>
+            <td>{{ report.render('time_from') }}</td>
+            <td>{{ report.render('time_to') }}</td>
+            <td>{{ report.render('breaktime') }}</td>
+            <td>
+                <input class="btn btn-primary btn-submit" type="button" value="保存" data-report-method="update">
+                <input class="btn btn-danger btn-submit" type="button" value="削除" data-report-method="delete">
+            </td>
         </tr>
-        <?php endforeach; ?>
+        {% endfor %}
         </tbody>
     </table>
     </div>
@@ -253,31 +237,25 @@
     $(function(){
 
         {# 現場の選択イベント 有効な作業分類を取得する #}
-        $("select[name='nm_site_id']").on("change", function (event) {
+        $("select[name='site_id']").on("change", function (event) {
 
-            // ポストキャンセル
-            event.preventDefault();
-
-            const siteId = $(this).val();
-            const employeeId = $(this).parents("tr").find("input[name='nm_employee_id']").val();
-            const $workTypeSelectForm = $(this).parents("tr").find("select[name='nm_wtype_id']");
-            const $timeFromForm = $(this).parents("tr").find("input[name='nm_timefrom']");
-            const $timeToForm = $(this).parents("tr").find("input[name='nm_timeto']");
-            const $breaktimeForm = $(this).parents("tr").find("input[name='nm_breaktime']");
+            const $tr = $(this).parents("tr");
+            const site_id = $(this).val();
+            const employee_id = $tr.find("input[name='employee_id']").val();
 
             // フォームをクリア
-            $workTypeSelectForm.empty();
-            $timeFromForm.val("");
-            $timeToForm.val("");
-            $breaktimeForm.val("");
+            $tr.find("select[name='worktype_id']").empty();
+            $tr.find("input[name='time_from']").val("");
+            $tr.find("input[name='time_to']").val("");
+            $tr.find("input[name='breaktime']").val("");
 
             $.ajax({
                 url: "/report/list/worktype",
                 type: "POST",
                 global: false,
                 data: {
-                    employee_id: employeeId,
-                    site_id: siteId,
+                    site_id: site_id,
+                    employee_id: employee_id
                 },
                 beforeSend: $(document).triggerHandler('ajaxStart')
             })
@@ -303,15 +281,16 @@
                     throw new Error("システムエラーです");
                 }
 
-                $workTypeSelectForm.append(`<option value="">選択してください</option>`);
+                $tr.find("select[name='worktype_id']").append(`<option value="">選択してください</option>`);
                 if( data['worktypes'] ){
+                    {# フォームをセット #}
                     $.each(data['worktypes'], function(idx, w) {
-                        $workTypeSelectForm
+                        $tr.find("select[name='worktype_id']")
                             .append(`<option value="${w['worktype_id']}">${w['name']}</option>`)
 
-                        $timeFromForm.val(w["time_from"]);
-                        $timeToForm.val(w["time_to"]);
-                        $breaktimeForm.val(w["breaktime"]);
+                        $tr.find("input[name='time_from']").val(w["time_from"]);
+                        $tr.find("input[name='time_to']").val(w["time_to"]);
+                        $tr.find("input[name='breaktime']").val(w["breaktime"]);
                     });
                 }
 
@@ -325,31 +304,29 @@
 
         $(".btn-submit").on("click", function (event) {
 
-            // ポストキャンセル
-            event.preventDefault();
-
             const $row = $(this).parents("tr");
-            const date = $row.find("input[name='nm_date']").val();
-            const employee_id = $row.find("input[name='nm_employee_id']").val();
-            const site_id = $row.find("select[name='nm_site_id']").val();
-            const wtype_id = $row.find("select[name='nm_wtype_id']").val();
-            const timefrom = $row.find("input[name='nm_timefrom']").val();
-            const timeto = $row.find("input[name='nm_timeto']").val();
-            const breaktime = $row.find("input[name='nm_breaktime']").val();
+            const date = $row.find("input[name='at_day']").val();
+            const employee_id = $row.find("input[name='employee_id']").val();
+            const attendance = $row.find("select[name='attendance']").val();
+            const site_id = $row.find("select[name='site_id']").val();
+            const wtype_id = $row.find("select[name='worktype_id']").val();
+            const timefrom = $row.find("input[name='time_from']").val();
+            const timeto = $row.find("input[name='time_to']").val();
+            const breaktime = $row.find("input[name='breaktime']").val();
             const action = $(this).data('report-method');
 
-            // 非同期ポスト実装
             $.ajax({
                 url: `/report/${action}`,
                 type: "POST",
                 data: {
-                    nm_date: date,
-                    nm_employee_id: employee_id,
-                    nm_site_id: site_id,
-                    nm_wtype_id: wtype_id,
-                    nm_timefrom: timefrom,
-                    nm_timeto: timeto,
-                    nm_breaktime: breaktime
+                    at_day: date,
+                    employee_id: employee_id,
+                    attendance: attendance,
+                    site_id: site_id,
+                    worktype_id: wtype_id,
+                    time_from: timefrom,
+                    time_to: timeto,
+                    breaktime: breaktime
                 },
                 global: false,
                 timeout: 1000 * 10,

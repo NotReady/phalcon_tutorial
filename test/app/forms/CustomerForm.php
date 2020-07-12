@@ -31,7 +31,6 @@ class CustomerForm extends Form
 
     }
 
-
     public function messages($nameControl)
     {
         if ($this->hasMessagesFor($nameControl)) {
