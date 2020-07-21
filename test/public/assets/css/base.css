@@ -76,6 +76,7 @@ tfoot tr{
     z-index:1;
     background-color: #666666;
     color: white;
+    border: none;
 }
 
 .sticky-table table tbody tr th {
@@ -176,8 +177,8 @@ h1 {
     border: 1px solid red;
     color: red;
     background-color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 5px;
+    padding: 4px 6px;
+    /*border-radius: 5px;*/
     font-weight: normal;
     font-size: 0.8rem !important;
 }
@@ -186,8 +187,8 @@ h1 {
     border: 1px solid #28a745;
     color: #28a745;
     background-color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 5px;
+    padding: 4px 6px;
+    /*border-radius: 5px;*/
     font-weight: normal;
     font-size: 0.8rem !important;
 }
@@ -196,8 +197,8 @@ h1 {
     border: 1px solid #0088ff;
     color: #0088ff;
     background-color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 5px;
+    padding: 4px 6px;
+    /*border-radius: 5px;*/
     font-weight: normal;
     font-size: 0.8rem !important;
 }
@@ -206,8 +207,8 @@ h1 {
     border: 1px solid #4c4c4c;
     color: #4c4c4c;
     background-color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 5px;
+    padding: 4px 6px;
+    /*border-radius: 5px;*/
     font-weight: normal;
     font-size: 0.8rem !important;
 }

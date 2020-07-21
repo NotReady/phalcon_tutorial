@@ -322,6 +322,34 @@ class SalaryForm extends Form
         ]);
         $this->add($etc_bill);
 
+        // 欠勤控除
+        $attendance_deduction1 = new Numeric('attendance_deduction1');
+        $attendance_deduction1->setLabel('欠勤控除');
+        $attendance_deduction1->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '欠勤控除額を入力してください。'
+        ]);
+        $attendance_deduction1->addValidators([
+            new PresenceOf([
+                'message' => '欠勤控除額を入力してください。'
+            ])
+        ]);
+        $this->add($attendance_deduction1);
+
+        // 勤怠控除
+        $attendance_deduction2 = new Numeric('attendance_deduction2');
+        $attendance_deduction2->setLabel('勤怠控除');
+        $attendance_deduction2->setAttributes([
+            'class' => 'form-control text-right',
+            'placeholder' => '勤怠控除額を入力してください。'
+        ]);
+        $attendance_deduction2->addValidators([
+            new PresenceOf([
+                'message' => '勤怠控除額を入力してください。'
+            ])
+        ]);
+        $this->add($attendance_deduction2);
+
         // 貸付返済
         $loan_bill = new Numeric('loan_bill');
         $loan_bill->setLabel('貸付返済額');

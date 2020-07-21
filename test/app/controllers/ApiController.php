@@ -308,9 +308,11 @@ class ApiController extends Controller
                 $params = $this->request->getPost();
                 $report = new Reports();
 
-                $form = new ReportForm();
+                // バインド
+                $form = new ReportForm($report, $params['attendance']);
                 $form->bind($params, $report);
 
+                // バリデーション
                 if( $form->isValid() === false ){
                     $invalidMessages = $form->getMessages();
                     $raiseMessages = [];
@@ -320,10 +322,22 @@ class ApiController extends Controller
                     throw new KVSExtendedException($raiseMessages);
                 }
 
+                // 欠勤
+                if( $report->attendance === 'absenteeism'){
+                    $report->site_id = null;
+                    $report->worktype_id = null;
+                    $report->breaktime = null;
+                    $report->time_from = null;
+                    $report->time_to = null;
+                }
+
+                // 保存
                 if( $report->save() === false ){
                     throw new Exception('更新に失敗しました。');
                 }
+
                 echo json_encode(['result' => 'success']);
+
             }catch (KVSExtendedException $e){
                 echo json_encode([
                     'result' => 'failure',
@@ -345,8 +359,8 @@ class ApiController extends Controller
         $this->jsonResponse(function (){
             try{
                 $params = $this->request->getPost();
-                $employeeId = $params['nm_employee_id'];
-                $date = $params['nm_date'];
+                $employeeId = $params['employee_id'];
+                $date = $params['at_day'];
                 $report = Reports::getReportByEmployeeAndDay($employeeId, $date);
 
                 if( empty($report) === true ){

@@ -84,14 +84,34 @@
         background-color: crimson;
         color: #ffffff;
     }
+
+    .holi-decoration{
+        border-radius: 50%;
+        padding: 8px 9px;
+        background-color: lightpink;
+        color: #ffffff;
+    }
+
+    .v-mid{
+        vertical-align: middle;
+    }
+    .v-sub{
+        vertical-align: sub;
+    }
 </style>
 
 <div class="content_root">
 
     <h1 class="title row">
         <div class="col-8 flex_box">
-            <span>
-                <a href="/employees/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
+
+            {% if salary.fixed is 'fixed'%}
+                <span class="badge-success v-mid">確定済</span>
+            {% else %}
+                <span class="badge-alert v-mid">未確定</span>
+            {% endif %}
+            <span class="v-mid">
+                <a class="ml-2" href="/employees/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
                 {{ "%d年 %d月の勤務レポート" | format(thisyear, thismonth) }}
             </span>
             <span class="highlight">
@@ -121,29 +141,25 @@
         </thead>
 
         {% for day, report in reports %}
-        <?php $windex = date('w',  strtotime("${thisyear}-${day}")); ?>
+        <?php $windex = date('w',  strtotime("${day}")); ?>
         <tr>
             <input type="hidden" name="at_day" value="{{ report.getValue('at_day') }}" />
             <input type="hidden" name="employee_id" value="{{report.getValue('employee_id') }}" />
-            <td class="cell">{{day}}</td>
+            <td class="cell"><?= date('m-d', strtotime($day)) ?></td>
             <td>
-                <span class="{% if windex is 6 %}sat-decoration{% elseif windex is 0 %}sun-decoration{% endif %}">
-                    <?= $week[date('w',  strtotime("${thisyear}-${day}"))]; ?>
+                {% set isHoliday = false %}
+                <?php foreach( $holidays as $holiday => $caption ): ?>
+                    <?php if( $holiday === $day ): ?>
+                        <?php $isHoliday = true; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <span class="{% if isHoliday === true %}holi-decoration{% elseif windex is 6 %}sat-decoration{% elseif windex is 0 %}sun-decoration{% endif %}">
+                    <?= $week[$windex] ?>
                 </span>
             </td>
-            <td class="cell">{{ report.render('attendance') }}</td>
+            <td>{{ report.render('attendance') }}</td>
             <td>{{ report.render('site_id') }}</td>
-            <td>
-                <select class="form-control" name="worktype_id"; ?>">
-                    {# 現場選択がある場合のみ選択可能な作業を補完する #}
-                    <?php
-                        $worktypes = Worktypes::getWorkTypesByEmployeeAtSite( $report->getValue('employee_id'), $report->getValue('site_id'));
-                    ?>
-                    <?php foreach($worktypes as $worktype): ?>
-                        <option value="{{ worktype['worktype_id'] }}" {% if worktype['worktype_id'] is report.getValue('worktype_id') %}selected{% endif %} >{{ worktype["name"] }}</option>
-                    <?php endforeach;?>
-                </select>
-            </td>
+            <td>{{ report.render('worktype_id') }}</td>
             <td>{{ report.render('time_from') }}</td>
             <td>{{ report.render('time_to') }}</td>
             <td>{{ report.render('breaktime') }}</td>
@@ -159,12 +175,14 @@
 
     <h2 class="title flex_box flex_left">
         <span>出勤統計</span>
-        <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
-        (
+        <span class="highlight"><span class="badge-disable v-mid">営業日数</span>　<span class="highlight-text v-sub">{{ days_business }}</span><span class="v-sub"> 日</span></span>
+        <span class="highlight"><span class="badge-success v-mid">出勤日数</span>　<span class="highlight-text v-sub">{{ days_worked }}</span><span class="v-sub"> 日</span></span>
+
         {% for unitname, time in howDaysWorkedOfDay %}
             <span class="highlight">{{ unitname }}　<span class="highlight-text">{{ time }}</span> 日</span>
         {% endfor %}
-        )
+
+        <span class="highlight"><span class="badge-alert v-mid">欠勤日数</span>　<span class="highlight-text v-sub">{{ days_Absenteeism }}</span><span class="v-sub"> 日</span></span>
     </h2>
     <div class="row">
         <div class="col-12">
@@ -235,6 +253,25 @@
 <script>
 
     $(function(){
+
+        {# 勤怠の選択イベント #}
+        $(document).on('change', 'select[name="attendance"]', function () {
+            {# フォームをクリアする #}
+            $(this).parents("tr").find("select[name='site_id']").val(0);
+            $(this).parents("tr").find("select[name='worktype_id']").val(0);
+            $(this).parents("tr").find("input[name='time_from']").val("");
+            $(this).parents("tr").find("input[name='time_to']").val("");
+            $(this).parents("tr").find("input[name='breaktime']").val("");
+
+            {# フォームのdisableを制御 #}
+            const attendance = $(this).val();
+            const disabled = attendance === "absenteeism";
+            $(this).parents("tr").find("select[name='site_id']").prop("disabled", disabled);
+            $(this).parents("tr").find("select[name='worktype_id']").prop("disabled", disabled);
+            $(this).parents("tr").find("input[name='time_from']").prop("disabled", disabled);
+            $(this).parents("tr").find("input[name='time_to']").prop("disabled", disabled);
+            $(this).parents("tr").find("input[name='breaktime']").prop("disabled", disabled)
+        });
 
         {# 現場の選択イベント 有効な作業分類を取得する #}
         $("select[name='site_id']").on("change", function (event) {

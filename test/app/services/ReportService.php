@@ -21,10 +21,61 @@ class ReportService
     }
 
     /**
+     * 営業稼働日を取得します
+     */
+    public function getBusinessDayOfMonth(){
+
+        // 月日数
+        $daysInThisMonth = date('t', strtotime("{$this->_year}-{$this->_month}"));
+        // 営業日数
+        $beginWeekOfThisMonth = date('w', strtotime("{$this->_year}-{$this->_month}"));
+        // 非営業日とする曜日(土日)
+        $daysOfHolidayweek = [0,6];
+
+        $daysOfHolidays = 0;
+        foreach ($daysOfHolidayweek as $notBisinessDay){
+
+            // ( 月日数 - 非営業曜日のオフセット ) / 7(週) = 曜日登場数
+            // 7進数の2の補数で曜日オフセットを出す
+
+            $offset = ( $notBisinessDay + ( 7 - $beginWeekOfThisMonth ) ) % 7;
+            $daysOfHolidays += ceil(( $daysInThisMonth - $offset ) / 7);
+        }
+
+        // 祝日
+        $holidays = GoogleCalenderAPIClient::getHoliday("{$this->_year}-{$this->_month}-01", "{$this->_year}-{$this->_month}-$daysInThisMonth");
+        foreach ($holidays as $day => $caption){
+            // 平日を営業日カウントから差し引く
+            $w = date('w', strtotime($day));
+            if( $w >= 1 && $w <= 5 ) $daysOfHolidays += 1;
+        }
+
+        return $daysInThisMonth - $daysOfHolidays;
+    }
+
+    /**
      * 月間の出勤日数を取得します
      * @return int
      */
-    public function howDaysWorked(){ return count($this->_reports);}
+    public function howDaysWorked(){
+        $arrayObjct = $this->_reports->toArray();
+        $attendanced = array_filter($arrayObjct, function ($r){
+            return $r['attendance'] === 'attendance';
+        });
+        return count($attendanced);
+    }
+
+    /**
+     * 月間の欠勤日数を取得します
+     * @return int
+     */
+    public function howDaysAbsenteeism(){
+        $arrayObjct = $this->_reports->toArray();
+        $attendanced = array_filter($arrayObjct, function ($r){
+            return $r['attendance'] === 'absenteeism';
+        });
+        return count($attendanced);
+    }
 
     /**
      * 曜日別の出勤日数を取得します
@@ -37,6 +88,8 @@ class ReportService
             '日曜日' => 0
         ];
         foreach ( $this->_reports as $report ){
+            if( $report->attendance === 'absenteeism' ) continue;
+
             $week = date('w', strtotime($report->at_day));
             switch ($week){
                 case 0:     $daysWorked['日曜日'] += 1; break; // 日曜日
@@ -58,12 +111,12 @@ class ReportService
         // ブランクのカレンダーリストを作成します
         $lastDay = date('t', mktime(0, 0, 0, $this->_month, 1, $this->_year));
         for($day=1; $day<=$lastDay; $day++){
-            $monthlyReport[sprintf("%02d-%02d", $this->_month, $day)] = '';
+            $monthlyReport[date('Y-m-d', strtotime("{$this->_year}-{$this->_month}-{$day}"))] = '';
         }
 
         // 記録のある出勤簿を上書きします
         foreach ( $this->_reports as $report) {
-            $monthlyReport[date('m-d', strtotime($report->at_day))] = $report;
+            $monthlyReport[date('Y-m-d', strtotime($report->at_day))] = $report;
         }
 
         return $monthlyReport;

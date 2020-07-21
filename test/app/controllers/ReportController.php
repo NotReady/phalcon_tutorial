@@ -37,6 +37,7 @@ class ReportController extends Controller
 
         $reportService = new ReportService($employee_id, $year, $month);
 
+        // 勤務表をフォームにバインドする
         $arr = $reportService->getMonthlyReport();
         $formarr = [];
         foreach ($arr as $key => $item) {
@@ -51,24 +52,33 @@ class ReportController extends Controller
             }
         }
 
+        // 勤務表
         $this->view->reports = $formarr;
-        $this->view->days_worked = $reportService->howDaysWorked();
+        $this->view->days_worked = $reportService->howDaysWorked(); // 出勤日数
+        $this->view->days_Absenteeism = $reportService->howDaysAbsenteeism(); // 欠勤日数
+        $this->view->days_business = $reportService->getBusinessDayOfMonth(); // 営業日数
         $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
         $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
 
+        // 社員
         $employee = Employees::findfirst($employee_id);
         $this->view->employee = $employee;
         $this->view->thismonth = $month ;
         $this->view->thisyear = $year ;
 
+        // 前後の月へのアンカー
         $currentYmd = "${year}/${month}/1";
         $this->view->previousUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' -1 month')) .
             '/' . date('m', strtotime( $currentYmd.' -1 month')) . '/edit';
         $this->view->nextUrl = "/report/${employee_id}/" . date('Y', strtotime( $currentYmd.' +1 month')) .
             '/' . date('m', strtotime( $currentYmd.' +1 month')) . '/edit';
 
-        $entity = new Reports();
-        $form = new ReportForm();
-        $this->view->form = $form;
+        // 祝日リスト
+        $daysInThisMonth = date('t', strtotime("${year}-${month}-01"));
+        $this->view->holidays = GoogleCalenderAPIClient::getHoliday("${year}-${month}-01", "${year}-${month}-${daysInThisMonth}");
+
+        // 給与明細
+        $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
+        $this->view->salary = $salary;
     }
 }

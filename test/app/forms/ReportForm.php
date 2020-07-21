@@ -13,7 +13,7 @@ use \Phalcon\Validation\Validator\PresenceOf;
 
 class ReportForm extends Form
 {
-    public function initialize(){
+    public function initialize($entity, $attend){
 
         // 社員ID
         $this->add(new Hidden('employee_id'));
@@ -25,19 +25,7 @@ class ReportForm extends Form
             'class' => 'form-control',
             'placeholder' => '出勤日を入力してください。',
         ]);
-        $at_day->addValidators([
-            new PresenceOf([
-                'message' => '出勤日を入力してください。'
-            ])
-        ]);
         $this->add($at_day);
-
-        // 現場ID
-        $this->add(new Hidden('site_id'));
-
-        // 作業ID
-        $this->add(new Hidden('worktype_id'));
-
 
         // 出勤
         $attendance = new Select('attendance',
@@ -46,11 +34,6 @@ class ReportForm extends Form
         $attendance->setLabel('勤怠');
         $attendance->setAttributes([
             'class' => 'form-control',
-        ]);
-        $attendance->addValidators([
-            new PresenceOf([
-                'message' => '勤怠を選択してください。'
-            ])
         ]);
         $this->add($attendance);
 
@@ -61,21 +44,20 @@ class ReportForm extends Form
         $site->setLabel('現場');
         $site->setAttributes([
             'class' => 'form-control',
-        ]);
-        $site->addValidators([
-            new PresenceOf([
-                'message' => '現場を選択してください。'
-            ])
+            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
         ]);
         $this->add($site);
 
         // 作業
-        $worktype = new Select('worktype_id'
-        );
-        $worktype->addValidators([
-            new PresenceOf([
-                'message' => '作業を選択してください。'
-            ])
+        $workTypes = Worktypes::getWorkTypesByEmployeeAtSite( $entity->employee_id, $entity->site_id);
+        $validWork = [];
+        foreach ($workTypes as $work){
+            $validWork[$work['worktype_id']] = $work['name'];
+        }
+        $worktype = new Select('worktype_id', $validWork);
+        $worktype->setAttributes([
+            'class' => 'form-control',
+            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
         ]);
         $this->add($worktype);
 
@@ -85,11 +67,7 @@ class ReportForm extends Form
         $time_from->setAttributes([
             'class' => 'form-control',
             'placeholder' => '業務開始時間を入力してください。',
-        ]);
-        $time_from->addValidators([
-            new PresenceOf([
-                'message' => '業務開始時間を入力してください。'
-            ])
+            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
         ]);
         $this->add($time_from);
 
@@ -99,11 +77,7 @@ class ReportForm extends Form
         $time_to->setAttributes([
             'class' => 'form-control',
             'placeholder' => '業務終了時間を入力してください。',
-        ]);
-        $time_to->addValidators([
-            new PresenceOf([
-                'message' => '業務終了時間を入力してください。'
-            ])
+            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
         ]);
         $this->add($time_to);
 
@@ -113,13 +87,55 @@ class ReportForm extends Form
         $breaktime->setAttributes([
             'class' => 'form-control',
             'placeholder' => '休憩時間を入力してください。',
-        ]);
-        $breaktime->addValidators([
-            new PresenceOf([
-                'message' => '休憩時間を入力してください。'
-            ])
+            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
         ]);
         $this->add($breaktime);
 
+        /* validators */
+
+        $at_day->addValidators([
+            new PresenceOf([
+                'message' => '出勤日を入力してください。'
+            ])
+        ]);
+
+        $attendance->addValidators([
+            new PresenceOf([
+                'message' => '勤怠を選択してください。'
+            ])
+        ]);
+
+        if( $attend !== 'absenteeism' ){
+
+            $site->addValidators([
+                new PresenceOf([
+                    'message' => '現場を選択してください。'
+                ])
+            ]);
+
+            $worktype->addValidators([
+                new PresenceOf([
+                    'message' => '作業を選択してください。'
+                ])
+            ]);
+
+            $time_from->addValidators([
+                new PresenceOf([
+                    'message' => '業務開始時間を入力してください。'
+                ])
+            ]);
+
+            $time_to->addValidators([
+                new PresenceOf([
+                    'message' => '業務終了時間を入力してください。'
+                ])
+            ]);
+
+            $breaktime->addValidators([
+                new PresenceOf([
+                    'message' => '休憩時間を入力してください。'
+                ])
+            ]);
+        }
     }
 }

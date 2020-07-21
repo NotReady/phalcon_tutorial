@@ -410,6 +410,30 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td>欠勤控除</td>
+                            <td>{{ form.render('attendance_deduction1') }} 円</td>
+                            <td>
+                                <div class="btn-wrap">
+                                    <input type="button" class="btn btn-primary btn-update" value="保存する">
+                                    {% if salary_origin.attendance_deduction1 is defined %}
+                                        <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>勤怠控除</td>
+                            <td>{{ form.render('attendance_deduction2') }} 円</td>
+                            <td>
+                                <div class="btn-wrap">
+                                    <input type="button" class="btn btn-primary btn-update" value="保存する">
+                                    {% if salary_origin.attendance_deduction2 is defined %}
+                                        <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>家賃</td>
                             <td>{{ form.render('rent_bill') }} 円</td>
                             <td>

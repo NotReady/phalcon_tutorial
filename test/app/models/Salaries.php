@@ -140,6 +140,16 @@ class Salaries extends Model{
     public $etc_bill;
 
     /**
+     * @var 欠勤控除
+     */
+    public $attendance_deduction1;
+
+    /**
+     * @var 勤怠控除
+     */
+    public $attendance_deduction2;
+
+    /**
      * @var 確定フラグ
      */
     public $fixed;
@@ -173,19 +183,16 @@ class Salaries extends Model{
 
         // 未作成の場合は作成して返却する
         if( $salary === false ){
-
             $data = array(
                 'employee_id' => $employee_id,
                 'salary_date' => $salatyDate,
                 'fixed' => 'temporary'
             );
-
             $cols = array(
                 'employee_id',
                 'salary_date',
                 'fixed'
             );
-
             $salary = new Salaries();
             if( $salary->save($data, $cols) === false){
                 $messages = '';
@@ -195,7 +202,6 @@ class Salaries extends Model{
                 throw new Exception($messages);
             }
         }
-
         return $salary;
     }
 
@@ -237,6 +243,8 @@ class Salaries extends Model{
                 + $this->water_bill
                 + $this->food_bill
                 + $this->etc_bill
+                + $this->attendance_deduction1
+                + $this->attendance_deduction2
                 + $this->loan_bill;
     }
 
