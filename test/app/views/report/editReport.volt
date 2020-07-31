@@ -19,18 +19,13 @@
     /* 時間内訳テーブル */
     .table_timeunit td:nth-of-type(1),
     .table_timeunit th:nth-of-type(1)
-    {width: 50%;}
+    {width: 40%;}
     .table_timeunit td:nth-of-type(2),
     .table_timeunit th:nth-of-type(2)
-    {width: 50%;}
-
-    .table_timeunit td:nth-of-type(1){
-        text-align: right;
-    }
-
-    .table_timeunit td:nth-of-type(2){
-        text-align: left;
-    }
+    {width: 30%;}
+    .table_timeunit td:nth-of-type(3),
+    .table_timeunit th:nth-of-type(3)
+    {width: 30%;}
 
     /* 現場別 出勤内訳 */
     table_timedetail td:nth-of-type(1),
@@ -41,13 +36,20 @@
     {width: 25%;}
     table_timedetail td:nth-of-type(3),
     table_timedetail th:nth-of-type(3)
-    {width: 15%;}
+    {width: 10%;}
     table_timedetail td:nth-of-type(4),
     table_timedetail th:nth-of-type(4)
-    {width: 15%;}
+    {width: 10%;}
     table_timedetail td:nth-of-type(5),
     table_timedetail th:nth-of-type(5)
+    {width: 10%;}
+    table_timedetail td:nth-of-type(6),
+    table_timedetail th:nth-of-type(6)
     {width: 20%;}
+
+    .right_align_margin{
+        margin-right: 25%;
+    }
 
     .timeinput {
         width: 100%;
@@ -177,12 +179,9 @@
         <span>出勤統計</span>
         <span class="highlight"><span class="badge-disable v-mid">営業日数</span>　<span class="highlight-text v-sub">{{ days_business }}</span><span class="v-sub"> 日</span></span>
         <span class="highlight"><span class="badge-success v-mid">出勤日数</span>　<span class="highlight-text v-sub">{{ days_worked }}</span><span class="v-sub"> 日</span></span>
-
-        {% for unitname, time in howDaysWorkedOfDay %}
-            <span class="highlight">{{ unitname }}　<span class="highlight-text">{{ time }}</span> 日</span>
-        {% endfor %}
-
         <span class="highlight"><span class="badge-alert v-mid">欠勤日数</span>　<span class="highlight-text v-sub">{{ days_Absenteeism }}</span><span class="v-sub"> 日</span></span>
+        <span class="highlight"><span class="badge-disable v-mid">時間内</span>　<span class="highlight-text v-sub">{{ summary['intimeAll'] }}</span><span class="v-sub"></span></span>
+        <span class="highlight"><span class="badge-disable v-mid">時間外</span>　<span class="highlight-text v-sub">{{ summary['outtimeAll'] }}</span><span class="v-sub"></span></span>
     </h2>
     <div class="row">
         <div class="col-12">
@@ -190,19 +189,22 @@
                 <thead>
                 <th>項目</th>
                 <th>時間</th>
+                <th>出勤日数</th>
                 </thead>
                 <tbody>
-                {% for categoryName, time in summary['timeunits'] %}
+                {% for categoryName, unit in summary['timeunits'] %}
                     <tr>
                         <td>{{ categoryName }}</td>
-                        <td>{{ time }}</td>
+                        <td>{{ unit['time'] }}</td>
+                        <td>{{ unit['days'] }} 日</td>
                     </tr>
                 {% endfor %}
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td>出勤時間合計</td>
+                    <td>合計</td>
                     <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
+                    <td><span class="highlight-text">{{ days_worked }} 日</span></td>
                 </tr>
                 </tfoot>
             </table>
@@ -218,7 +220,8 @@
                     <th>作業</th>
                     <th></th>
                     <th>時間計</th>
-                    <th>金額</th>
+                    <th>日数計</th>
+                    <th class="text-right"><span class="right_align_margin">金額</span></th>
                 </thead>
                 <tbody>
                 {% for row in summary['site'] %}
@@ -227,7 +230,8 @@
                         <td>{{ row.worktype_name }}</td>
                         <td class="{% if row.label == '時間外' %}text-danger{% endif %}" >{{ row.label }}</td>
                         <td>{{ row.sum_time }}</td>
-                        <td class="text-right">{{ row.sum_charge | number_format }} 円</td>
+                        <td>{{ row.days_worked }} 日</td>
+                        <td class="text-right"><span class="right_align_margin">{{ row.sum_charge | number_format }} 円</span></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -237,7 +241,8 @@
                     <td></td>
                     <td></td>
                     <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
-                    <td class="text-right"><span class="highlight-text">{{ summary['chargeAll'] | number_format }} 円</span></td>
+                    <td><span class="highlight-text">{{ days_worked }} 日</span></td>
+                    <td class="text-right"><span class="highlight-text right_align_margin">{{ summary['chargeAll'] | number_format }} 円</span></td>
                 </tr>
                 </tfoot>
             </table>

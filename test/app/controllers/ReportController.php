@@ -57,7 +57,6 @@ class ReportController extends Controller
         $this->view->days_worked = $reportService->howDaysWorked(); // 出勤日数
         $this->view->days_Absenteeism = $reportService->howDaysAbsenteeism(); // 欠勤日数
         $this->view->days_business = $reportService->getBusinessDayOfMonth(); // 営業日数
-        $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
         $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
 
         // 社員

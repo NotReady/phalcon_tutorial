@@ -550,10 +550,10 @@
                     <th>時間</th>
                     </thead>
                     <tbody>
-                    {% for categoryName, time in summary['timeunits'] %}
+                    {% for categoryName, unit in summary['timeunits'] %}
                         <tr>
                             <td>{{ categoryName }}</td>
-                            <td>{{ time }}</td>
+                            <td>{{ unit['time'] }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
