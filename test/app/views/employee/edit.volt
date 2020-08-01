@@ -538,8 +538,8 @@ $(function() {
                 console.log(data);
                 if( data['result'] ){
                     if( data['result'] == "success" ) {
-                        location.reload();
-                        $(document).triggerHandler('ajaxStop', [true]);
+                        $(document).triggerHandler('ajaxStop', [true,
+                            method=="create" ? "登録しました": method=="update" ? "更新しました" : "削除しました", ()=>{location.reload();}]);
                     }
                     if( data['result'] == "failure" ) {
                         $(document).triggerHandler('ajaxStop', [ false, data['message']]);

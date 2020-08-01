@@ -278,7 +278,9 @@ $(function() {
                     }
                     throw new Error("システムエラーです");
                 }
-                location.reload();
+
+                $(document).triggerHandler('ajaxStop', [ true, actionMethod == "update" ? "保存しました" : "削除しました", ()=>{location.reload();}]);
+
             })
             .catch(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
