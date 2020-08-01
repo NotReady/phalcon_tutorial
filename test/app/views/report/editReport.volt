@@ -109,7 +109,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
-        height: 0;
+        height: 100%;
     }
 
     .flex_sequence_container > *{
