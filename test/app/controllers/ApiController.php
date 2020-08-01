@@ -307,18 +307,42 @@ class ApiController extends Controller
             try{
                 $params = $this->request->getPost();
                 $report = new Reports();
-                $report->employee_id = $params['nm_employee_id'];
-                $report->at_day = $params['nm_date'];
-                $report->site_id = $params['nm_site_id'];
-                $report->worktype_id = $params['nm_wtype_id'];
-                $report->time_from = $params['nm_timefrom'];
-                $report->time_to = $params['nm_timeto'];
-                $report->breaktime = $params['nm_breaktime'];
 
+                // バインド
+                $form = new ReportForm($report, $params['attendance']);
+                $form->bind($params, $report);
+
+                // バリデーション
+                if( $form->isValid() === false ){
+                    $invalidMessages = $form->getMessages();
+                    $raiseMessages = [];
+                    foreach ($invalidMessages as $message) {
+                        $raiseMessages[] = $message->getMessage();
+                    }
+                    throw new KVSExtendedException($raiseMessages);
+                }
+
+                // 欠勤
+                if( $report->attendance === 'absenteeism'){
+                    $report->site_id = null;
+                    $report->worktype_id = null;
+                    $report->breaktime = null;
+                    $report->time_from = null;
+                    $report->time_to = null;
+                }
+
+                // 保存
                 if( $report->save() === false ){
                     throw new Exception('更新に失敗しました。');
                 }
+
                 echo json_encode(['result' => 'success']);
+
+            }catch (KVSExtendedException $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getKVSStore()
+                ]);
             }catch (Exception $e){
                 echo json_encode([
                     'result' => 'failure',
@@ -335,8 +359,8 @@ class ApiController extends Controller
         $this->jsonResponse(function (){
             try{
                 $params = $this->request->getPost();
-                $employeeId = $params['nm_employee_id'];
-                $date = $params['nm_date'];
+                $employeeId = $params['employee_id'];
+                $date = $params['at_day'];
                 $report = Reports::getReportByEmployeeAndDay($employeeId, $date);
 
                 if( empty($report) === true ){

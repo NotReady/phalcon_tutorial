@@ -36,15 +36,28 @@ class SalaryHelper
      * @param $employee Employees
      * @return array
      */
-    public static function complementTempolarySalary($salary, $employee){
+    public static function complementTempolarySalary($salary, $employee, $reportHelper){
 
         // 基本給を補完します
         if( is_null($salary->base_charge) === true ){
-            // 社員は固定給を補完します
+            // 社員固定給
             if( $employee->employee_type === 'pro' ){
+
+                // 基本給
                 $salary->base_charge = $employee->monthly_charge;
-            }else{
-                $salary->base_charge = 0;
+
+                // 勤怠控除
+                // 基本給を営業日で割った日給と欠勤日数を欠勤控除とする
+                $bisinessDaysOfThisMonth = $reportHelper->getBusinessDayOfMonth(); // 営業日
+                $daysUnit = floor($salary->base_charge / $bisinessDaysOfThisMonth);
+                $days_Absenteeism = $reportHelper->howDaysAbsenteeism(); // 欠勤日
+                $salary->attendance_deduction1 = $daysUnit * $days_Absenteeism;
+            }
+            // パート時間給
+            else
+            {
+                $salary->base_charge = $reportHelper->getSummaryBySiteWorkUnit();
+
             }
         }
 

@@ -217,6 +217,14 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td>欠勤控除</td>
+                            <td>{{ salary.attendance_deduction1 | number_format }} 円</td>
+                        </tr>
+                        <tr>
+                            <td>勤怠控除</td>
+                            <td>{{ salary.attendance_deduction2 | number_format }} 円</td>
+                        </tr>
+                        <tr>
                             <td>家賃</td>
                             <td>{{ salary.rent_bill | number_format }} 円</td>
 
@@ -276,10 +284,10 @@
                     <th>時間</th>
                     </thead>
                     <tbody>
-                    {% for categoryName, time in summary['timeunits'] %}
+                    {% for categoryName, unit in summary['timeunits'] %}
                         <tr>
                             <td>{{ categoryName }}</td>
-                            <td>{{ time }}</td>
+                            <td>{{ unit['time'] }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

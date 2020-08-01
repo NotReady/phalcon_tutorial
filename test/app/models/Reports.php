@@ -15,6 +15,19 @@ class Reports extends Model
     public $at_day;
 
     /**
+     * @var 勤怠
+     */
+    public $attendance;
+
+    const ATTENDANCE_MAP = [
+        'attendance' => '出勤',
+        'absenteeism' => '欠勤',
+        'holidays' => '有給',
+        'be_late' => '遅刻',
+        'Leave_early' => '早退',
+    ];
+
+    /**
      * @var 業務開始時間
      */
     public $time_from;
@@ -155,11 +168,13 @@ class Reports extends Model
 
         $query = "
         select
+            -- 平日定時内の就業時間と時間給, 現場-作業グループ
             in_time.sitename,
             in_time.worktype_name,
             '平日時間内' as label,
             sec_to_time(sum(time_to_sec(in_time.worktime))) as sum_time,
-            ceil(sum(time_to_sec(in_time.worktime) * h.value / 3600)) as sum_charge
+            ceil(sum(time_to_sec(in_time.worktime) * h.value / 3600)) as sum_charge,
+            count(in_time.site_id) as days_worked
         from
             (
                 select
@@ -192,11 +207,13 @@ class Reports extends Model
 		union 
 		
         select
+            -- 平日時間外の就業時間と時間給, 現場-作業グループ
             out_time.sitename,
             out_time.worktype_name,
             '平日時間外' as label,
             sec_to_time(sum(time_to_sec(out_time.worktime))) as sum_time,
-            ceil(sum(time_to_sec(out_time.worktime) * ( h.value* 1.25 ) / 3600)) as sum_charge
+            ceil(sum(time_to_sec(out_time.worktime) * ( h.value* 1.25 ) / 3600)) as sum_charge,
+            0 as days_worked
         from
             (
                 select
@@ -230,11 +247,13 @@ class Reports extends Model
         union 
 		
         select
+            -- 土曜日一括の就業時間と時間給, 現場-作業グループ
             sat_time.sitename,
             sat_time.worktype_name,
             '土曜日出勤' as label,
             sec_to_time(sum(time_to_sec(sat_time.worktime))) as sum_time,
-            ceil(sum(time_to_sec(sat_time.worktime)) * ( h.value* 1.35 ) / 3600) as sum_charge
+            ceil(sum(time_to_sec(sat_time.worktime)) * ( h.value* 1.35 ) / 3600) as sum_charge,
+            count(sat_time.site_id) as days_worked
         from
             (
                 select
@@ -266,11 +285,13 @@ class Reports extends Model
 		union
 		
         select
+            -- 日曜日一括の就業時間と時間給, 現場-作業グループ
             sun_time.sitename,
             sun_time.worktype_name,
             '日曜日出勤' as label,
             sec_to_time(sum(time_to_sec(sun_time.worktime))) as sum_time,
-            ceil(sum(time_to_sec(sun_time.worktime)) * ( h.value* 1.5 ) / 3600) as sum_charge
+            ceil(sum(time_to_sec(sun_time.worktime)) * ( h.value* 1.5 ) / 3600) as sum_charge,
+            count(sun_time.site_id) as days_worked
         from
             (
                 select

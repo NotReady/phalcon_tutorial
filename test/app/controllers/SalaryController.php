@@ -27,6 +27,7 @@ class SalaryController extends Controller
         $reportService = new ReportService($employee_id, $year, $month);
         $this->view->reports = $reportService->getMonthlyReport();
         $this->view->days_worked = $reportService->howDaysWorked();
+        $this->view->days_Absenteeism = $reportService->howDaysAbsenteeism();
         $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
         $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
 
@@ -60,6 +61,7 @@ class SalaryController extends Controller
         $reportService = new ReportService($employee_id, $year, $month);
         $this->view->reports = $reportService->getMonthlyReport();
         $this->view->days_worked = $reportService->howDaysWorked();
+        $this->view->days_Absenteeism = $reportService->howDaysAbsenteeism();
         $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
         $this->view->summary = $summary = $reportService->getSummaryBySiteWorkUnit();
 
@@ -76,7 +78,7 @@ class SalaryController extends Controller
             }
 
             // マスタから補完します
-            SalaryHelper::complementTempolarySalary($salary_temporary, $employee);
+            SalaryHelper::complementTempolarySalary($salary_temporary, $employee, $reportService);
         }
 
         $form = new SalaryForm($salary_temporary);
@@ -109,9 +111,7 @@ class SalaryController extends Controller
 
             // 就業トランザクション
             $reportService = new ReportService($employee_id, $year, $month);
-            $this->view->reports = $reportService->getMonthlyReport();
-            $this->view->days_worked = $reportService->howDaysWorked();
-            $this->view->summary = $summary = $reportService->getSummaryBySiteWorkUnit();
+            $summary = $reportService->getSummaryBySiteWorkUnit();
 
             // 給与モデルを取得します
             $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
@@ -152,13 +152,7 @@ class SalaryController extends Controller
             // 社員マスタ
             $employee = null;
             $employee = Employees::findfirst($employee_id);
-
-            // 就業トランザクション
-            $reportService = new ReportService($employee_id, $year, $month);
-            $this->view->reports = $reportService->getMonthlyReport();
-            $this->view->days_worked = $reportService->howDaysWorked();
-            $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
-
+            
             // 給与モデルを取得します
             $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
 

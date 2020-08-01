@@ -244,25 +244,29 @@ class Employees extends Model{
                         case when r.days_worked is null then 0
                         else r.days_worked end
                     ) as days_worked,
-                    max(r.at_day) as last_worked_day,
+                    r.at_day as last_worked_day,
                     (
                         case when s.fixed is null then "temporary"
                         else s.fixed end
                     ) as salary_fixed
+                -- 社員
                 from
                     employees e
+                -- 期間内の勤務表 社員IDグルーピング
                 left outer join
                 (
                     select
-                        max(reports.at_day) as at_day,
-                        count(reports.at_day) as days_worked,
-                        reports.employee_id
+                        max(reports.at_day) as at_day, -- 最終出勤日
+                        count(reports.at_day) as days_worked, -- 出勤日数
+                        reports.employee_id -- 社員ID
                     from
                         reports
                     where
                         reports.at_day between :date_from and :date_to
+                        and reports.attendance not in ("absenteeism","holidays") -- 欠勤,有給以外
                     group by employee_id
                 ) r on r.employee_id = e.id
+                -- 給与
                 left outer join
                 (
                     select
