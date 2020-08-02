@@ -48,7 +48,12 @@ class EmployeeController extends Controller
         $form = new EmployeesForm();
         $employee = new Employees();
 
+        // リクエストをモデルにバインド
         $params = $this->request->getPost();
+        $form->bind($params, $employee);
+
+        // バリデーションのため、フォームに逆バインド
+        $form = new EmployeesForm($employee);
         $form->bind($params, $employee);
 
         try{

@@ -94,26 +94,10 @@
             {{ form.messages('last_name') }}
         </div>
 
-        <div class="form-element-wrap col-3">
-            {#blank#}
-        </div>
-
-        <div class="form-element-wrap col-3">
-            {#blank#}
-        </div>
-
         <div class="form-element-wrap col-6">
             {{ form.label('address', ['class' : 'form-label']) }}
             {{ form.render('address') }}
             {{ form.messages('address') }}
-        </div>
-
-        <div class="form-element-wrap col-3">
-            {#blank#}
-        </div>
-
-        <div class="form-element-wrap col-3">
-            {#blank#}
         </div>
 
         <div class="form-element-wrap col-3">
@@ -290,10 +274,17 @@
         </div>
 
         <div class="form-element-wrap col-3">
+            {{ form.label('insurance_bill', ['class' : 'form-label negative']) }}
+            {{ form.render('insurance_bill') }}
+            {{ form.messages('insurance_bill') }}
         </div>
 
         <div class="form-element-wrap col-3">
+            {{ form.label('pension_bill', ['class' : 'form-label negative']) }}
+            {{ form.render('pension_bill') }}
+            {{ form.messages('pension_bill') }}
         </div>
+
     </div>
     </div>
     </div>
@@ -579,6 +570,19 @@ $(function() {
         );
 
     });
+
+    {# 保険加入選択 保険料額フォームのenable/disableを制御 #}
+    {# disable時、postは飛ばないので自動的にnullとなる #}
+    $(document).on("change", "#insurance_type", function () {
+        if( $(this).val() === "enable" ){
+            $("input[name='insurance_bill']").prop("disabled", false);
+            $("input[name='pension_bill']").prop("disabled", false);
+        }else{
+            $("input[name='insurance_bill']").prop("disabled", true);
+            $("input[name='pension_bill']").prop("disabled", true);
+        }
+    })
+
 });
 </script>
 
