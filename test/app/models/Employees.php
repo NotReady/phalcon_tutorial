@@ -147,6 +147,16 @@ class Employees extends Model{
     public $etc_bill;
 
     /**
+     * @var 社会保険料
+     */
+    public $insurance_bill;
+
+    /**
+     * @var 厚生年金料
+     */
+    public $pension_bill;
+
+    /**
      * @var ログインユーザ
      */
     public $username;

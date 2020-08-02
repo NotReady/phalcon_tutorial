@@ -154,6 +154,7 @@ class SalaryHelper
         }
 
         if( $employee->insurance_type === 'enable' ){
+            /*
             $insurancies = ApiHelper::get(self::INSURANCE_CALC_API_ENDPOINT_V202003, [
                 'salary' => $salary->getChargiesSummary(),
                 'kaigo' => 0
@@ -166,6 +167,18 @@ class SalaryHelper
             if( is_null($salary->pension_bill) === true ){
                 $salary->pension_bill = $insurancies->pension->payment;
             }
+            */
+
+            // 社会保険料を補完します
+            if( is_null($salary->insurance_bill) === true ){
+                $salary->insurance_bill = $employee->insurance_bill;
+            }
+
+            // 厚生年金量を補完します
+            if( is_null($salary->pension_bill) === true ){
+                $salary->pension_bill = $employee->pension_bill;
+            }
+
         }else{
             $salary->insurance_bill = null;
             $salary->pension_bill = null;

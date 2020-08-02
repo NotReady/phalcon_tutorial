@@ -10,7 +10,7 @@ use \Phalcon\Validation\Validator\PresenceOf;
 
 class EmployeesForm extends Form
 {
-    public function initialize($emtry=null, $options=null){
+    public function initialize($entity=null, $option=null){
 
         // id
         $this->add(new Hidden('id'));
@@ -396,6 +396,45 @@ class EmployeesForm extends Form
             ])
         ]);
         $this->add($etc_bill);
+
+        // 社会保険料
+        $insurance_bill= new Numeric('insurance_bill');
+        $insurance_bill->setLabel('社会保険料');
+        $insurance_bill->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '社会保険料を入力してください。',
+            $entity->insurance_type === 'enable' ? '' : 'disabled' =>
+                $entity->insurance_type === 'enable' ? '' : 'disabled'
+        ]);
+        // 保険加入者は必須
+        if( $entity->insurance_type === 'enable' ){
+            $insurance_bill->addValidators([
+                new PresenceOf([
+                    'message' => '社会保険料を入力してください。'
+                ])
+            ]);
+        }
+        $this->add($insurance_bill);
+
+        // 厚生年金料
+        $pension_bill= new Numeric('pension_bill');
+        $pension_bill->setLabel('厚生年金料');
+        $pension_bill->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '厚生年金料を入力してください。',
+            $entity->insurance_type === 'enable' ? '' : 'disabled' =>
+                $entity->insurance_type === 'enable' ? '' : 'disabled'
+
+        ]);
+        // 保険加入者は必須
+        if( $entity->insurance_type === 'enable' ){
+            $pension_bill->addValidators([
+                new PresenceOf([
+                    'message' => '厚生年金料を入力してください。'
+                ])
+            ]);
+        }
+        $this->add($pension_bill);
 
         // 送信
         $this->add(new Submit('submit', [
