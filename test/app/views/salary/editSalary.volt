@@ -625,8 +625,6 @@
         const method = "POST";
 
         $(".btn-update").on("click",  function () {
-            // ポストキャンセル
-            event.preventDefault();
 
             const $input = $(this).parents("tr").find("input");
             const key = $input.attr('name');
@@ -648,7 +646,7 @@
                     console.log(data);
                     if( data['result'] ){
                         if( data['result'] == "success" ) {
-                            location.reload();
+                            $(document).triggerHandler('ajaxStop', [ true, "更新しました", ()=>{location.reload();}]);
                         }
                         if( data['result'] == "failure" ) {
                             $(document).triggerHandler('ajaxStop', [ false, data['message']]);
@@ -665,8 +663,6 @@
         });
 
         $(".btn-undo").on("click",  function () {
-            // ポストキャンセル
-            event.preventDefault();
 
             const $input = $(this).parents("tr").find("input");
             const key = $input.attr('name');
@@ -680,6 +676,7 @@
                     "value" : value
                 },
                 timeout: 1000 * 10,
+                global: false,
                 beforeSend: function(xhr, settings){
                     $(document).triggerHandler('ajaxStart');
                 }}).then(
@@ -687,7 +684,7 @@
                     console.log(data);
                     if( data['result'] ){
                         if( data['result'] == "success" ) {
-                            location.reload();
+                            $(document).triggerHandler('ajaxStop', [ true, "元に戻しました", ()=>{location.reload();}]);
                         }
                         if( data['result'] == "failure" ) {
                             $(document).triggerHandler('ajaxStop', [ false, data['message']]);

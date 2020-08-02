@@ -97,9 +97,45 @@
     .v-mid{
         vertical-align: middle;
     }
-    .v-sub{
-        vertical-align: sub;
+
+    .v-center{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
     }
+
+    .flex_sequence_container{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        height: 100%;
+    }
+
+    .flex_sequence_container > *{
+        margin: 0.5rem;
+
+    }
+
+    .data-boxy{
+        width: 110px;
+        height: 110px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        display: inline-block;
+        border: 1px solid #eee;
+    }
+
+    .data-boxy .header{
+        height: 30px;
+        background-color: #eee;
+    }
+
+    .data-boxy .body{
+        height: 80px;
+    }
+
 </style>
 
 <div class="content_root">
@@ -177,14 +213,37 @@
 
     <h2 class="title flex_box flex_left">
         <span>出勤統計</span>
-        <span class="highlight"><span class="badge-disable v-mid">営業日数</span>　<span class="highlight-text v-sub">{{ days_business }}</span><span class="v-sub"> 日</span></span>
-        <span class="highlight"><span class="badge-success v-mid">出勤日数</span>　<span class="highlight-text v-sub">{{ days_worked }}</span><span class="v-sub"> 日</span></span>
-        <span class="highlight"><span class="badge-alert v-mid">欠勤日数</span>　<span class="highlight-text v-sub">{{ days_Absenteeism }}</span><span class="v-sub"> 日</span></span>
-        <span class="highlight"><span class="badge-disable v-mid">時間内</span>　<span class="highlight-text v-sub">{{ summary['intimeAll'] }}</span><span class="v-sub"></span></span>
-        <span class="highlight"><span class="badge-disable v-mid">時間外</span>　<span class="highlight-text v-sub">{{ summary['outtimeAll'] }}</span><span class="v-sub"></span></span>
     </h2>
     <div class="row">
-        <div class="col-12">
+        <div class="col-4 flex_sequence_container">
+
+            <div class="data-boxy">
+                <div class="header v-center">営業日数</div>
+                <div class="body v-center"><span class="highlight-text">{{ days_business }}</div>
+            </div>
+
+            <div class="data-boxy">
+                <div class="header v-center">出勤日数</div>
+                <div class="body v-center"><span class="highlight-text text-success">{{ days_worked }}</span></div>
+            </div>
+
+            <div class="data-boxy">
+                <div class="header v-center">欠勤日数</div>
+                <div class="body v-center"><span class="highlight-text text-danger">{{ days_Absenteeism }}</span></div>
+            </div>
+
+            <div class="data-boxy">
+                <div class="header v-center">時間内</div>
+                <div class="body v-center"><span class="highlight-text">{{ summary['intimeAll']}}</span></div>
+            </div>
+
+            <div class="data-boxy">
+                <div class="header v-center">時間外</div>
+                <div class="body v-center"><span class="highlight-text">{{ summary['outtimeAll']}}</span></div>
+            </div>
+
+        </div>
+        <div class="col-8">
             <table class="table table_timeunit">
                 <thead>
                 <th>項目</th>
@@ -380,7 +439,9 @@
                     console.log(data);
                     if( data['result'] ){
                         if( data['result'] == "success" ) {
-                            location.reload();
+                            $(document).triggerHandler('ajaxStop', [ true , action=="update"?"登録しました":"削除しました", function () {
+                                location.reload(); return;
+                            }]);
                         }
                         if( data['result'] == "failure" ) {
                             $(document).triggerHandler('ajaxStop', [ false, data['message']]);

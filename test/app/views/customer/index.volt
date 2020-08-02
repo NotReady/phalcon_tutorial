@@ -105,7 +105,7 @@
                 console.log(data);
                 if( data['result'] ){
                     if( data['result'] == "success" ) {
-                        location.reload();
+                        $(document).triggerHandler('ajaxStop', [ true, "保存しました", ()=>{location.reload();}]);
                     }
                     if( data['result'] == "failure" ) {
                         $(document).triggerHandler('ajaxStop', [ false, data['messages']]);
