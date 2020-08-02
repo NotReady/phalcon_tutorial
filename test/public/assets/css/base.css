@@ -222,3 +222,11 @@ h1 {
     margin-bottom: 0.5rem;
     font-weight: 700;
 }
+
+.form-label.positive{
+    border-left: 4px solid #28a745;
+}
+
+.form-label.negative{
+    border-left: 4px solid red;
+}

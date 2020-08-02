@@ -158,67 +158,67 @@
 
 
     <div class="form-element-wrap col-3">
-        {{ form.label('monthly_charge', ['class' : 'form-label']) }}
+        {{ form.label('monthly_charge', ['class' : 'form-label positive']) }}
         {{ form.render('monthly_charge') }}
         {{ form.messages('monthly_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('overtime_charge', ['class' : 'form-label']) }}
+        {{ form.label('overtime_charge', ['class' : 'form-label positive']) }}
         {{ form.render('overtime_charge') }}
         {{ form.messages('overtime_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('skill_charge', ['class' : 'form-label']) }}
+        {{ form.label('skill_charge', ['class' : 'form-label positive']) }}
         {{ form.render('skill_charge') }}
         {{ form.messages('skill_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses', ['class' : 'form-label']) }}
+        {{ form.label('transportation_expenses', ['class' : 'form-label positive']) }}
         {{ form.render('transportation_expenses') }}
         {{ form.messages('transportation_expenses') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses_by_day', ['class' : 'form-label']) }}
+        {{ form.label('transportation_expenses_by_day', ['class' : 'form-label positive']) }}
         {{ form.render('transportation_expenses_by_day') }}
         {{ form.messages('transportation_expenses_by_day') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses_without_tax', ['class' : 'form-label']) }}
+        {{ form.label('transportation_expenses_without_tax', ['class' : 'form-label positive']) }}
         {{ form.render('transportation_expenses_without_tax') }}
         {{ form.messages('transportation_expenses_without_tax') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('communication_charge_without_tax', ['class' : 'form-label']) }}
+        {{ form.label('communication_charge_without_tax', ['class' : 'form-label positive']) }}
         {{ form.render('communication_charge_without_tax') }}
         {{ form.messages('communication_charge_without_tax') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('house_charge', ['class' : 'form-label']) }}
+        {{ form.label('house_charge', ['class' : 'form-label positive']) }}
         {{ form.render('house_charge') }}
         {{ form.messages('house_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('bus_charge', ['class' : 'form-label']) }}
+        {{ form.label('bus_charge', ['class' : 'form-label positive']) }}
         {{ form.render('bus_charge') }}
         {{ form.messages('bus_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('officework_charge', ['class' : 'form-label']) }}
+        {{ form.label('officework_charge', ['class' : 'form-label positive']) }}
         {{ form.render('officework_charge') }}
         {{ form.messages('officework_charge') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('etc_charge', ['class' : 'form-label']) }}
+        {{ form.label('etc_charge', ['class' : 'form-label positive']) }}
         {{ form.render('etc_charge') }}
         {{ form.messages('etc_charge') }}
     </div>
@@ -232,37 +232,37 @@
     </span>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('rent_bill', ['class' : 'form-label']) }}
+        {{ form.label('rent_bill', ['class' : 'form-label negative']) }}
         {{ form.render('rent_bill') }}
         {{ form.messages('rent_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('electric_bill', ['class' : 'form-label']) }}
+        {{ form.label('electric_bill', ['class' : 'form-label negative']) }}
         {{ form.render('electric_bill') }}
         {{ form.messages('electric_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('gas_bill', ['class' : 'form-label']) }}
+        {{ form.label('gas_bill', ['class' : 'form-label negative']) }}
         {{ form.render('gas_bill') }}
         {{ form.messages('gas_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('water_bill', ['class' : 'form-label']) }}
+        {{ form.label('water_bill', ['class' : 'form-label negative']) }}
         {{ form.render('water_bill') }}
         {{ form.messages('water_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('food_bill', ['class' : 'form-label']) }}
+        {{ form.label('food_bill', ['class' : 'form-label negative']) }}
         {{ form.render('food_bill') }}
         {{ form.messages('food_bill') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {{ form.label('etc_bill', ['class' : 'form-label']) }}
+        {{ form.label('etc_bill', ['class' : 'form-label negative']) }}
         {{ form.render('etc_bill') }}
         {{ form.messages('etc_bill') }}
     </div>
