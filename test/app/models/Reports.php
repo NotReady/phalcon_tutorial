@@ -28,6 +28,11 @@ class Reports extends Model
     ];
 
     /**
+     * @var 有給外部キー
+     */
+    public $paid_holiday_id;
+
+    /**
      * @var 業務開始時間
      */
     public $time_from;
@@ -395,5 +400,17 @@ class Reports extends Model
         }catch (Exception $e){
             die($e);
         }
+    }
+
+    /**
+     * 有給該当レコードを取得します
+     * @param $holiday_id
+     * @return mixed
+     */
+    public static function getStatementByHolidayId($holiday_id){
+        return self::findFirst([
+            'conditions' => 'paid_holiday_id = :paid_holiday_id:',
+            'bind' => [ 'paid_holiday_id' => $holiday_id ]
+        ]);
     }
 }

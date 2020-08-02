@@ -46,6 +46,11 @@ $router->add('/employees/loan/update',          ['controller' => "Api",      'ac
 $router->add('/employees/loan/delete',          ['controller' => "Api",      'action'=>'deleteLoan']);
 $router->add('/employees/loan/get/member',      ['controller' => "Api",      'action'=>'getLoanWithMember']);
 $router->add('/employees/loan/get/id',          ['controller' => "Api",      'action'=>'getLoanWithId']);
+$router->add('/employees/holiday/get/member',   ['controller' => "Api",      'action'=>'getPaidHolidayOfEmployee']);
+$router->add('/employees/holiday/get/id',       ['controller' => "Api",      'action'=>'getPaidHolidayOfUnit']);
+$router->add('/employees/holiday/create',       ['controller' => "Api",      'action'=>'createHoliday']);
+$router->add('/employees/holiday/update',       ['controller' => "Api",      'action'=>'updateHoliday']);
+$router->add('/employees/holiday/delete',       ['controller' => "Api",      'action'=>'deleteHoliday']);
 
 // 現場
 $router->add('/sites',                          ['controller' => "Site",     'action'=>'index']);

@@ -38,6 +38,10 @@ class EmployeeController extends Controller
         $this->view->form = $form;
         $this->view->loans = Loans::getBook($employee_id);
         $this->view->loansAmount = Loans::getAmount($employee_id);
+
+        $this->view->paid_holidays = PaidHolidays::getStatementOfEmplyoee($employee_id);
+        $this->view->holidaysAmount = PaidHolidays::getCountOfRemainHolidays($employee_id);
+
     }
 
     /**

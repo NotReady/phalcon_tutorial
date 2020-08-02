@@ -216,7 +216,7 @@ class ApiController extends Controller
     }
 
     /**
-     * 明細の取得アクション
+     * 貸付明細の取得アクション
      */
     public function getLoanWithMemberAction(){
         $this->jsonResponse(function (){
@@ -233,7 +233,7 @@ class ApiController extends Controller
     }
 
     /**
-     * 明細の取得アクション
+     * 貸付明細の取得アクション
      */
     public function getLoanWithIdAction(){
         $this->jsonResponse(function (){
@@ -244,6 +244,84 @@ class ApiController extends Controller
                 'result' => 'success',
                 'loan' => $loan,
             ]);
+        });
+    }
+
+    /**
+     * 有給明細の取得アクション
+     */
+    public function getPaidHolidayOfEmployeeAction(){
+        $this->jsonResponse(function (){
+            $params = $this->request->getPost();
+            $eid = $params['employee_id'];
+            $page = $params['page'];
+            $paidHolidays = PaidHolidays::getStatementOfEmplyoeePagingUnit($eid, $page);
+            $json = json_encode($paidHolidays);
+            echo json_encode([
+                'result' => 'success',
+                'holidays' => $json,
+            ]);
+        });
+    }
+
+    /**
+     * 有給の登録アクション
+     */
+    public function createHolidayAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $holiday = PaidHolidays::createHoliday($params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
+                if( $holiday->save() === false ){
+                    throw new Exception("作成に失敗しました");
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
+     * 有給の更新アクション
+     */
+    public function updateHolidayAction(){
+        $this->jsonResponse(function (){
+
+            try{
+                $params = $this->request->getPost();
+                $loan = PaidHolidays::updateHoliday($params['holiday_id'], $params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
+                if( $loan->save() === false ){
+                    throw new Exception("更新に失敗しました");
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
+     * 有給の削除アクション
+     */
+    public function deleteHolidayAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                PaidHolidays::deleteHoliday($params['holiday_id']);
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e) {
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
         });
     }
 
