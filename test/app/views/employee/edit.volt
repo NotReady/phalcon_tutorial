@@ -2,6 +2,7 @@
 
 {% block title %}従業員編集{% endblock %}
 {% block css_include %}
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 {% endblock %}
 
 {% block content_body %}
@@ -59,220 +60,243 @@
         color: red;
     }
 
+    input[type="number"]{
+        text-align: right;
+    }
+
 </style>
 
 <div class="content_root">
 
-    <h1 class="title">登録情報</h1>
+    <h1 class="title"><i class="fas fa-user-circle mr-1"></i>登録情報</h1>
 
     {{ form('/employees/edit/check', 'method': 'post', 'class': 'row') }}
 
     {{ form.render('id') }}
 
-    <span class="col-12">
-        <h2 class="subtitle">基本情報管理</h2>
-    </span>
+    <div class="col-12 mb-4">
+    <div style="border: 1px solid #ced4da; border-radius: 5px; padding: 1.5rem;">
+    <div class="row">
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('first_name', ['class' : 'form-label']) }}
-        {{ form.render('first_name') }}
-        {{ form.messages('first_name') }}
+        <span class="col-12">
+            <h2 class="subtitle"><i class="fas fa-user-circle mr-1"></i>基本情報管理</h2>
+        </span>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('first_name', ['class' : 'form-label']) }}
+            {{ form.render('first_name') }}
+            {{ form.messages('first_name') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('last_name', ['class' : 'form-label']) }}
+            {{ form.render('last_name') }}
+            {{ form.messages('last_name') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {#blank#}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {#blank#}
+        </div>
+
+        <div class="form-element-wrap col-6">
+            {{ form.label('address', ['class' : 'form-label']) }}
+            {{ form.render('address') }}
+            {{ form.messages('address') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {#blank#}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {#blank#}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('employee_no', ['class' : 'form-label']) }}
+            {{ form.render('employee_no') }}
+            {{ form.messages('employee_no') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('employee_status', ['class' : 'form-label']) }}
+            {{ form.render('employee_status') }}
+            {{ form.messages('employee_status') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('hire_date', ['class' : 'form-label']) }}
+            {{ form.render('hire_date') }}
+            {{ form.messages('hire_date') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('leave_date', ['class' : 'form-label']) }}
+            {{ form.render('leave_date') }}
+            {{ form.messages('leave_date') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('employee_type', ['class' : 'form-label']) }}
+            {{ form.render('employee_type') }}
+            {{ form.messages('employee_type') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('skill_id', ['class' : 'form-label']) }}
+            {{ form.render('skill_id') }}
+            {{ form.messages('skill_id') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('insurance_type', ['class' : 'form-label']) }}
+            {{ form.render('insurance_type') }}
+            {{ form.messages('insurance_type') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+        </div>
+    </div>
+    </div>
     </div>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('last_name', ['class' : 'form-label']) }}
-        {{ form.render('last_name') }}
-        {{ form.messages('last_name') }}
+    <div class="col-12 mb-4">
+    <div style="border: 1px solid #ced4da; border-radius: 5px; padding: 1.5rem;">
+    <div class="row">
+
+        <span class="col-12">
+            <h2 class="subtitle"><i class="fas fa-arrow-circle-up mr-1"></i>給与管理 支給マスタ</h2>
+        </span>
+
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('monthly_charge', ['class' : 'form-label positive']) }}
+            {{ form.render('monthly_charge') }}
+            {{ form.messages('monthly_charge') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('overtime_charge', ['class' : 'form-label positive']) }}
+            {{ form.render('overtime_charge') }}
+            {{ form.messages('overtime_charge') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('skill_charge', ['class' : 'form-label positive']) }}
+            {{ form.render('skill_charge') }}
+            {{ form.messages('skill_charge') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('transportation_expenses', ['class' : 'form-label positive']) }}
+            {{ form.render('transportation_expenses') }}
+            {{ form.messages('transportation_expenses') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('transportation_expenses_by_day', ['class' : 'form-label positive']) }}
+            {{ form.render('transportation_expenses_by_day') }}
+            {{ form.messages('transportation_expenses_by_day') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('transportation_expenses_without_tax', ['class' : 'form-label positive']) }}
+            {{ form.render('transportation_expenses_without_tax') }}
+            {{ form.messages('transportation_expenses_without_tax') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('communication_charge_without_tax', ['class' : 'form-label positive']) }}
+            {{ form.render('communication_charge_without_tax') }}
+            {{ form.messages('communication_charge_without_tax') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('house_charge', ['class' : 'form-label positive']) }}
+            {{ form.render('house_charge') }}
+            {{ form.messages('house_charge') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('bus_charge', ['class' : 'form-label positive']) }}
+            {{ form.render('bus_charge') }}
+            {{ form.messages('bus_charge') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('officework_charge', ['class' : 'form-label positive']) }}
+            {{ form.render('officework_charge') }}
+            {{ form.messages('officework_charge') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('etc_charge', ['class' : 'form-label positive']) }}
+            {{ form.render('etc_charge') }}
+            {{ form.messages('etc_charge') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+        </div>
+    </div>
+    </div>
     </div>
 
-    <div class="form-element-wrap col-3">
-        {#blank#}
+    <div class="col-12 mb-4">
+    <div style="border: 1px solid #ced4da; border-radius: 5px; padding: 1.5rem;">
+    <div class="row">
+
+        <span class="col-12">
+            <h2 class="subtitle"><i class="fas fa-arrow-circle-down mr-1"></i>給与管理 控除マスタ</h2>
+        </span>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('rent_bill', ['class' : 'form-label negative']) }}
+            {{ form.render('rent_bill') }}
+            {{ form.messages('rent_bill') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('electric_bill', ['class' : 'form-label negative']) }}
+            {{ form.render('electric_bill') }}
+            {{ form.messages('electric_bill') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('gas_bill', ['class' : 'form-label negative']) }}
+            {{ form.render('gas_bill') }}
+            {{ form.messages('gas_bill') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('water_bill', ['class' : 'form-label negative']) }}
+            {{ form.render('water_bill') }}
+            {{ form.messages('water_bill') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('food_bill', ['class' : 'form-label negative']) }}
+            {{ form.render('food_bill') }}
+            {{ form.messages('food_bill') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+            {{ form.label('etc_bill', ['class' : 'form-label negative']) }}
+            {{ form.render('etc_bill') }}
+            {{ form.messages('etc_bill') }}
+        </div>
+
+        <div class="form-element-wrap col-3">
+        </div>
+
+        <div class="form-element-wrap col-3">
+        </div>
     </div>
-
-    <div class="form-element-wrap col-3">
-        {#blank#}
     </div>
-
-    <div class="form-element-wrap col-6">
-        {{ form.label('address', ['class' : 'form-label']) }}
-        {{ form.render('address') }}
-        {{ form.messages('address') }}
     </div>
-
-    <div class="form-element-wrap col-3">
-        {#blank#}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {#blank#}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('employee_no', ['class' : 'form-label']) }}
-        {{ form.render('employee_no') }}
-        {{ form.messages('employee_no') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('employee_status', ['class' : 'form-label']) }}
-        {{ form.render('employee_status') }}
-        {{ form.messages('employee_status') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('hire_date', ['class' : 'form-label']) }}
-        {{ form.render('hire_date') }}
-        {{ form.messages('hire_date') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('leave_date', ['class' : 'form-label']) }}
-        {{ form.render('leave_date') }}
-        {{ form.messages('leave_date') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('employee_type', ['class' : 'form-label']) }}
-        {{ form.render('employee_type') }}
-        {{ form.messages('employee_type') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('skill_id', ['class' : 'form-label']) }}
-        {{ form.render('skill_id') }}
-        {{ form.messages('skill_id') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('insurance_type', ['class' : 'form-label']) }}
-        {{ form.render('insurance_type') }}
-        {{ form.messages('insurance_type') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-    </div>
-
-    <span class="col-12">
-        <h2 class="subtitle">給与管理 支給マスタ</h2>
-    </span>
-
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('monthly_charge', ['class' : 'form-label positive']) }}
-        {{ form.render('monthly_charge') }}
-        {{ form.messages('monthly_charge') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('overtime_charge', ['class' : 'form-label positive']) }}
-        {{ form.render('overtime_charge') }}
-        {{ form.messages('overtime_charge') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('skill_charge', ['class' : 'form-label positive']) }}
-        {{ form.render('skill_charge') }}
-        {{ form.messages('skill_charge') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses', ['class' : 'form-label positive']) }}
-        {{ form.render('transportation_expenses') }}
-        {{ form.messages('transportation_expenses') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses_by_day', ['class' : 'form-label positive']) }}
-        {{ form.render('transportation_expenses_by_day') }}
-        {{ form.messages('transportation_expenses_by_day') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('transportation_expenses_without_tax', ['class' : 'form-label positive']) }}
-        {{ form.render('transportation_expenses_without_tax') }}
-        {{ form.messages('transportation_expenses_without_tax') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('communication_charge_without_tax', ['class' : 'form-label positive']) }}
-        {{ form.render('communication_charge_without_tax') }}
-        {{ form.messages('communication_charge_without_tax') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('house_charge', ['class' : 'form-label positive']) }}
-        {{ form.render('house_charge') }}
-        {{ form.messages('house_charge') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('bus_charge', ['class' : 'form-label positive']) }}
-        {{ form.render('bus_charge') }}
-        {{ form.messages('bus_charge') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('officework_charge', ['class' : 'form-label positive']) }}
-        {{ form.render('officework_charge') }}
-        {{ form.messages('officework_charge') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('etc_charge', ['class' : 'form-label positive']) }}
-        {{ form.render('etc_charge') }}
-        {{ form.messages('etc_charge') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-    </div>
-
-
-    <span class="col-12">
-        <h2 class="subtitle">給与管理 控除マスタ</h2>
-    </span>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('rent_bill', ['class' : 'form-label negative']) }}
-        {{ form.render('rent_bill') }}
-        {{ form.messages('rent_bill') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('electric_bill', ['class' : 'form-label negative']) }}
-        {{ form.render('electric_bill') }}
-        {{ form.messages('electric_bill') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('gas_bill', ['class' : 'form-label negative']) }}
-        {{ form.render('gas_bill') }}
-        {{ form.messages('gas_bill') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('water_bill', ['class' : 'form-label negative']) }}
-        {{ form.render('water_bill') }}
-        {{ form.messages('water_bill') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('food_bill', ['class' : 'form-label negative']) }}
-        {{ form.render('food_bill') }}
-        {{ form.messages('food_bill') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-        {{ form.label('etc_bill', ['class' : 'form-label negative']) }}
-        {{ form.render('etc_bill') }}
-        {{ form.messages('etc_bill') }}
-    </div>
-
-    <div class="form-element-wrap col-3">
-    </div>
-
-    <div class="form-element-wrap col-3">
-    </div>
-
 
     <div class="form-element-wrap col-12 text-right mt-3">
         <ul>
@@ -283,7 +307,7 @@
 
     {{ endform() }}
 
-    <h1 class="title">貸付明細</h1>
+    <h1 class="title"><i class="fas fa-hand-holding-usd mr-1"></i>貸付明細</h1>
 
     <p class="caption-large">貸付残高　{{ loansAmount | number_format }} 円</p>
 
