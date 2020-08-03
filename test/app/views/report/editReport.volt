@@ -329,7 +329,7 @@
 
             {# フォームのdisableを制御 #}
             const attendance = $(this).val();
-            const disabled = attendance === "absenteeism";
+            const disabled = attendance === "absenteeism" || attendance === "holidays";
             $(this).parents("tr").find("select[name='site_id']").prop("disabled", disabled);
             $(this).parents("tr").find("select[name='worktype_id']").prop("disabled", disabled);
             $(this).parents("tr").find("input[name='time_from']").prop("disabled", disabled);

@@ -15,6 +15,8 @@ class ReportForm extends Form
 {
     public function initialize($entity, $attend){
 
+        $disableForm = ( $entity->attendance === 'absenteeism' || $entity->attendance === 'holidays' );
+
         // 社員ID
         $this->add(new Hidden('employee_id'));
 
@@ -44,7 +46,7 @@ class ReportForm extends Form
         $site->setLabel('現場');
         $site->setAttributes([
             'class' => 'form-control',
-            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
+            $disableForm ? 'disabled' : '' => '',
         ]);
         $this->add($site);
 
@@ -57,7 +59,7 @@ class ReportForm extends Form
         $worktype = new Select('worktype_id', $validWork);
         $worktype->setAttributes([
             'class' => 'form-control',
-            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
+            $disableForm ? 'disabled' : '' => '',
         ]);
         $this->add($worktype);
 
@@ -67,7 +69,7 @@ class ReportForm extends Form
         $time_from->setAttributes([
             'class' => 'form-control',
             'placeholder' => '業務開始時間を入力してください。',
-            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
+            $disableForm ? 'disabled' : '' => '',
         ]);
         $this->add($time_from);
 
@@ -77,7 +79,7 @@ class ReportForm extends Form
         $time_to->setAttributes([
             'class' => 'form-control',
             'placeholder' => '業務終了時間を入力してください。',
-            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
+            $disableForm ? 'disabled' : '' => '',
         ]);
         $this->add($time_to);
 
@@ -87,7 +89,7 @@ class ReportForm extends Form
         $breaktime->setAttributes([
             'class' => 'form-control',
             'placeholder' => '休憩時間を入力してください。',
-            $entity->attendance === 'absenteeism' ? 'disabled' : '' => '',
+            $disableForm ? 'disabled' : '' => '',
         ]);
         $this->add($breaktime);
 
@@ -105,7 +107,7 @@ class ReportForm extends Form
             ])
         ]);
 
-        if( $attend !== 'absenteeism' ){
+        if( $disableForm === false ){
 
             $site->addValidators([
                 new PresenceOf([

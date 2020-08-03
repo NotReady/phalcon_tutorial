@@ -74,7 +74,30 @@ class Reports extends Model
         );
     }
 
-    // ある年月の勤怠表を取得します。
+    /**
+     * 年月日の勤怠を取得します。
+     * @param $employee_id 社員Id
+     * @param $date 取得する日付
+     * @return mixed
+     */
+    public static function getReportAtDay($employee_id, $at_day){
+        return $reports = self::findFirst(
+            [
+                'conditions' => 'employee_id = :employee_id: and at_day = :at_day:',
+                "bind" => [
+                    'employee_id' => $employee_id
+                    ,'at_day' => $at_day
+                ]
+            ]);
+    }
+
+    /**
+     * 年月の勤怠リストを取得します。
+     * @param $employee_id 社員Id
+     * @param $year 年
+     * @param $month 月
+     * @return mixed
+     */
     public static function getReport($employee_id, $year, $month){
 
         // 日数
@@ -367,7 +390,6 @@ class Reports extends Model
             if($mo===false) {
                 $mo = new Reports();
             }
-
 
             $ar = array(
                 'employee_id' => $employeeId,
