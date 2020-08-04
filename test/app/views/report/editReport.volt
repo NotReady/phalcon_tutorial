@@ -233,6 +233,11 @@
             </div>
 
             <div class="data-boxy">
+                <div class="header v-center">有給日数</div>
+                <div class="body v-center"><span class="highlight-text text-info">{{ days_holiday }}</span></div>
+            </div>
+
+            <div class="data-boxy">
                 <div class="header v-center">時間内</div>
                 <div class="body v-center"><span class="highlight-text">{{ summary['intimeAll']}}</span></div>
             </div>

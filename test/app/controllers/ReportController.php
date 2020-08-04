@@ -56,6 +56,7 @@ class ReportController extends Controller
         $this->view->reports = $formarr;
         $this->view->days_worked = $reportService->howDaysWorked(); // 出勤日数
         $this->view->days_Absenteeism = $reportService->howDaysAbsenteeism(); // 欠勤日数
+        $this->view->days_holiday = $reportService->howDaysHoliday();// 有給日数
         $this->view->days_business = $reportService->getBusinessDayOfMonth(); // 営業日数
         $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
 
