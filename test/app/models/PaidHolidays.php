@@ -129,9 +129,17 @@ class PaidHolidays extends Model
      * @param $type         1:付与/2:消化
      * @param $amount       日数
      * @param $comment      明細コメント
+     * @throws Exception
      * @return PaidHolidays 貸付モデル
      */
-    public static function createHoliday($employee_id, $regist_date, $type, $amount, $comment, $salary_id=null){
+    public static function createHoliday($employee_id, $regist_date, $type, $amount, $comment){
+
+        $remainHolidaysCount = self::getCountOfRemainHolidays($employee_id);
+        if( $type == 2 ){
+            if( $remainHolidaysCount < $amount ){
+                throw new Exception('余剰有給が不足しています。');
+            }
+        }
 
         $holiday = new PaidHolidays();
         $holiday->employee_id = $employee_id;
@@ -139,7 +147,6 @@ class PaidHolidays extends Model
         $holiday->io_type = $type;
         $holiday->comment = $comment;
         $holiday->regist_date = $regist_date;
-        $holiday->salary_id = $salary_id;
         return $holiday;
     }
 
@@ -166,6 +173,16 @@ class PaidHolidays extends Model
             throw new Exception('勤務表に登録されているため削除できません');
         }
 
+        $srcIoType = $holiday->io_type;
+        $srcAmount = $holiday->amount;
+
+        // 余剰有給のチェック
+        $remainHolidaysCount = self::getCountOfRemainHolidays($employee_id) + ( ( $srcIoType == 1 ) ? -$srcAmount : $srcAmount );
+        $remainHolidaysCount += $type == 1 ? $amount : -$amount;
+        if( $remainHolidaysCount < 0 ){
+            throw new Exception('余剰有給が不足するため更新できません。');
+        }
+
         $holiday->employee_id = $employee_id;
         $holiday->amount = $amount;
         $holiday->io_type = $type;
@@ -190,6 +207,13 @@ class PaidHolidays extends Model
 
         if( empty(Reports::getStatementByHolidayId($holiday_id)) === false ){
             throw new Exception('勤務表に登録されているため削除できません');
+        }
+
+        // 余剰有給のチェック
+        $remainHolidaysCount =
+            self::getCountOfRemainHolidays($holiday->employee_id) + ( ( $holiday->io_type == 1 ) ? -$holiday->amount : $holiday->amount );
+        if( $remainHolidaysCount < 0 ){
+            throw new Exception('余剰有給が不足するため削除できません。');
         }
 
         if( $holiday->delete() === false ){

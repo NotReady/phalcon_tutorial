@@ -78,6 +78,18 @@ class ReportService
     }
 
     /**
+     * 月間の有給消化日数を取得します
+     * @return int
+     */
+    public function howDaysHoliday(){
+        $arrayObjct = $this->_reports->toArray();
+        $horidays = array_filter($arrayObjct, function ($r){
+            return $r['attendance'] === 'holidays';
+        });
+        return count($horidays);
+    }
+
+    /**
      * 曜日別の出勤日数を取得します
      * @return int
      */

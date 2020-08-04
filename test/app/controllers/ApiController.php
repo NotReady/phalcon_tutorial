@@ -393,7 +393,6 @@ class ApiController extends Controller
                 }
 
                 // リクエストにバインドする
-                //$report = Reports::cloneResult($report, $params);
                 $report->assign($params);
 
                 // フォームにバインドする
@@ -418,17 +417,11 @@ class ApiController extends Controller
                 {
                     if( empty($report->paid_holiday_id) ){
                         // 有給エンティティを作成する
-                        $holiday = new PaidHolidays();
-                        $holiday->employee_id = $report->employee_id;
-                        $holiday->amount = 1;
-                        $holiday->io_type = 2;
-                        $holiday->regist_date = $report->at_day;
-                        $holiday->comment = '有給消化';
+                        $holiday = PaidHolidays::createHoliday($report->employee_id, $report->at_day, 2, 1, '有給消化');
                         $holiday->setTransaction($transaction);
                         if( $holiday->save() === false ){
                             throw new Exception('更新に失敗しました。');
                         }
-
                         $report->paid_holiday_id = $holiday->paid_holiday_id;
                     }
 
