@@ -319,7 +319,7 @@
     <div class="float-container clearfix">
         <button type="button" class="float-right btn btn-primary" data-toggle="modal" data-target="#idModalLoans">新規登録する</button>
         {# pager #}
-        <ul id="id_pager" class="float-right m0 mr-3 mb-0"></ul>
+        <ul id="id_loan_pager" class="float-right m0 mr-3 mb-0"></ul>
     </div>
 
     {# 有給Pane #}
@@ -343,7 +343,7 @@
     <div class="float-container clearfix">
         <button type="button" class="float-right btn btn-primary" data-toggle="modal" data-target="#idModalHolidays">新規登録する</button>
         {# pager #}
-        <ul id="id_pager" class="float-right m0 mr-3 mb-0"></ul>
+        <ul id="id_holiday_pager" class="float-right m0 mr-3 mb-0"></ul>
     </div>
 
     {# 貸付編集モーダルウインドウ #}
@@ -481,7 +481,7 @@ $(function() {
 
     {# ページャ #}
     <?php if( count($loans) > 0 ): ?>
-        $('#id_pager').twbsPagination({
+        $('#id_loan_pager').twbsPagination({
             startPage : 1,
             totalPages: <?= ceil( count($loans) / 10); ?>,
             first: "最初",
@@ -543,6 +543,21 @@ $(function() {
     {# 有給明細を描画します #}
     <?php if( count($paid_holidays) > 0 ): ?>
 
+    $('#id_holiday_pager').twbsPagination({
+        startPage : 1,
+        totalPages: <?= ceil( count($paid_holidays) / 10); ?>,
+        first: "最初",
+        prev : "前",
+        next : "次",
+        last : "最後",
+        // これつけないと onPageClick の関数が初期表示時に実行されるアホ不具合がある。
+        initiateStartPageClick: false,
+        onPageClick: function (event, pageNum) {
+        renderStatementInHoliday(pageNum);
+        console.log(pageNum);
+        },
+    });
+
     renderStatementInHoliday(1);
     function renderStatementInHoliday(page){
         $.post({
@@ -550,7 +565,7 @@ $(function() {
             dataType: 'json',
             data: {
                 "employee_id" : {{ employee_id }},
-                "page" : 1,
+                "page" : page,
             },
             timeout: 1000 * 30})
         .then(
