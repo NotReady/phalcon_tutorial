@@ -170,7 +170,7 @@ class PaidHolidays extends Model
         }
 
         if( empty(Reports::getStatementByHolidayId($holiday_id)) === false ){
-            throw new Exception('勤務表に登録されているため削除できません');
+            throw new Exception('勤務表に登録されているため変更できません');
         }
 
         $srcIoType = $holiday->io_type;
@@ -180,7 +180,7 @@ class PaidHolidays extends Model
         $remainHolidaysCount = self::getCountOfRemainHolidays($employee_id) + ( ( $srcIoType == 1 ) ? -$srcAmount : $srcAmount );
         $remainHolidaysCount += $type == 1 ? $amount : -$amount;
         if( $remainHolidaysCount < 0 ){
-            throw new Exception('余剰有給が不足するため更新できません。');
+            throw new Exception('余剰有給が不足するため変更できません。');
         }
 
         $holiday->employee_id = $employee_id;
