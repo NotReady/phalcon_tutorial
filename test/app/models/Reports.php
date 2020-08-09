@@ -205,6 +205,7 @@ class Reports extends Model
          select
             rp.at_day,
             rp.attendance,
+            -- 勤怠不足時間
             timediff(
                 timediff( timediff(sites.time_to, sites.time_from), timediff(sites.breaktime_to, sites.breaktime_from))
                 ,timediff( timediff( rp.time_to, rp.time_from), rp.breaktime)
@@ -253,6 +254,7 @@ class Reports extends Model
             -- 平日定時内の就業時間と時間給, 現場-作業グループ
             in_time.sitename,
             in_time.worktype_name,
+            in_time.weekday,
             '平日時間内' as label,
             sec_to_time(sum(time_to_sec(in_time.worktime))) as sum_time,
             ceil(sum(time_to_sec(in_time.worktime) * h.value / 3600)) as sum_charge,
@@ -266,7 +268,8 @@ class Reports extends Model
                     s.sitename,
                     w.id as worktype_id,
                     w.name as worktype_name,
-                    rp.employee_id
+                    rp.employee_id,
+                    rp.weekday
                 from
                     reports rp
                 join 
@@ -276,7 +279,7 @@ class Reports extends Model
                 where
                  rp.employee_id = :employee_id and
                  rp.at_day between :date_from and :date_to and
-                 dayofweek( rp.at_day ) in ( 2,3,4,5,6 )
+                 rp.weekday = 'weekday'
              ) in_time
         join
              employees e on e.id = in_time.employee_id
@@ -292,6 +295,7 @@ class Reports extends Model
             -- 平日時間外の就業時間と時間給, 現場-作業グループ
             out_time.sitename,
             out_time.worktype_name,
+            out_time.weekday,
             '平日時間外' as label,
             sec_to_time(sum(time_to_sec(out_time.worktime))) as sum_time,
             ceil(sum(time_to_sec(out_time.worktime) * ( h.value* 1.25 ) / 3600)) as sum_charge,
@@ -305,7 +309,8 @@ class Reports extends Model
                     s.sitename,
                     w.id as worktype_id,
                     w.name as worktype_name,
-                    rp.employee_id
+                    rp.employee_id,
+                    rp.weekday
                 from
                     reports rp
                 join 
@@ -315,7 +320,7 @@ class Reports extends Model
                 where
                     rp.employee_id = :employee_id and
                     rp.at_day between :date_from and :date_to and
-                    dayofweek( rp.at_day ) in ( 2,3,4,5,6 )
+                    rp.weekday = 'weekday'
              ) out_time
         join
              employees e on e.id = out_time.employee_id
@@ -332,6 +337,7 @@ class Reports extends Model
             -- 土曜日一括の就業時間と時間給, 現場-作業グループ
             sat_time.sitename,
             sat_time.worktype_name,
+            sat_time.weekday,
             '土曜日出勤' as label,
             sec_to_time(sum(time_to_sec(sat_time.worktime))) as sum_time,
             ceil(sum(time_to_sec(sat_time.worktime)) * ( h.value* 1.35 ) / 3600) as sum_charge,
@@ -344,7 +350,8 @@ class Reports extends Model
                     s.sitename,
                     w.id as worktype_id,
                     w.name as worktype_name,
-                    rp.employee_id
+                    rp.employee_id,
+                    rp.weekday
                 from
                     reports rp
                 join 
@@ -354,7 +361,7 @@ class Reports extends Model
                 where
                     rp.employee_id = :employee_id and
                     rp.at_day between :date_from and :date_to and
-                    dayofweek( rp.at_day ) in ( 7 )
+                    rp.weekday = 'saturday'
              ) sat_time
         join
              employees e on e.id = sat_time.employee_id
@@ -370,6 +377,7 @@ class Reports extends Model
             -- 日曜日一括の就業時間と時間給, 現場-作業グループ
             sun_time.sitename,
             sun_time.worktype_name,
+            sun_time.weekday,
             '日曜日出勤' as label,
             sec_to_time(sum(time_to_sec(sun_time.worktime))) as sum_time,
             ceil(sum(time_to_sec(sun_time.worktime)) * ( h.value* 1.5 ) / 3600) as sum_charge,
@@ -382,7 +390,8 @@ class Reports extends Model
                     s.sitename,
                     w.id as worktype_id,
                     w.name as worktype_name,
-                    rp.employee_id
+                    rp.employee_id,
+                    rp.weekday
                 from
                     reports rp
                 join 
@@ -392,7 +401,7 @@ class Reports extends Model
                 where
                     rp.employee_id = :employee_id and
                     rp.at_day between :date_from and :date_to and
-                    dayofweek( rp.at_day ) in ( 1 )
+                    rp.weekday = 'sunday'
              ) sun_time
         join
              employees e on e.id = sun_time.employee_id
@@ -402,7 +411,47 @@ class Reports extends Model
              h.worktype_id = sun_time.worktype_id
         group by sun_time.site_id, sun_time.worktype_id
         
-        order by sitename, worktype_name, label asc
+        union
+		
+        select
+            -- 祝祭日一括の就業時間と時間給, 現場-作業グループ
+            holi_time.sitename,
+            holi_time.worktype_name,
+            holi_time.weekday,
+            '祝祭日出勤' as label,
+            sec_to_time(sum(time_to_sec(holi_time.worktime))) as sum_time,
+            ceil(sum(time_to_sec(holi_time.worktime)) * ( h.value* 1.5 ) / 3600) as sum_charge,
+            count(holi_time.site_id) as days_worked
+        from
+            (
+                select
+                    timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) as worktime,
+                    rp.site_id,
+                    s.sitename,
+                    w.id as worktype_id,
+                    w.name as worktype_name,
+                    rp.employee_id,
+                    rp.weekday
+                from
+                    reports rp
+                join 
+                    sites s on s.id = rp.site_id
+                join
+                    worktypes w on w.id = rp.worktype_id
+                where
+                    rp.employee_id = :employee_id and
+                    rp.at_day between :date_from and :date_to and
+                    rp.weekday = 'holiday'
+             ) holi_time
+        join
+             employees e on e.id = holi_time.employee_id
+        join
+             hourlycharges h on h.skill_id = e.skill_id and
+             h.site_id = holi_time.site_id and
+             h.worktype_id = holi_time.worktype_id
+        group by holi_time.site_id, holi_time.worktype_id
+        
+        order by sitename, worktype_name, weekday asc
         ";
 
         $mo = new Reports();
