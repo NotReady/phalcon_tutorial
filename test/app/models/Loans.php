@@ -152,7 +152,7 @@ class Loans extends Model
     }
 
     /**
-     * 新規に貸付明細を更新します
+     * 貸付明細を更新します
      * @param integer   $loan_id      貸付モデルサロゲートキー
      * @param integer   $employee_id  社員id
      * @param date      $date         明細日付
@@ -183,7 +183,7 @@ class Loans extends Model
     }
 
     /**
-     * 新規に貸付明細を削除します
+     * 貸付明細を削除します
      * @param integer   $loan_id      貸付モデルサロゲートキー
      * @return none
      */
@@ -201,6 +201,5 @@ class Loans extends Model
         if( $loan->delete() === false ){
             throw new Exception('削除に失敗しました');
         }
-
     }
 }

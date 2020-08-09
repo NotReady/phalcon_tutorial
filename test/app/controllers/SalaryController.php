@@ -60,8 +60,13 @@ class SalaryController extends Controller
         // 就業トランザクション
         $reportService = new ReportService($employee_id, $year, $month);
         $this->view->reports = $reportService->getMonthlyReport();
-        $this->view->days_worked = $reportService->howDaysWorked();
-        $this->view->days_Absenteeism = $reportService->howDaysAbsenteeism();
+        $this->view->days_business      = $reportService->getBusinessDayOfMonth();      // 営業日数
+        $this->view->days_worked        = $reportService->howDaysWorked();              // 出勤日数
+        $this->view->days_Absenteeism   = $reportService->howDaysAbsenteeism();         // 欠勤日数
+        $this->view->days_holiday       = $reportService->howDaysHoliday();             // 有給日数
+        $this->view->days_be_late       = $reportService->getCountOfBeLateDays();       // 遅刻日数
+        $this->view->days_leave_early   = $reportService->getCountOfLeaveEarlyDays();   // 早退日数
+        $this->view->missing_time       = $reportService->getMissingTime();             // 勤怠控除時間
         $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
         $this->view->summary = $summary = $reportService->getSummaryBySiteWorkUnit();
 

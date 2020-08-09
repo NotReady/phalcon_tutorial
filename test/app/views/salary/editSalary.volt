@@ -64,20 +64,13 @@
     /* 時間内訳テーブル */
     .table_timeunit td:nth-of-type(1),
     .table_timeunit th:nth-of-type(1)
-    {width: 50%;}
+    {width: 40%;}
     .table_timeunit td:nth-of-type(2),
     .table_timeunit th:nth-of-type(2)
-    {width: 50%;}
-
-    /* 支給控除明細テーブル */
-    .table_timeunit td:nth-of-type(1){
-        text-align: right;
-    }
-
-    /* 支給控除明細テーブル */
-    .table_timeunit td:nth-of-type(2){
-        text-align: left;
-    }
+    {width: 30%;}
+    .table_timeunit td:nth-of-type(3),
+    .table_timeunit th:nth-of-type(3)
+    {width: 30%;}
 
 </style>
 
@@ -537,33 +530,83 @@
             <div class="col-12">
                 <h2 class="subtitle flex_box flex_left">
                     <span>出勤統計</span>
-                    <span class="highlight">出勤日数　<span class="highlight-text">{{ days_worked }}</span> 日</span>
-                    (
-                    {% for unitname, time in howDaysWorkedOfDay %}
-                        <span class="highlight">{{ unitname }}　<span class="highlight-text">{{ time }}</span> 日</span>
-                    {% endfor %}
-                    )
                 </h2>
-                <table class="table table_timeunit">
-                    <thead>
-                    <th>項目</th>
-                    <th>時間</th>
-                    </thead>
-                    <tbody>
-                    {% for categoryName, unit in summary['timeunits'] %}
-                        <tr>
-                            <td>{{ categoryName }}</td>
-                            <td>{{ unit['time'] }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td>出勤時間合計</td>
-                        <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
-                    </tr>
-                    </tfoot>
-                </table>
+
+                <div class="row">
+                    <div class="col-4 flex_sequence_container">
+
+                        <div class="data-boxy">
+                            <div class="header v-center">営業日数</div>
+                            <div class="body v-center"><span class="highlight-text">{{ days_business }}</div>
+                        </div>
+
+                        <div class="data-boxy">
+                            <div class="header v-center">出勤日数</div>
+                            <div class="body v-center"><span class="highlight-text text-success">{{ days_worked }}</span></div>
+                        </div>
+
+                        <div class="data-boxy">
+                            <div class="header v-center">有給日数</div>
+                            <div class="body v-center"><span class="highlight-text text-info">{{ days_holiday }}</span></div>
+                        </div>
+
+                        <div class="data-boxy">
+                            <div class="header v-center">欠勤日数</div>
+                            <div class="body v-center"><span class="highlight-text text-danger">{{ days_Absenteeism }}</span></div>
+                        </div>
+
+                        <div class="data-boxy">
+                            <div class="header v-center">遅刻日数</div>
+                            <div class="body v-center"><span class="highlight-text text-danger">{{ days_be_late }}</span></div>
+                        </div>
+
+                        <div class="data-boxy">
+                            <div class="header v-center">早退日数</div>
+                            <div class="body v-center"><span class="highlight-text text-danger">{{ days_leave_early }}</span></div>
+                        </div>
+
+                        <div class="data-boxy">
+                            <div class="header v-center">時間内</div>
+                            <div class="body v-center"><span class="highlight-text">{{ summary['intimeAll']}}</span></div>
+                        </div>
+
+                        <div class="data-boxy">
+                            <div class="header v-center">時間外</div>
+                            <div class="body v-center"><span class="highlight-text">{{ summary['outtimeAll']}}</span></div>
+                        </div>
+
+                        <div class="data-boxy">
+                            <div class="header v-center">控除時間</div>
+                            <div class="body v-center"><span class="highlight-text text-danger">{% if employee.employee_type is 'pro' %}{{ missing_time }}{% endif %}</span></div>
+                        </div>
+
+                    </div>
+                    <div class="col-8">
+                        <table class="table table_timeunit">
+                            <thead>
+                            <th>項目</th>
+                            <th>時間</th>
+                            <th>出勤日数</th>
+                            </thead>
+                            <tbody>
+                            {% for categoryName, unit in summary['timeunits'] %}
+                                <tr>
+                                    <td>{{ categoryName }}</td>
+                                    <td>{{ unit['time'] }}</td>
+                                    <td>{{ unit['days'] }} 日</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td>合計</td>
+                                <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
+                                <td><span class="highlight-text">{{ days_worked }} 日</span></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -30,6 +30,34 @@ class SalaryHelper
      */
     private const REPAY_LOAN_VALUE = 20000;
 
+
+    /**
+     * 欠勤控除額を取得します
+     * @note 基本給をベースに日給×欠勤日数を欠勤控除額とします
+     * @param $baseCharge 基本給
+     * @param $daysCountOfBusinessDays 月の営業日
+     * @param $daysCountOfAbsenteeismDays 欠勤日数
+     * @return int
+     */
+    private static function getAbsenceDeductionByDay($baseCharge, $daysCountOfBusinessDays, $daysCountOfAbsenteeismDays ){
+        $salaryPerDay = floor($baseCharge / $daysCountOfBusinessDays);
+        return $salaryPerDay * $daysCountOfAbsenteeismDays;
+    }
+
+    /**
+     * 勤怠控除額を取得します
+     * @note 基本給をベースに時給×欠勤時間を欠勤控除額とします
+     * @param $baseCharge 基本給
+     * @param $daysCountOfBusinessDays 月の営業日
+     * @param $missingTimes 控除時間
+     * @return int
+     */
+    private static function getMissingDeductionByTime($baseCharge, $daysCountOfBusinessDays, $missingTimes){
+        $salaryPerSeconds = $baseCharge / $daysCountOfBusinessDays / 8 / 3600;
+        $missingBySecounds = TimeUtil::makeFromTimeStr($missingTimes)->getSeconds();
+        return floor($salaryPerSeconds * $missingBySecounds);
+    }
+
     /**
      * 給与モデルのブランクをマスタで補完します
      * @param $salary Salaries
@@ -40,24 +68,39 @@ class SalaryHelper
 
         // 基本給を補完します
         if( is_null($salary->base_charge) === true ){
+
             // 社員固定給
             if( $employee->employee_type === 'pro' ){
 
                 // 基本給
                 $salary->base_charge = $employee->monthly_charge;
 
-                // 勤怠控除
-                // 基本給を営業日で割った日給と欠勤日数を欠勤控除とする
-                $bisinessDaysOfThisMonth = $reportHelper->getBusinessDayOfMonth(); // 営業日
-                $daysUnit = floor($salary->base_charge / $bisinessDaysOfThisMonth);
-                $days_Absenteeism = $reportHelper->howDaysAbsenteeism(); // 欠勤日
-                $salary->attendance_deduction1 = $daysUnit * $days_Absenteeism;
             }
             // パート時間給
             else
             {
                 $salary->base_charge = $reportHelper->getSummaryBySiteWorkUnit();
+            }
+        }
 
+        $bisinessDaysOfThisMonth = $reportHelper->getBusinessDayOfMonth();  // 営業日
+
+        // 欠勤控除を補完します
+        if( is_null($salary->attendance_deduction1) === true ) {
+            if( $employee->employee_type === 'pro' ) {
+                $days_Absenteeism = $reportHelper->howDaysAbsenteeism(); // 欠勤日数
+                $salary->attendance_deduction1 =
+                self::getAbsenceDeductionByDay($salary->base_charge, $bisinessDaysOfThisMonth, $days_Absenteeism);
+            }
+
+        }
+
+        // 勤怠控除を補完します
+        if( is_null($salary->attendance_deduction2) === true ) {
+            if( $employee->employee_type === 'pro' ) {
+                $missingTimes = $reportHelper->getMissingTime();  // 勤怠控除時間
+                $salary->attendance_deduction2 =
+                    self::getMissingDeductionByTime($salary->base_charge, $bisinessDaysOfThisMonth, $missingTimes);
             }
         }
 

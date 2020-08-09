@@ -94,48 +94,6 @@
         color: #ffffff;
     }
 
-    .v-mid{
-        vertical-align: middle;
-    }
-
-    .v-center{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
-
-    .flex_sequence_container{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        height: 100%;
-    }
-
-    .flex_sequence_container > *{
-        margin: 0.5rem;
-
-    }
-
-    .data-boxy{
-        width: 110px;
-        height: 110px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        display: inline-block;
-        border: 1px solid #eee;
-    }
-
-    .data-boxy .header{
-        height: 30px;
-        background-color: #eee;
-    }
-
-    .data-boxy .body{
-        height: 80px;
-    }
-
 </style>
 
 <div class="content_root">
@@ -181,16 +139,19 @@
         {% for day, report in reports %}
         <?php $windex = date('w',  strtotime("${day}")); ?>
         <tr>
+            {% set isHoliday = false %}
+            {% for holiday, caption in holidays %}
+                {% if holiday is day %}
+                    {% set isHoliday = true %}
+                {% endif %}
+            {% endfor %}
+
             <input type="hidden" name="at_day" value="{{ report.getValue('at_day') }}" />
+            <input type="hidden" name="weekday"
+                   value="{% if isHoliday is true %}holiday{% elseif windex is 6 %}saturday{% elseif windex is 0 %}sunday{% else %}weekday{% endif %}" />
             <input type="hidden" name="employee_id" value="{{report.getValue('employee_id') }}" />
             <td class="cell"><?= date('m-d', strtotime($day)) ?></td>
             <td>
-                {% set isHoliday = false %}
-                <?php foreach( $holidays as $holiday => $caption ): ?>
-                    <?php if( $holiday === $day ): ?>
-                        <?php $isHoliday = true; ?>
-                    <?php endif; ?>
-                <?php endforeach; ?>
                 <span class="{% if isHoliday === true %}holi-decoration{% elseif windex is 6 %}sat-decoration{% elseif windex is 0 %}sun-decoration{% endif %}">
                     <?= $week[$windex] ?>
                 </span>
@@ -228,8 +189,23 @@
             </div>
 
             <div class="data-boxy">
+                <div class="header v-center">有給日数</div>
+                <div class="body v-center"><span class="highlight-text text-info">{{ days_holiday }}</span></div>
+            </div>
+
+            <div class="data-boxy">
                 <div class="header v-center">欠勤日数</div>
                 <div class="body v-center"><span class="highlight-text text-danger">{{ days_Absenteeism }}</span></div>
+            </div>
+
+            <div class="data-boxy">
+                <div class="header v-center">遅刻日数</div>
+                <div class="body v-center"><span class="highlight-text text-danger">{{ days_be_late }}</span></div>
+            </div>
+
+            <div class="data-boxy">
+                <div class="header v-center">早退日数</div>
+                <div class="body v-center"><span class="highlight-text text-danger">{{ days_leave_early }}</span></div>
             </div>
 
             <div class="data-boxy">
@@ -240,6 +216,11 @@
             <div class="data-boxy">
                 <div class="header v-center">時間外</div>
                 <div class="body v-center"><span class="highlight-text">{{ summary['outtimeAll']}}</span></div>
+            </div>
+
+            <div class="data-boxy">
+                <div class="header v-center">控除時間</div>
+                <div class="body v-center"><span class="highlight-text text-danger">{% if employee.employee_type is 'pro' %}{{ missing_time }}{% endif %}</span></div>
             </div>
 
         </div>
@@ -329,7 +310,7 @@
 
             {# フォームのdisableを制御 #}
             const attendance = $(this).val();
-            const disabled = attendance === "absenteeism";
+            const disabled = attendance === "absenteeism" || attendance === "holidays";
             $(this).parents("tr").find("select[name='site_id']").prop("disabled", disabled);
             $(this).parents("tr").find("select[name='worktype_id']").prop("disabled", disabled);
             $(this).parents("tr").find("input[name='time_from']").prop("disabled", disabled);
@@ -407,6 +388,7 @@
 
             const $row = $(this).parents("tr");
             const date = $row.find("input[name='at_day']").val();
+            const weekday = $row.find("input[name='weekday']").val();
             const employee_id = $row.find("input[name='employee_id']").val();
             const attendance = $row.find("select[name='attendance']").val();
             const site_id = $row.find("select[name='site_id']").val();
@@ -421,6 +403,7 @@
                 type: "POST",
                 data: {
                     at_day: date,
+                    weekday: weekday,
                     employee_id: employee_id,
                     attendance: attendance,
                     site_id: site_id,

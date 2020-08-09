@@ -298,6 +298,7 @@
 
     {{ endform() }}
 
+    {# 貸付Pane #}
     <h1 class="title"><i class="fas fa-hand-holding-usd mr-1"></i>貸付明細</h1>
 
     <p class="caption-large">貸付残高　{{ loansAmount | number_format }} 円</p>
@@ -316,17 +317,41 @@
     </div>
 
     <div class="float-container clearfix">
-        <button type="button" class="float-right btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">新規登録する</button>
+        <button type="button" class="float-right btn btn-primary" data-toggle="modal" data-target="#idModalLoans">新規登録する</button>
         {# pager #}
-        <ul id="id_pager" class="float-right m0 mr-3 mb-0"></ul>
+        <ul id="id_loan_pager" class="float-right m0 mr-3 mb-0"></ul>
     </div>
 
-    {# モーダルウインドウ #}
-    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    {# 有給Pane #}
+    <h1 class="title"><i class="fas fa-hand-holding-usd mr-1"></i>有給管理</h1>
+
+    <p class="caption-large">残り有給　{{ holidaysAmount | number_format }} 日</p>
+
+    <div class="sticky-table mb-3">
+        <table class="table-hover table table-main loans">
+            <thead>
+            <th>日付</th>
+            <th>付与日数</th>
+            <th>消化日数</th>
+            <th>コメント</th>
+            <th>変更</th>
+            </thead>
+            <tbody id="id-holiday-body">{# load ajax response #}</tbody>
+        </table>
+    </div>
+
+    <div class="float-container clearfix">
+        <button type="button" class="float-right btn btn-primary" data-toggle="modal" data-target="#idModalHolidays">新規登録する</button>
+        {# pager #}
+        <ul id="id_holiday_pager" class="float-right m0 mr-3 mb-0"></ul>
+    </div>
+
+    {# 貸付編集モーダルウインドウ #}
+    <div class="modal fade" id="idModalLoans" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="idModalLoansLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">明細を新規追加します</h5>
+                    <h5 class="modal-title" id="idModalLoansLabel">明細を新規追加します</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -356,7 +381,7 @@
 
                             </li>
                             <li class="form-element-wrap">
-                                <label for="loan-comment">金額</label>
+                                <label for="loan-amount">金額</label>
                                 <input class="form-control" name="loan-amount" type="number" placeholder="金額を入力してください"/>
                                 <span class="text-danger d-none" id="id-warn-loan-amount">金額を入力してください</span>
                             </li>
@@ -382,6 +407,69 @@
             </div>
         </div>
     </div>
+
+    {# 有給編集モーダルウインドウ #}
+    <div class="modal fade" id="idModalHolidays" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="idModalHolidaysLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="idModalHolidaysLabel">有給を新規追加します</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" name="nm-employee-id" value="{{ employee_id }}">
+                        <input type="hidden" name="holiday-id">
+                        <ul>
+                            <li class="form-element-wrap">
+                                <label for="holiday-date">登録日付</label>
+                                <input class="form-control" name="holiday-date" type="date"/>
+                                <span class="text-danger d-none" id="id-warn-holiday-date">登録日付を入力してください</span>
+                            </li>
+                            <li class="form-element-wrap">
+                                <label>種別</label><br />
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="holiday-type" value="1" checked>
+                                    <label class="form-check-label">付与</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="holiday-type" value="2">
+                                    <label class="form-check-label">消化</label>
+                                </div>
+
+                            </li>
+                            <li class="form-element-wrap">
+                                <label for="holiday-amount">日数</label>
+                                <input class="form-control" name="holiday-amount" type="number" placeholder="日数を入力してください"/>
+                                <span class="text-danger d-none" id="id-warn-holiday-amount">日数を入力してください</span>
+                            </li>
+                            <li class="form-element-wrap">
+                                <label for="holiday-comment">コメント</label>
+                                <input class="form-control" name="holiday-comment" type="text" placeholder="コメントを入力してください"/>
+                                <span class="text-danger d-none" id="id-warn-holiday-comment">コメントを入力してください</span>
+                            </li>
+
+                        </ul>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                    <span class="holiday-modify-method">
+                        <button type="button" class="btn btn-danger" id="id-delete-holiday" data-method="delete">削除する</button>
+                        <button type="button" class="btn btn-primary" id="id-update-holiday" data-method="update">変更する</button>
+                    </span>
+                    <span class="holiday-add-method">
+                        <button type="button" class="btn btn-primary" id="id-create-holiday" data-method="create">登録する</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% include "includes/spinner.volt" %}
 {% endblock %}
@@ -393,9 +481,71 @@ $(function() {
 
     {# ページャ #}
     <?php if( count($loans) > 0 ): ?>
-    $('#id_pager').twbsPagination({
+        $('#id_loan_pager').twbsPagination({
+            startPage : 1,
+            totalPages: <?= ceil( count($loans) / 10); ?>,
+            first: "最初",
+            prev : "前",
+            next : "次",
+            last : "最後",
+            // これつけないと onPageClick の関数が初期表示時に実行されるアホ不具合がある。
+            initiateStartPageClick: false,
+            onPageClick: function (event, pageNum) {
+                refreshLoansByPage(pageNum);
+                console.log(pageNum);
+            },
+        });
+
+        refreshLoansByPage(1);
+        {# 貸付明細取得 #}
+        function refreshLoansByPage(page){
+            $.post({
+
+                url: "/employees/loan/get/member",
+                dataType: 'json',
+                // フォーム要素の内容をハッシュ形式に変換
+                data: {
+                    "employee_id" : {{ employee_id }},
+                    "page" : page,
+                },
+                timeout: 1000 * 30})
+                .then(
+                    function(data, textStatus, jqXHR) {
+
+                        $("#id-loans-body").empty();
+
+                        $.each(JSON.parse(data['loans']), function(idx, loan) {
+
+                        $("<tr />").appendTo($("#id-loans-body"))
+                                .append($("<td />").text(function(){
+                                    const d = new Date(loan.regist_date);
+                                    return `${d.getFullYear()}年${("00"+(d.getMonth()+1)).slice(-2)}月${("00" + d.getDate()).slice(-2)}日` }))
+                                .append($("<td />").text(function(){if( loan.io_type == 1 ) return loan.amount + " 円";}()))
+                                .append($("<td />").text(function(){if( loan.io_type == 2 ) return loan.amount + " 円";}()))
+                                .append($("<td />").text(loan.comment))
+                                .append(
+                                    $("<td />").append(
+                                        $(`<button class="btn btn-primary" data-toggle="modal" data-target="#idModalLoans" data-loan-id="${loan.loan_id}"
+                                        data-loan-date="${function(){const d = new Date(loan.regist_date);return `${d.getFullYear()}-${("00"+(d.getMonth()+1)).slice(-2)}-${("00" + d.getDate()).slice(-2)}`}()}"
+                                        data-loan-type="${loan.io_type}" data-loan-amount="${loan.amount}" data-loan-comment="${loan.comment}">変更</button>`)
+                                    )
+                                );
+                            console.log(loan);
+                        });
+                    },
+                    function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                    }
+                );
+        }
+    <?php endif; ?>
+
+    {# 有給明細を描画します #}
+    <?php if( count($paid_holidays) > 0 ): ?>
+
+    $('#id_holiday_pager').twbsPagination({
         startPage : 1,
-        totalPages: <?= ceil( count($loans) / 10); ?>,
+        totalPages: <?= ceil( count($paid_holidays) / 10); ?>,
         first: "最初",
         prev : "前",
         next : "次",
@@ -403,57 +553,54 @@ $(function() {
         // これつけないと onPageClick の関数が初期表示時に実行されるアホ不具合がある。
         initiateStartPageClick: false,
         onPageClick: function (event, pageNum) {
-            refreshLoansByPage(pageNum);
-            console.log(pageNum);
+        renderStatementInHoliday(pageNum);
+        console.log(pageNum);
         },
     });
 
-    refreshLoansByPage(1);
-    {# 貸付明細取得 #}
-    function refreshLoansByPage(page){
+    renderStatementInHoliday(1);
+    function renderStatementInHoliday(page){
         $.post({
-
-            url: "/employees/loan/get/member",
+            url: "/employees/holiday/get/member",
             dataType: 'json',
-            // フォーム要素の内容をハッシュ形式に変換
             data: {
                 "employee_id" : {{ employee_id }},
                 "page" : page,
             },
             timeout: 1000 * 30})
-            .then(
-                function(data, textStatus, jqXHR) {
+        .then(
+            function(data, textStatus, jqXHR) {
 
-                    $("#id-loans-body").empty();
+                $("#id-holiday-body").empty();
 
-                    $.each(JSON.parse(data['loans']), function(idx, l) {
+                $.each(JSON.parse(data['holidays']), function(idx, holiday) {
 
-                    $("<tr />").appendTo($("#id-loans-body"))
-                            .append($("<td />").text(function(){
-                                const d = new Date(l.regist_date);
-                                return `${d.getFullYear()}年${("00"+(d.getMonth()+1)).slice(-2)}月${("00" + d.getDate()).slice(-2)}日` }))
-                            .append($("<td />").text(function(){if( l.io_type == 1 ) return "+ " + l.amount + " 円";}()))
-                            .append($("<td />").text(function(){if( l.io_type == 2 ) return "- " + l.amount + " 円";}()))
-                            .append($("<td />").text(l.comment))
-                            .append(
-                                $("<td />").append(
-                                    $(`<button class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop" data-loan-id="${l.loan_id}"
-                                    data-loan-date="${function(){const d = new Date(l.regist_date);return `${d.getFullYear()}-${("00"+(d.getMonth()+1)).slice(-2)}-${("00" + d.getDate()).slice(-2)}`}()}"
-                                    data-loan-type="${l.io_type}" data-loan-amount="${l.amount}" data-loan-comment="${l.comment}">変更</button>`)
-                                )
-                            );
-                        console.log(l);
-                    });
-                },
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
-                }
-            );
+                    $("<tr />").appendTo($("#id-holiday-body"))
+                        .append($("<td />").text(function(){
+                            const d = new Date(holiday.regist_date);
+                            return `${d.getFullYear()}年${("00"+(d.getMonth()+1)).slice(-2)}月${("00" + d.getDate()).slice(-2)}日` }))
+                        .append($("<td />").text(function(){if( holiday.io_type == 1 ) return holiday.amount + " 日";}()))
+                        .append($("<td />").text(function(){if( holiday.io_type == 2 ) return holiday.amount + " 日";}()))
+                        .append($("<td />").text(holiday.comment))
+                        .append(
+                            $("<td />").append(
+                                $(`<button class="btn btn-primary" data-toggle="modal" data-target="#idModalHolidays" data-holiday-id="${holiday.paid_holiday_id}"
+                                    data-holiday-date="${function(){const d = new Date(holiday.regist_date);return `${d.getFullYear()}-${("00"+(d.getMonth()+1)).slice(-2)}-${("00" + d.getDate()).slice(-2)}`}()}"
+                                    data-holiday-type="${holiday.io_type}" data-holiday-amount="${holiday.amount}" data-holiday-comment="${holiday.comment}">変更</button>`)
+                            )
+                        );
+                    console.log(holiday);
+                });
+            },
+            function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+            }
+        );
     }
     <?php endif; ?>
 
-    {# モーダルの表示イベント #}
-    $("#staticBackdrop").on("show.bs.modal", function (e) {
+    {# 貸付モーダルの表示イベント #}
+    $("#idModalLoans").on("show.bs.modal", function (e) {
         const loan_id = $(e.relatedTarget).data("loan-id");
         const loan_date = $(e.relatedTarget).data("loan-date");
         const loan_type = $(e.relatedTarget).data("loan-type")
@@ -467,14 +614,41 @@ $(function() {
         $("input[name='loan-comment']").val(loan_comment);
 
         if( loan_id ){
-            $(".modal-title").text("明細を編集します");
+            $(".modal-title").text("貸付を編集します");
             $(".loan-add-method").hide();
             $(".loan-modify-method").show();
         }
         else{
-            $(".modal-title").text("明細を追加します");
+            $(".modal-title").text("貸付を登録します");
             $(".loan-add-method").show();
             $(".loan-modify-method").hide();
+        }
+
+    })
+
+    {# 有給モーダルの表示イベント #}
+    $("#idModalHolidays").on("show.bs.modal", function (e) {
+        const holiday_id = $(e.relatedTarget).data("holiday-id");
+        const holiday_date = $(e.relatedTarget).data("holiday-date");
+        const holiday_type = $(e.relatedTarget).data("holiday-type")
+        const holiday_amount = $(e.relatedTarget).data("holiday-amount");
+        const holiday_comment = $(e.relatedTarget).data("holiday-comment");
+        const radio = holiday_type ? holiday_type-1 : 0;
+        $("input[name='holiday-id']").val(holiday_id);
+        $("input[name='holiday-date']").val(holiday_date);
+        $(`input[name='holiday-type']:eq(${radio})`).prop("checked", true);
+        $("input[name='holiday-amount']").val(holiday_amount);
+        $("input[name='holiday-comment']").val(holiday_comment);
+
+        if( holiday_id ){
+            $(".modal-title").text("有給を編集します");
+            $(".holiday-add-method").hide();
+            $(".holiday-modify-method").show();
+        }
+        else{
+            $(".modal-title").text("有給を登録します");
+            $(".holiday-add-method").show();
+            $(".holiday-modify-method").hide();
         }
 
     })
@@ -489,15 +663,15 @@ $(function() {
             },
             timeout: 1000 * 30,
         })
-            .then(
-                function(data, textStatus, jqXHR) {
-                    console.log(data);
-                    $loan = JSON.parse(data);
-                },
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
-                }
-            );
+        .then(
+            function(data, textStatus, jqXHR) {
+                console.log(data);
+                $loan = JSON.parse(data);
+            },
+            function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+            }
+        );
     }
 
     {# 貸付編集 #}
@@ -570,6 +744,77 @@ $(function() {
         );
 
     });
+
+    {# 有給編集 #}
+    $("#id-create-holiday, #id-update-holiday, #id-delete-holiday").on("click", function(){
+
+        if( date = $("input[name='holiday-date']").val() ){
+            $("#id-warn-holiday-date").addClass("d-none");
+        }else{
+            $("#id-warn-holiday-date").removeClass("d-none");
+        }
+
+        if( amount = $("input[name='holiday-amount']").val() ){
+            $("#id-warn-holiday-amount").addClass("d-none");
+        }else{
+            $("#id-warn-holiday-amount").removeClass("d-none");
+        }
+
+        if( comment = $("input[name='holiday-comment']").val() ){
+            $("#id-warn-holiday-comment").addClass("d-none");
+        }else{
+            $("#id-warn-holiday-comment").removeClass("d-none");
+        }
+
+        const type = $("input[name='holiday-type']:checked").val();
+        const employee_id = $("input[name='nm-employee-id']").val();
+        const holiday_id = $("input[name='holiday-id']").val();
+        const method = $(this).data("method");
+
+        if( !( date && amount && comment && type && employee_id) ){return;}
+
+        $.post({
+            url: `/employees/holiday/${method}`,
+            dataType: 'json',
+            global: false,
+            // フォーム要素の内容をハッシュ形式に変換
+            data: {
+                "date" : date,
+                "type" : type,
+                "amount" : amount,
+                "comment" : comment,
+                "employee_id" : employee_id,
+                "holiday_id" : holiday_id,
+                "method" : method
+            },
+            timeout: 1000 * 30,
+            beforeSend: function(xhr, settings){
+                $(document).triggerHandler('ajaxStart');
+            },
+
+        })
+        .then(
+            function(data, textStatus, jqXHR) {
+                console.log(data);
+                if( data['result'] ){
+                    if( data['result'] == "success" ) {
+                        $(document).triggerHandler('ajaxStop', [true,
+                            method=="create" ? "登録しました": method=="update" ? "更新しました" : "削除しました", ()=>{location.reload();}]);
+                    }
+                    if( data['result'] == "failure" ) {
+                        $(document).triggerHandler('ajaxStop', [ false, data['message']]);
+                    }
+                }else{
+                    $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
+                }
+            },
+            function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                $(document).triggerHandler('ajaxStop', [ false, "システムエラーが発生しました。"]);
+            }
+        );
+    });
+
 
     {# 保険加入選択 保険料額フォームのenable/disableを制御 #}
     {# disable時、postは飛ばないので自動的にnullとなる #}

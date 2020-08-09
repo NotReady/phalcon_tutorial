@@ -54,7 +54,7 @@ class ReportService
     }
 
     /**
-     * 月間の出勤日数を取得します
+     * 月間の出勤した日数を取得します
      * @return int
      */
     public function howDaysWorked(){
@@ -66,7 +66,7 @@ class ReportService
     }
 
     /**
-     * 月間の欠勤日数を取得します
+     * 月間の欠勤した日数を取得します
      * @return int
      */
     public function howDaysAbsenteeism(){
@@ -75,6 +75,43 @@ class ReportService
             return $r['attendance'] === 'absenteeism';
         });
         return count($attendanced);
+    }
+
+    /**
+     * 月間の遅刻した日数を取得します
+     * @return int
+     */
+    public function getCountOfBeLateDays(){
+        $arrayObjct = $this->_reports->toArray();
+        $filteredBeLateArray = array_filter($arrayObjct, function ($r){
+            return $r['attendance'] === 'be_late';
+        });
+        return count($filteredBeLateArray);
+    }
+
+    /**
+     * 月間の早退した日数を取得します
+     * @return int
+     */
+    public function getCountOfLeaveEarlyDays(){
+        $arrayObjct = $this->_reports->toArray();
+        $filteredLeaveEarlyArray = array_filter($arrayObjct, function ($r){
+            return $r['attendance'] === 'Leave_early';
+        });
+        return count($filteredLeaveEarlyArray);
+    }
+
+
+    /**
+     * 月間の有給消化日数を取得します
+     * @return int
+     */
+    public function howDaysHoliday(){
+        $arrayObjct = $this->_reports->toArray();
+        $horidays = array_filter($arrayObjct, function ($r){
+            return $r['attendance'] === 'holidays';
+        });
+        return count($horidays);
     }
 
     /**
@@ -172,12 +209,14 @@ class ReportService
             '平日時間外' => new TimeUtil(),
             '土曜日出勤' => new TimeUtil(),
             '日曜日出勤' => new TimeUtil(),
+            '祝祭日出勤' => new TimeUtil(),
         ];
         $daysWorkedCount = [
             '平日時間内' => 0,
             '平日時間外' => 0,
             '土曜日出勤' => 0,
             '日曜日出勤' => 0,
+            '祝祭日出勤' => 0,
         ];
 
         $timeUnitsValue = [];
@@ -210,7 +249,7 @@ class ReportService
 
         // 時間軸の統計 -　時間外
         $outTimeAll = new TimeUtil();
-        foreach (['平日時間外', '土曜日出勤', '日曜日出勤'] as $outtime){
+        foreach (['平日時間外', '土曜日出勤', '日曜日出勤', '祝祭日出勤'] as $outtime){
             $outTimeAll->addTimeStr($timeUnitObjects[$outtime]->getTimeStr());
         }
 
@@ -222,6 +261,24 @@ class ReportService
             'outtimeAll' => $outTimeAll->getTimeStr(),
             'chargeAll' => $chargeAll,
         ];
+    }
+
+
+    /**
+     * 遅刻か早退のうち、醜状時間に満たない勤怠控除時間合計を取得します
+     * @return string
+     */
+    public function getMissingTime(){
+        $report = new Reports();
+        $missing = $report->getMissingCharge($this->_employee_id, $this->_year, $this->_month);
+
+        $missingTimeSummary = new TimeUtil();
+        foreach ($missing as $statement){
+            $missingTimeSummary->addTimeStr($statement->time_missing);
+        }
+
+        return $missingTimeSummary->getTimeStr();
+
     }
 
 }

@@ -1,5 +1,7 @@
 <?php
 use Phalcon\Mvc\Controller;
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
+use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 
 class ApiController extends Controller
 {
@@ -216,7 +218,7 @@ class ApiController extends Controller
     }
 
     /**
-     * 明細の取得アクション
+     * 貸付明細の取得アクション
      */
     public function getLoanWithMemberAction(){
         $this->jsonResponse(function (){
@@ -233,7 +235,7 @@ class ApiController extends Controller
     }
 
     /**
-     * 明細の取得アクション
+     * 貸付明細の取得アクション
      */
     public function getLoanWithIdAction(){
         $this->jsonResponse(function (){
@@ -244,6 +246,84 @@ class ApiController extends Controller
                 'result' => 'success',
                 'loan' => $loan,
             ]);
+        });
+    }
+
+    /**
+     * 有給明細の取得アクション
+     */
+    public function getPaidHolidayOfEmployeeAction(){
+        $this->jsonResponse(function (){
+            $params = $this->request->getPost();
+            $eid = $params['employee_id'];
+            $page = $params['page'];
+            $paidHolidays = PaidHolidays::getStatementOfEmplyoeePagingUnit($eid, $page);
+            $json = json_encode($paidHolidays);
+            echo json_encode([
+                'result' => 'success',
+                'holidays' => $json,
+            ]);
+        });
+    }
+
+    /**
+     * 有給の登録アクション
+     */
+    public function createHolidayAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $holiday = PaidHolidays::createHoliday($params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
+                if( $holiday->save() === false ){
+                    throw new Exception("作成に失敗しました");
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
+     * 有給の更新アクション
+     */
+    public function updateHolidayAction(){
+        $this->jsonResponse(function (){
+
+            try{
+                $params = $this->request->getPost();
+                $loan = PaidHolidays::updateHoliday($params['holiday_id'], $params['employee_id'], $params['date'], $params['type'], $params['amount'], $params['comment']);
+                if( $loan->save() === false ){
+                    throw new Exception("更新に失敗しました");
+                }
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
+     * 有給の削除アクション
+     */
+    public function deleteHolidayAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                PaidHolidays::deleteHoliday($params['holiday_id']);
+                echo json_encode(['result' => 'success']);
+            }catch (Exception $e) {
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
         });
     }
 
@@ -305,11 +385,18 @@ class ApiController extends Controller
     public function saveReportAction(){
         $this->jsonResponse(function (){
             try{
-                $params = $this->request->getPost();
-                $report = new Reports();
 
-                // バインド
-                $form = new ReportForm($report, $params['attendance']);
+                $params = $this->request->getPost();
+                $report = Reports::getReportAtDay($params['employee_id'], $params['at_day']);
+                if( empty($report) ){
+                    $report = $report = new Reports();
+                }
+
+                // リクエストにバインドする
+                $report->assign($params);
+
+                // フォームにバインドする
+                $form = new ReportForm($report);
                 $form->bind($params, $report);
 
                 // バリデーション
@@ -322,19 +409,58 @@ class ApiController extends Controller
                     throw new KVSExtendedException($raiseMessages);
                 }
 
-                // 欠勤
-                if( $report->attendance === 'absenteeism'){
+                $transactionManager = new TransactionManager();
+                $transaction = $transactionManager->get();
+
+                // 有給
+                if($report->attendance === 'holidays')
+                {
+                    if( empty($report->paid_holiday_id) ){
+                        // 有給エンティティを作成する
+                        $holiday = PaidHolidays::createHoliday($report->employee_id, $report->at_day, 2, 1, '有給消化');
+                        $holiday->setTransaction($transaction);
+                        if( $holiday->save() === false ){
+                            throw new Exception('更新に失敗しました。');
+                        }
+                        $report->paid_holiday_id = $holiday->paid_holiday_id;
+                    }
+
                     $report->site_id = null;
                     $report->worktype_id = null;
                     $report->breaktime = null;
                     $report->time_from = null;
                     $report->time_to = null;
                 }
+                else
+                {
+                    // 有給エンティティの削除
+                    if( empty($report->paid_holiday_id) === false ){
+                        $holiday = PaidHolidays::getStatementById($report->paid_holiday_id);
+                        $holiday->setTransaction($transaction);
+                        if( $holiday->delete() === false ){
+                            throw new Exception('削除に失敗しました。');
+                        }
+                        $report->paid_holiday_id = null;
+                    }
+
+                    // 欠勤
+                    if( $report->attendance === 'absenteeism'){
+                        $report->site_id = null;
+                        $report->worktype_id = null;
+                        $report->breaktime = null;
+                        $report->time_from = null;
+                        $report->time_to = null;
+                    }
+
+                }
 
                 // 保存
+                $report->setTransaction($transaction);
                 if( $report->save() === false ){
                     throw new Exception('更新に失敗しました。');
                 }
+
+                $transaction->commit();
 
                 echo json_encode(['result' => 'success']);
 
@@ -367,9 +493,26 @@ class ApiController extends Controller
                     throw new Exception("データが存在しません。");
                 }
 
+                $transactionManager = new TransactionManager();
+                $transaction = $transactionManager->get();
+
+                // 有給エンティティの削除
+                if( empty($report->paid_holiday_id) === false ){
+                    $holiday = PaidHolidays::getStatementById($report->paid_holiday_id);
+                    $holiday->setTransaction($transaction);
+                    if( $holiday->delete() === false ){
+                        throw new Exception('削除に失敗しました。');
+                    }
+                    $report->paid_holiday_id = null;
+                }
+
+                $report->setTransaction($transaction);
                 if( $report->delete() === false ){
                     throw new Exception("削除に失敗しました。");
                 }
+
+                $transaction->commit();
+
                 echo json_encode(['result' => 'success']);
             }catch (Exception $e){
                 echo json_encode([

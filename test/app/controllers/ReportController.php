@@ -54,10 +54,14 @@ class ReportController extends Controller
 
         // 勤務表
         $this->view->reports = $formarr;
-        $this->view->days_worked = $reportService->howDaysWorked(); // 出勤日数
-        $this->view->days_Absenteeism = $reportService->howDaysAbsenteeism(); // 欠勤日数
-        $this->view->days_business = $reportService->getBusinessDayOfMonth(); // 営業日数
-        $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
+        $this->view->summary            = $reportService->getSummaryBySiteWorkUnit();   // 出勤統計
+        $this->view->days_business      = $reportService->getBusinessDayOfMonth();      // 営業日数
+        $this->view->days_worked        = $reportService->howDaysWorked();              // 出勤日数
+        $this->view->days_Absenteeism   = $reportService->howDaysAbsenteeism();         // 欠勤日数
+        $this->view->days_holiday       = $reportService->howDaysHoliday();             // 有給日数
+        $this->view->days_be_late       = $reportService->getCountOfBeLateDays();       // 遅刻日数
+        $this->view->days_leave_early   = $reportService->getCountOfLeaveEarlyDays();   // 早退日数
+        $this->view->missing_time       = $reportService->getMissingTime();             // 勤怠控除時間
 
         // 社員
         $employee = Employees::findfirst($employee_id);
@@ -79,5 +83,6 @@ class ReportController extends Controller
         // 給与明細
         $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
         $this->view->salary = $salary;
+
     }
 }

@@ -22,8 +22,19 @@ class TimeUtil
         $this->addMinuteToHour($_minute);
     }
 
+    /**
+     * 時分の文字列で取得します
+     * @return string
+     */
     public function getTimeStr(){
         return sprintf("%02d:%02d", $this->_hour, $this->_minute);
+    }
+
+    /**
+     * 秒数を取得します
+     */
+    public function getSeconds(){
+        return ( $this->_hour * 60 * 60 ) + ( $this->_minute * 60 );
     }
 
     public function addTimeStr($timeStr){
