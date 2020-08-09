@@ -94,48 +94,6 @@
         color: #ffffff;
     }
 
-    .v-mid{
-        vertical-align: middle;
-    }
-
-    .v-center{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
-
-    .flex_sequence_container{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        height: 100%;
-    }
-
-    .flex_sequence_container > *{
-        margin: 0.5rem;
-
-    }
-
-    .data-boxy{
-        width: 110px;
-        height: 110px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        display: inline-block;
-        border: 1px solid #eee;
-    }
-
-    .data-boxy .header{
-        height: 30px;
-        background-color: #eee;
-    }
-
-    .data-boxy .body{
-        height: 80px;
-    }
-
 </style>
 
 <div class="content_root">
@@ -231,6 +189,11 @@
             </div>
 
             <div class="data-boxy">
+                <div class="header v-center">有給日数</div>
+                <div class="body v-center"><span class="highlight-text text-info">{{ days_holiday }}</span></div>
+            </div>
+
+            <div class="data-boxy">
                 <div class="header v-center">欠勤日数</div>
                 <div class="body v-center"><span class="highlight-text text-danger">{{ days_Absenteeism }}</span></div>
             </div>
@@ -246,11 +209,6 @@
             </div>
 
             <div class="data-boxy">
-                <div class="header v-center">有給日数</div>
-                <div class="body v-center"><span class="highlight-text text-info">{{ days_holiday }}</span></div>
-            </div>
-
-            <div class="data-boxy">
                 <div class="header v-center">時間内</div>
                 <div class="body v-center"><span class="highlight-text">{{ summary['intimeAll']}}</span></div>
             </div>
@@ -258,6 +216,11 @@
             <div class="data-boxy">
                 <div class="header v-center">時間外</div>
                 <div class="body v-center"><span class="highlight-text">{{ summary['outtimeAll']}}</span></div>
+            </div>
+
+            <div class="data-boxy">
+                <div class="header v-center">控除時間</div>
+                <div class="body v-center"><span class="highlight-text text-danger">{% if employee.employee_type is 'pro' %}{{ missing_time }}{% endif %}</span></div>
             </div>
 
         </div>
