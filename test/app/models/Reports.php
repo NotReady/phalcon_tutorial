@@ -15,6 +15,17 @@ class Reports extends Model
     public $at_day;
 
     /**
+     * @var 出勤曜日
+     */
+    public $weekday;
+    const WEEKDAY_MAP = [
+        'weekday' => '平日',
+        'saturday' => '土曜日',
+        'sunday' => '土曜日',
+        'holiday' => '祝日',
+    ];
+
+    /**
      * @var 勤怠
      */
     public $attendance;
@@ -172,6 +183,49 @@ class Reports extends Model
             'date_from' => $date_from,
             'date_to' => $date_to
         ]));
+
+        return $summaryReports;
+    }
+
+    /**
+     * 勤怠控除が必要な勤務を抽出します
+     * @params $employee_id integer 社員Id
+     * @params $year integer 抽出対象年
+     * @params $month integer 抽出対象月
+     * @return Model\Resultset\Simple
+     */
+    public function getMissingCharge($employee_id, $year, $month){
+
+        // 日数
+        $lastDay = date('t', mktime(0,0,0,$month, 1, $year));
+        $date_from = date('Y-m-d', mktime(0, 0, 0, $month, 1, $year));
+        $date_to = date('Y-m-d', mktime(0,0,0,$month, $lastDay, $year));
+
+        $query = '
+         select
+            rp.at_day,
+            rp.attendance,
+            timediff(
+                timediff( timediff(sites.time_to, sites.time_from), timediff(sites.breaktime_to, sites.breaktime_from))
+                ,timediff( timediff( rp.time_to, rp.time_from), rp.breaktime)
+            ) as time_missing
+        from
+            reports rp
+        join
+            sites on rp.site_id = sites.id
+        where
+            rp.employee_id = :employee_id
+            and rp.at_day between :date_from and :date_to
+            and ( rp.attendance = "be_late" or rp.attendance = "Leave_early" )';
+
+        $mo = new Reports();
+
+        $summaryReports = new \Phalcon\Mvc\Model\Resultset\Simple(null, $mo,
+            $mo->getReadConnection()->query($query, [
+                'employee_id' => $employee_id,
+                'date_from' => $date_from,
+                'date_to' => $date_to
+            ]));
 
         return $summaryReports;
     }
@@ -372,56 +426,6 @@ class Reports extends Model
             ]
         ]);
         return $report;
-    }
-
-    public function updateOneReport($employeeId, $day, $report){
-
-        try{
-
-            $mo = Reports::findfirst([
-                "conditions" => "employee_id = ?1 and at_day = ?2",
-                bind => [
-                    1 => $employeeId,
-                    2 => $day,
-                ]
-            ]);
-
-            // new
-            if($mo===false) {
-                $mo = new Reports();
-            }
-
-            $ar = array(
-                'employee_id' => $employeeId,
-                'at_day' => $day,
-                'site_id' => $report['site_id'],
-                'worktype_id' => $report['wtype_id'],
-                'time_from' => $report['timefrom'],
-                'time_to' => $report['timeto'],
-                'breaktime' => '1:00',
-            );
-
-            $wh = array(
-                'employee_id',
-                'at_day',
-                'site_id',
-                'worktype_id',
-                'time_from',
-                'time_to',
-                'breaktime',
-            );
-
-            if($mo->save($ar, $wh)==false){
-                foreach ($mo->getMessages() as $message) {
-                    echo "${day}: $message . <br>";
-                }
-            }else{
-                echo "${day}: save completed' . <br>";
-            }
-
-        }catch (Exception $e){
-            die($e);
-        }
     }
 
     /**
