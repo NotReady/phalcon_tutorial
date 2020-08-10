@@ -413,7 +413,7 @@ class ApiController extends Controller
                 $transaction = $transactionManager->get();
 
                 // 有給
-                if($report->attendance === 'holidays')
+                if( $report->attendance === 'holidays' )
                 {
                     if( empty($report->paid_holiday_id) ){
                         // 有給エンティティを作成する
@@ -430,6 +430,18 @@ class ApiController extends Controller
                     $report->breaktime = null;
                     $report->time_from = null;
                     $report->time_to = null;
+                }
+                else if( $report->attendance === 'holidays-half' )
+                {
+                    if( empty($report->paid_holiday_id) ){
+                        // 有給エンティティを作成する
+                        $holiday = PaidHolidays::createHoliday($report->employee_id, $report->at_day, 2, 0.5, '半日有給消化');
+                        $holiday->setTransaction($transaction);
+                        if( $holiday->save() === false ){
+                            throw new Exception('更新に失敗しました。');
+                        }
+                        $report->paid_holiday_id = $holiday->paid_holiday_id;
+                    }
                 }
                 else
                 {

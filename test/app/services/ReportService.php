@@ -64,6 +64,7 @@ class ReportService
                 case 'attendance': // 出勤
                 case 'be_late': // 遅刻
                 case 'Leave_early': // 早退
+                case 'holidays_half': // 半有給
                     return true;
                 default: return false;
             }
@@ -114,10 +115,14 @@ class ReportService
      */
     public function howDaysHoliday(){
         $arrayObjct = $this->_reports->toArray();
-        $horidays = array_filter($arrayObjct, function ($r){
-            return $r['attendance'] === 'holidays';
-        });
-        return count($horidays);
+        $holidayCount = 0;
+        foreach ($arrayObjct as $report) {
+            switch ($report['attendance']){
+                case 'holidays':        $holidayCount += 1; break;
+                case 'holidays-half':   $holidayCount += 0.5; break;
+            }
+        }
+        return $holidayCount;
     }
 
     /**

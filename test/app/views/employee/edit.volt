@@ -325,7 +325,7 @@
     {# 有給Pane #}
     <h1 class="title"><i class="fas fa-hand-holding-usd mr-1"></i>有給管理</h1>
 
-    <p class="caption-large">残り有給　{{ holidaysAmount | number_format }} 日</p>
+    <p class="caption-large">残り有給　{{ holidaysAmount }} 日</p>
 
     <div class="sticky-table mb-3">
         <table class="table-hover table table-main loans">
