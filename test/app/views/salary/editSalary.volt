@@ -1,7 +1,9 @@
 {% extends "layout/template_in_service.volt" %}
 
 {% block title %}給与登録{% endblock %}
-{% block css_include %}{% endblock %}
+{% block css_include %}
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+{% endblock %}
 {% block js_include %}{% endblock %}
 {% block content_body %}
 
@@ -78,6 +80,7 @@
 
     <h1 class="title flex_box">
         <div class="col-8">
+            <i class="fas fa-user-circle mr-2 highlight-text"></i>
             <a href="/employees/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
             {{ "%d年 %d月の給与編集" | format(thisyear, thismonth) }}
         </div>
@@ -102,7 +105,7 @@
 
         <div class="col-12">
             <div class="col-12">
-            <h2 class="subtitle">支給</h2>
+            <h2 class="subtitle"><i class="fas fa-hand-holding-usd mr-2 highlight-text"></i>支給</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -135,14 +138,12 @@
                             <td>賞与</td>
                             <td>{{ form.render('bonus_charge') }} 円</td>
                             <td>
-                                {% if salary.fixed is 'temporary' %}
-                                    <div class="btn-wrap">
-                                        <input type="button" class="btn btn-primary btn-update" value="保存する">
-                                        {% if salary_origin.bonus_charge is defined %}
-                                            <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
+                                <div class="btn-wrap">
+                                    <input type="button" class="btn btn-primary btn-update" value="保存する">
+                                    {% if salary_origin.bonus_charge is defined %}
+                                        <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
 
@@ -269,7 +270,7 @@
                             <td>
                                 <div class="btn-wrap">
                                     <input type="button" class="btn btn-primary btn-update" value="保存する">
-                                    {% if salary_origin.officework_charge is defined %}
+                                    {% if salary_origin.etc_charge is defined %}
                                         <input type="button" class="btn btn-danger btn-undo" value="元に戻す">
                                     {% endif %}
                                 </div>
@@ -289,7 +290,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <h2 class="subtitle">社会保険</h2>
+                <h2 class="subtitle"><i class="fas fa-file-medical mr-2 highlight-text"></i>社会保険</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -364,7 +365,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <h2 class="subtitle">税引</h2>
+                <h2 class="subtitle"><i class="fas fa-search-dollar mr-2 highlight-text"></i>税引</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -403,7 +404,7 @@
 
         <div class="col-12">
             <div class="col-12">
-                <h2 class="subtitle">控除</h2>
+                <h2 class="subtitle"><i class="fas fa-file-invoice-dollar mr-2 highlight-text"></i>控除</h2>
                 <table class="table table_statement">
                     <thead>
                     <th>項目</th>
@@ -538,7 +539,7 @@
         <div class="col-12">
             <div class="col-12">
                 <h2 class="subtitle flex_box flex_left">
-                    <span>出勤統計</span>
+                    <i class="far fa-clock mr-2 highlight-text"></i><span>出勤統計</span>
                 </h2>
 
                 <div class="row">
@@ -622,7 +623,7 @@
         <div class=" col-12">
             <div class="col-12">
                 <h2 class="subtitle flex_box flex_bottom">
-                    <div class="col-6">現場別 出勤内訳</div>
+                    <div class="col-6"><i class="fas fa-map mr-2 highlight-text"></i>現場別 出勤内訳</div>
                     <div class="col-6 text-right">
                         <a href="/report/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/edit" class="btn btn-primary btn-fix" target="_blank">勤務表を開く</a>
                     </div>

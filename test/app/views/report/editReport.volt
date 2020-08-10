@@ -1,7 +1,9 @@
 {% extends "layout/template_in_service.volt" %}
 
 {% block title %}勤怠入力{% endblock %}
-{% block css_include %}{% endblock %}
+{% block css_include %}
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+{% endblock %}
 {% block js_include %}{% endblock %}
 {% block content_body %}
 
@@ -100,12 +102,7 @@
 
     <h1 class="title row">
         <div class="col-8 flex_box">
-
-            {% if salary.fixed is 'fixed'%}
-                <span class="badge-success v-mid">確定済</span>
-            {% else %}
-                <span class="badge-alert v-mid">未確定</span>
-            {% endif %}
+            <i class="fas fa-user-circle mr-2 highlight-text"></i>
             <span class="v-mid">
                 <a class="ml-2" href="/employees/edit/{{ employee.id }}">{{ "%s %s" | format(employee.first_name, employee.last_name) }}</a>さん
                 {{ "%d年 %d月の勤務レポート" | format(thisyear, thismonth) }}
@@ -123,108 +120,110 @@
     {% set week = ['日','月','火','水','木','金','土'] %}
 
     <div class="sticky-table mb-3">
-    <table class="table-hover table table-main">
-        <thead>
-        <th>日付</th>
-        <th>曜日</th>
-        <th>勤怠</th>
-        <th>勤務先</th>
-        <th>作業分類</th>
-        <th>開始時間</th>
-        <th>終了時間</th>
-        <th>休憩時間</th>
-        <th>保存</th>
-        </thead>
+        <table class="table-hover table table-main">
+            <thead>
+            <th>日付</th>
+            <th>曜日</th>
+            <th>勤怠</th>
+            <th>勤務先</th>
+            <th>作業分類</th>
+            <th>開始時間</th>
+            <th>終了時間</th>
+            <th>休憩時間</th>
+            <th>登録</th>
+            </thead>
 
-        {% for day, report in reports %}
-        <?php $windex = date('w',  strtotime("${day}")); ?>
-        <tr>
-            {% set isHoliday = false %}
-            {% for holiday, caption in holidays %}
-                {% if holiday is day %}
-                    {% set isHoliday = true %}
-                {% endif %}
+            {% for day, report in reports %}
+            <?php $windex = date('w',  strtotime("${day}")); ?>
+            <tr>
+                {% set isHoliday = false %}
+                {% for holiday, caption in holidays %}
+                    {% if holiday is day %}
+                        {% set isHoliday = true %}
+                    {% endif %}
+                {% endfor %}
+
+                <input type="hidden" name="at_day" value="{{ report.getValue('at_day') }}" />
+                <input type="hidden" name="weekday"
+                       value="{% if isHoliday is true %}holiday{% elseif windex is 6 %}saturday{% elseif windex is 0 %}sunday{% else %}weekday{% endif %}" />
+                <input type="hidden" name="employee_id" value="{{report.getValue('employee_id') }}" />
+                <td class="cell"><?= date('m-d', strtotime($day)) ?></td>
+                <td>
+                    <span class="{% if isHoliday === true %}holi-decoration{% elseif windex is 6 %}sat-decoration{% elseif windex is 0 %}sun-decoration{% endif %}">
+                        <?= $week[$windex] ?>
+                    </span>
+                </td>
+                <td>{{ report.render('attendance') }}</td>
+                <td>{{ report.render('site_id') }}</td>
+                <td>{{ report.render('worktype_id') }}</td>
+                <td>{{ report.render('time_from') }}</td>
+                <td>{{ report.render('time_to') }}</td>
+                <td>{{ report.render('breaktime') }}</td>
+                <td>
+                    <input class="btn btn-primary btn-submit" type="button" value="保存" data-report-method="update">
+                    <input class="btn btn-danger btn-submit" type="button" value="削除" data-report-method="delete">
+                </td>
+            </tr>
             {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-            <input type="hidden" name="at_day" value="{{ report.getValue('at_day') }}" />
-            <input type="hidden" name="weekday"
-                   value="{% if isHoliday is true %}holiday{% elseif windex is 6 %}saturday{% elseif windex is 0 %}sunday{% else %}weekday{% endif %}" />
-            <input type="hidden" name="employee_id" value="{{report.getValue('employee_id') }}" />
-            <td class="cell"><?= date('m-d', strtotime($day)) ?></td>
-            <td>
-                <span class="{% if isHoliday === true %}holi-decoration{% elseif windex is 6 %}sat-decoration{% elseif windex is 0 %}sun-decoration{% endif %}">
-                    <?= $week[$windex] ?>
-                </span>
-            </td>
-            <td>{{ report.render('attendance') }}</td>
-            <td>{{ report.render('site_id') }}</td>
-            <td>{{ report.render('worktype_id') }}</td>
-            <td>{{ report.render('time_from') }}</td>
-            <td>{{ report.render('time_to') }}</td>
-            <td>{{ report.render('breaktime') }}</td>
-            <td>
-                <input class="btn btn-primary btn-submit" type="button" value="保存" data-report-method="update">
-                <input class="btn btn-danger btn-submit" type="button" value="削除" data-report-method="delete">
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="flex_sequence_container mb-4">
+
+        <div class="data-boxy">
+            <div class="header v-center">営業日数</div>
+            <div class="body v-center"><span class="highlight-text">{{ days_business }}</div>
+        </div>
+
+        <div class="data-boxy">
+            <div class="header v-center">出勤日数</div>
+            <div class="body v-center"><span class="highlight-text text-success">{{ days_worked }}</span></div>
+        </div>
+
+        <div class="data-boxy">
+            <div class="header v-center">有給日数</div>
+            <div class="body v-center"><span class="highlight-text text-info">{{ days_holiday }}</span></div>
+        </div>
+
+        <div class="data-boxy">
+            <div class="header v-center">欠勤日数</div>
+            <div class="body v-center"><span class="highlight-text text-danger">{{ days_Absenteeism }}</span></div>
+        </div>
+
+        <div class="data-boxy">
+            <div class="header v-center">時間内</div>
+            <div class="body v-center"><span class="highlight-text">{{ summary['intimeAll']}}</span></div>
+        </div>
+
+        <div class="data-boxy">
+            <div class="header v-center">時間外</div>
+            <div class="body v-center"><span class="highlight-text">{{ summary['outtimeAll']}}</span></div>
+        </div>
+
+        <div class="data-boxy">
+            <div class="header v-center">遅刻日数</div>
+            <div class="body v-center"><span class="highlight-text text-danger">{{ days_be_late }}</span></div>
+        </div>
+
+        <div class="data-boxy">
+            <div class="header v-center">早退日数</div>
+            <div class="body v-center"><span class="highlight-text text-danger">{{ days_leave_early }}</span></div>
+        </div>
+
+        <div class="data-boxy">
+            <div class="header v-center">控除時間</div>
+            <div class="body v-center"><span class="highlight-text text-danger">{% if employee.employee_type is 'pro' %}{{ missing_time }}{% endif %}</span></div>
+        </div>
+
     </div>
 
     <h2 class="title flex_box flex_left">
-        <span>出勤統計</span>
+        <i class="far fa-clock mr-2 highlight-text"></i><span>勤務時間内訳</span>
     </h2>
+
     <div class="row">
-        <div class="col-4 flex_sequence_container">
-
-            <div class="data-boxy">
-                <div class="header v-center">営業日数</div>
-                <div class="body v-center"><span class="highlight-text">{{ days_business }}</div>
-            </div>
-
-            <div class="data-boxy">
-                <div class="header v-center">出勤日数</div>
-                <div class="body v-center"><span class="highlight-text text-success">{{ days_worked }}</span></div>
-            </div>
-
-            <div class="data-boxy">
-                <div class="header v-center">有給日数</div>
-                <div class="body v-center"><span class="highlight-text text-info">{{ days_holiday }}</span></div>
-            </div>
-
-            <div class="data-boxy">
-                <div class="header v-center">欠勤日数</div>
-                <div class="body v-center"><span class="highlight-text text-danger">{{ days_Absenteeism }}</span></div>
-            </div>
-
-            <div class="data-boxy">
-                <div class="header v-center">遅刻日数</div>
-                <div class="body v-center"><span class="highlight-text text-danger">{{ days_be_late }}</span></div>
-            </div>
-
-            <div class="data-boxy">
-                <div class="header v-center">早退日数</div>
-                <div class="body v-center"><span class="highlight-text text-danger">{{ days_leave_early }}</span></div>
-            </div>
-
-            <div class="data-boxy">
-                <div class="header v-center">時間内</div>
-                <div class="body v-center"><span class="highlight-text">{{ summary['intimeAll']}}</span></div>
-            </div>
-
-            <div class="data-boxy">
-                <div class="header v-center">時間外</div>
-                <div class="body v-center"><span class="highlight-text">{{ summary['outtimeAll']}}</span></div>
-            </div>
-
-            <div class="data-boxy">
-                <div class="header v-center">控除時間</div>
-                <div class="body v-center"><span class="highlight-text text-danger">{% if employee.employee_type is 'pro' %}{{ missing_time }}{% endif %}</span></div>
-            </div>
-
-        </div>
-        <div class="col-8">
+        <div class="col-12">
             <table class="table table_timeunit">
                 <thead>
                 <th>項目</th>
@@ -251,7 +250,7 @@
         </div>
     </div>
 
-    <h2 class="title">現場別 出勤内訳</h2>
+    <h2 class="title"><i class="fas fa-map mr-2 highlight-text"></i>現場別 勤務時間内訳</h2>
     <div class="row">
         <div class=" col-12">
             <table class="table table_timedetail">
@@ -261,7 +260,6 @@
                     <th></th>
                     <th>時間計</th>
                     <th>日数計</th>
-                    <th class="text-right"><span class="right_align_margin">金額</span></th>
                 </thead>
                 <tbody>
                 {% for row in summary['site'] %}
@@ -271,7 +269,6 @@
                         <td class="{% if row.label == '時間外' %}text-danger{% endif %}" >{{ row.label }}</td>
                         <td>{{ row.sum_time }}</td>
                         <td>{{ row.days_worked }} 日</td>
-                        <td class="text-right"><span class="right_align_margin">{{ row.sum_charge | number_format }} 円</span></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -282,7 +279,6 @@
                     <td></td>
                     <td><span class="highlight-text">{{ summary['timeAll'] }}</span></td>
                     <td><span class="highlight-text">{{ days_worked }} 日</span></td>
-                    <td class="text-right"><span class="highlight-text right_align_margin">{{ summary['chargeAll'] | number_format }} 円</span></td>
                 </tr>
                 </tfoot>
             </table>
