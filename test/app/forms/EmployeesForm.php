@@ -178,11 +178,6 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => 'みなし残業代を入力してください。'
         ]);
-        $monthly_charge->addValidators([
-            new PresenceOf([
-                'message' => 'みなし残業代を入力してください。'
-            ])
-        ]);
         $this->add($monthly_charge);
 
 
@@ -193,11 +188,6 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => '役職手当を入力してください。'
         ]);
-        $skill_charge->addValidators([
-            new PresenceOf([
-                'message' => '役職手当を入力してください。'
-            ])
-        ]);
         $this->add($skill_charge);
 
         // 課税交通費
@@ -207,13 +197,7 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => '課税交通費を入力してください。'
         ]);
-        $transportation_expenses->addValidators([
-            new PresenceOf([
-                'message' => '課税交通費を入力してください。'
-            ])
-        ]);
         $this->add($transportation_expenses);
-
 
         // 日割交通費
         $transportation_expenses_by_day = new Numeric('transportation_expenses_by_day');
@@ -221,11 +205,6 @@ class EmployeesForm extends Form
         $transportation_expenses_by_day->setAttributes([
             'class' => 'form-control',
             'placeholder' => '日割交通費を入力してください。'
-        ]);
-        $transportation_expenses_by_day->addValidators([
-            new PresenceOf([
-                'message' => '日割交通費を入力してください。'
-            ])
         ]);
         $this->add($transportation_expenses_by_day);
 
@@ -236,11 +215,6 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => '非課税交通費を入力してください。'
         ]);
-        $transportation_expenses_without_tax->addValidators([
-            new PresenceOf([
-                'message' => '非課税交通費を入力してください。'
-            ])
-        ]);
         $this->add($transportation_expenses_without_tax);
 
         // 非課税通信費
@@ -249,11 +223,6 @@ class EmployeesForm extends Form
         $communication_charge_without_tax->setAttributes([
             'class' => 'form-control',
             'placeholder' => '非課税通信費を入力してください。'
-        ]);
-        $communication_charge_without_tax->addValidators([
-            new PresenceOf([
-                'message' => '非課税通信費を入力してください。'
-            ])
         ]);
         $this->add($communication_charge_without_tax);
 
@@ -264,11 +233,6 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => '住宅手当を入力してください。'
         ]);
-        $house_charge->addValidators([
-            new PresenceOf([
-                'message' => '住宅手当を入力してください。'
-            ])
-        ]);
         $this->add($house_charge);
 
         // 送迎手当
@@ -277,11 +241,6 @@ class EmployeesForm extends Form
         $bus_charge->setAttributes([
             'class' => 'form-control',
             'placeholder' => '送迎手当を入力してください。'
-        ]);
-        $bus_charge->addValidators([
-            new PresenceOf([
-                'message' => '送迎手当を入力してください。'
-            ])
         ]);
         $this->add($bus_charge);
 
@@ -292,11 +251,6 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => '事務手当を入力してください。'
         ]);
-        $officework_charge->addValidators([
-            new PresenceOf([
-                'message' => '事務手当を入力してください。'
-            ])
-        ]);
         $this->add($officework_charge);
 
         // その他支給
@@ -305,11 +259,6 @@ class EmployeesForm extends Form
         $etc_charge->setAttributes([
             'class' => 'form-control',
             'placeholder' => 'その他支給を入力してください。'
-        ]);
-        $etc_charge->addValidators([
-            new PresenceOf([
-                'message' => 'その他支給を入力してください。'
-            ])
         ]);
         $this->add($etc_charge);
 
@@ -320,11 +269,6 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => '家賃を入力してください。'
         ]);
-        $rent_bill->addValidators([
-            new PresenceOf([
-                'message' => '家賃を入力してください。'
-            ])
-        ]);
         $this->add($rent_bill);
 
         // 電気代
@@ -333,11 +277,6 @@ class EmployeesForm extends Form
         $electric_bill->setAttributes([
             'class' => 'form-control',
             'placeholder' => '電気代を入力してください。'
-        ]);
-        $electric_bill->addValidators([
-            new PresenceOf([
-                'message' => '電気代を入力してください。'
-            ])
         ]);
         $this->add($electric_bill);
 
@@ -348,11 +287,6 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => 'ガス代を入力してください。'
         ]);
-        $gas_bill->addValidators([
-            new PresenceOf([
-                'message' => 'ガス代を入力してください。'
-            ])
-        ]);
         $this->add($gas_bill);
 
         // 水道代
@@ -361,11 +295,6 @@ class EmployeesForm extends Form
         $water_bill->setAttributes([
             'class' => 'form-control',
             'placeholder' => '水道代を入力してください。'
-        ]);
-        $water_bill->addValidators([
-            new PresenceOf([
-                'message' => '水道代を入力してください。'
-            ])
         ]);
         $this->add($water_bill);
 
@@ -376,11 +305,6 @@ class EmployeesForm extends Form
             'class' => 'form-control',
             'placeholder' => '弁当代を入力してください。'
         ]);
-        $food_bill->addValidators([
-            new PresenceOf([
-                'message' => '弁当代を入力してください。'
-            ])
-        ]);
         $this->add($food_bill);
 
         // その他控除
@@ -389,11 +313,6 @@ class EmployeesForm extends Form
         $etc_bill->setAttributes([
             'class' => 'form-control',
             'placeholder' => 'その他控除を入力してください。'
-        ]);
-        $etc_bill->addValidators([
-            new PresenceOf([
-                'message' => 'その他控除を入力してください。'
-            ])
         ]);
         $this->add($etc_bill);
 
