@@ -132,12 +132,7 @@ class SalaryHelper
                     self::getMissingDeductionByTime($salary->base_charge, $bisinessDaysOfThisMonth, $missingTimes);
             }
         }
-
-        // 賞与を補完します
-        if( is_null($salary->bonus_charge) === true ){
-            $salary->bonus_charge = 0;
-        }
-
+        
         // 時間外手当を補完します
         if( is_null($salary->overtime_charge) === true ){
             // みなし残業を優先に設定
