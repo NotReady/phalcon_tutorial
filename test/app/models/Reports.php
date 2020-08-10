@@ -34,6 +34,7 @@ class Reports extends Model
         'attendance' => '出勤',
         'absenteeism' => '欠勤',
         'holidays' => '有給',
+        'holidays-half' => '半有給',
         'be_late' => '遅刻',
         'Leave_early' => '早退',
     ];
