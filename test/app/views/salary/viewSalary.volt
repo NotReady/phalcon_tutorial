@@ -94,7 +94,7 @@
                         </tr>
 
                         <tr>
-                            <td>みなし残業額</td>
+                            <td>時間外勤務手当</td>
                             <td>{{ salary.overtime_charge | number_format }} 円</td>
                         </tr>
                         <tr>

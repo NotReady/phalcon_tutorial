@@ -147,8 +147,17 @@
                         </tr>
 
                         <tr>
-                            <td>みなし残業額</td>
-                            <td>{{ form.render('overtime_charge') }} 円</td>
+                            <td>時間外勤務手当</td>
+                            <td>
+                                {{ form.render('overtime_charge') }} 円
+                                {% if employee.employee_type is 'pro' %}
+                                    {% if employee.overtime_charge is not empty %}
+                                        <div class="text-right"><small>定額残業手当 {{ employee.overtime_charge | number_format }} 円</small></div>
+                                    {% else %}
+                                        <div class="text-right"><small>時間外勤務 {{ summary['outtimeAll'] }}</small></div>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
                             <td>
                                 <div class="btn-wrap">
                                     <input type="button" class="btn btn-primary btn-update" value="保存する">
