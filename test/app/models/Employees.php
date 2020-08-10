@@ -202,12 +202,33 @@ class Employees extends Model{
     }
 
     /**
-     * 退社日のセッター
-     * Date型テーブルなので、ブランクの場合はnullに置き換える
-     * @param $leaveDate
+     * 永続化前のコールバック
+     * @note 文字列以外のプリミティブ型へのブランク、型違いをnullに置き換える
      */
-    public function setLeaveDate($leaveDate){
-        $this->leave_date = empty($leaveDate) ? null : $leaveDate;
+    public function beforeSave(){
+
+        // 無効値のnull埋め
+        $this->leave_date       = empty($this->leave_date) === false ? $this->leave_date : null;
+        $this->overtime_charge  = is_numeric($this->overtime_charge ) ? $this->overtime_charge  : null;
+        $this->skill_charge     = is_numeric($this->skill_charge) ? $this->skill_charge : null;
+        $this->transportation_expenses              = is_numeric($this->transportation_expenses) ? $this->transportation_expenses : null;
+        $this->transportation_expenses_by_day       = is_numeric($this->transportation_expenses_by_day) ? $this->transportation_expenses_by_day : null;
+        $this->transportation_expenses_without_tax  = is_numeric($this->transportation_expenses_without_tax) ? $this->transportation_expenses_without_tax : null;
+        $this->communication_charge_without_tax = is_numeric($this->communication_charge_without_tax) ? $this->communication_charge_without_tax : null;
+        $this->house_charge     = is_numeric($this->house_charge) ? $this->house_charge : null;
+        $this->bus_charge       = is_numeric($this->bus_charge) ? $this->bus_charge : null;
+        $this->officework_charge = is_numeric($this->officework_charge) ? $this->officework_charge : null;
+        $this->etc_charge       = is_numeric($this->etc_charge) ? $this->etc_charge : null;
+        $this->rent_bill        = is_numeric($this->rent_bill) ? $this->rent_bill : null;
+        $this->electric_bill    = is_numeric($this->electric_bill) ? $this->electric_bill : null;
+        $this->gas_bill         = is_numeric($this->gas_bill) ? $this->gas_bill : null;
+        $this->water_bill       = is_numeric($this->water_bill) ? $this->water_bill : null;
+        $this->food_bill        = is_numeric($this->food_bill) ? $this->food_bill : null;
+        $this->etc_bill         = is_numeric($this->etc_bill) ? $this->etc_bill : null;
+        $this->insurance_bill   = is_numeric($this->insurance_bill) ? $this->insurance_bill : null;
+        $this->pension_bill     = is_numeric($this->pension_bill) ? $this->pension_bill : null;
+        $this->insurance_bill   = is_numeric($this->insurance_bill) ? $this->insurance_bill : null;
+        $this->pension_bill     = is_numeric($this->pension_bill) ? $this->pension_bill : null;
     }
 
     /**

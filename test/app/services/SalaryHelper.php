@@ -30,9 +30,18 @@ class SalaryHelper
      */
     private const REPAY_LOAN_VALUE = 20000;
 
+    /**
+     * 曜日ごとの時間外手当の算出比率
+     */
+    private const OVERTIME_CHARGE_PAR_MAP =[
+        '平日時間外' => 1.25
+        ,'土曜日出勤' => 1.35
+        ,'日曜日出勤' => 1.5
+        ,'祝祭日出勤' => 1.5
+    ];
 
     /**
-     * 欠勤控除額を取得します
+     * 欠勤控除額を算出します
      * @note 基本給をベースに日給×欠勤日数を欠勤控除額とします
      * @param $baseCharge 基本給
      * @param $daysCountOfBusinessDays 月の営業日
@@ -45,7 +54,7 @@ class SalaryHelper
     }
 
     /**
-     * 勤怠控除額を取得します
+     * 勤怠控除額を算出します
      * @note 基本給をベースに時給×欠勤時間を欠勤控除額とします
      * @param $baseCharge 基本給
      * @param $daysCountOfBusinessDays 月の営業日
@@ -59,12 +68,34 @@ class SalaryHelper
     }
 
     /**
+     * 基本給を元に残業手当を算出します
+     * @param $reportHelper ReportService
+     */
+    private static function getOvertimeChargeBasedSalary($baseCharge, $daysCountOfBusinessDays, $reportHelper){
+        $report = $reportHelper->getSummaryBySiteWorkUnit();
+        $timeUnit = $report['timeunits'];
+        $salaryPerSeconds = $baseCharge / $daysCountOfBusinessDays / 8 / 3600;
+        $charge = 0;
+        foreach(['平日時間外', '土曜日出勤' ,'日曜日出勤', '祝祭日出勤'] as $nameUnit ){
+
+            $outtimeStr = $timeUnit[$nameUnit]['time'];
+            $outtimeSeconds = TimeUtil::makeFromTimeStr($outtimeStr)->getSeconds();
+
+            $per = self::OVERTIME_CHARGE_PAR_MAP[$nameUnit];
+            $charge += ($salaryPerSeconds * $outtimeSeconds * $per);
+        }
+        return floor($charge);
+    }
+
+    /**
      * 給与モデルのブランクをマスタで補完します
      * @param $salary Salaries
      * @param $employee Employees
      * @return array
      */
     public static function complementTempolarySalary($salary, $employee, $reportHelper){
+
+        $bisinessDaysOfThisMonth = $reportHelper->getBusinessDayOfMonth();  // 営業日
 
         // 基本給を補完します
         if( is_null($salary->base_charge) === true ){
@@ -82,8 +113,6 @@ class SalaryHelper
                 $salary->base_charge = $reportHelper->getSummaryBySiteWorkUnit();
             }
         }
-
-        $bisinessDaysOfThisMonth = $reportHelper->getBusinessDayOfMonth();  // 営業日
 
         // 欠勤控除を補完します
         if( is_null($salary->attendance_deduction1) === true ) {
@@ -103,15 +132,15 @@ class SalaryHelper
                     self::getMissingDeductionByTime($salary->base_charge, $bisinessDaysOfThisMonth, $missingTimes);
             }
         }
-
-        // 賞与を補完します
-        if( is_null($salary->bonus_charge) === true ){
-            $salary->bonus_charge = 0;
-        }
-
-        // みなし残業代を補完します
+        
+        // 時間外手当を補完します
         if( is_null($salary->overtime_charge) === true ){
-            $salary->overtime_charge = $employee->overtime_charge;
+            // みなし残業を優先に設定
+            if( empty($employee->overtime_charge) === false ){
+                $salary->overtime_charge = $employee->overtime_charge;
+            }else{
+                $salary->overtime_charge = self::getOvertimeChargeBasedSalary($salary->base_charge, $bisinessDaysOfThisMonth, $reportHelper);
+            }
         }
 
         // 役職手当を補完します
@@ -281,7 +310,7 @@ class SalaryHelper
      * @param bool $fixed 確定フラグ
      * @throws Exception
      */
-    public static function updateWithComplement($salary, $employee, $fixed = true){
+    public static function updateWithComplement($salary, $employee, $reportService, $fixed = true){
 
         $transactionManager = new TransactionManager();
         $transaction = $transactionManager->get();
@@ -289,7 +318,7 @@ class SalaryHelper
         try{
 
             // ブランク属性をマスタから補完して更新します
-            self::complementTempolarySalary($salary, $employee);
+            self::complementTempolarySalary($salary, $employee, $reportService);
             $salary->fixed = $fixed;
 
             $salary->setTransaction($transaction);

@@ -60,7 +60,13 @@ class ReportService
     public function howDaysWorked(){
         $arrayObjct = $this->_reports->toArray();
         $attendanced = array_filter($arrayObjct, function ($r){
-            return $r['attendance'] === 'attendance';
+            switch ($r['attendance']){
+                case 'attendance': // 出勤
+                case 'be_late': // 遅刻
+                case 'Leave_early': // 早退
+                    return true;
+                default: return false;
+            }
         });
         return count($attendanced);
     }

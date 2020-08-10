@@ -132,7 +132,7 @@ class SalaryController extends Controller
             }
 
             // ブランク属性をマスタから補完して給与を確定します
-            SalaryHelper::updateWithComplement($salary, $employee, true);
+            SalaryHelper::updateWithComplement($salary, $employee, $reportService, true);
 
             // 閲覧画面にリダイレクトします
             $this->response->redirect("/salary/${employee_id}/${year}/${month}");
