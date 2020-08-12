@@ -64,7 +64,7 @@ class ReportService
                 case 'attendance': // 出勤
                 case 'be_late': // 遅刻
                 case 'Leave_early': // 早退
-                case 'holidays_half': // 半有給
+                case 'holidays-half': // 半有給
                     return true;
                 default: return false;
             }
