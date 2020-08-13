@@ -10,7 +10,7 @@ use Phalcon\Mvc\View\Engine\Volt;
 $di = new FactoryDefault();
 
 // setup a base URI
-$di->set(
+$di->setShared(
     'url',
     function(){
         $url = new UrlProvider();
@@ -20,7 +20,7 @@ $di->set(
 );
 
 // Register Volt as a service
-$di->set(
+$di->setShared(
     'voltService',
     function ($view, $di) use ( $config ){
 
@@ -49,7 +49,7 @@ $di->set(
 );
 
 // setup the view component
-$di->set('view', function() use ($config) {
+$di->setShared('view', function() use ($config) {
 
     $view = new View();
     $view->setViewsDir('../app/views');
@@ -63,10 +63,10 @@ $di->set('view', function() use ($config) {
     // 登録
     $view->registerEngines($registerOptions);
     return $view;
-}, true);
+});
 
 // db
-$di->set(
+$di->setShared(
     'db',
     function(){
         return new DbAdapter(
@@ -81,7 +81,7 @@ $di->set(
 );
 
 // router
-$di->set(
+$di->setShared(
     'router', function(){
     require APP_PATH . '/config/routes.php';
     return $router;
