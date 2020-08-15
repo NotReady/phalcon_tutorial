@@ -1,7 +1,7 @@
 <?php
 use Phalcon\Mvc\Controller;
 
-class SalaryController extends Controller
+class SalaryController extends ControllerBase
 {
     /**
      * 給与閲覧アクション

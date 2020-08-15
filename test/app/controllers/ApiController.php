@@ -3,7 +3,7 @@ use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 
-class ApiController extends Controller
+class ApiController extends ControllerBase
 {
     /**
      * JSONレスポンスヘッダのラッパ

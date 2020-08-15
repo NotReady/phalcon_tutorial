@@ -1,7 +1,7 @@
 <?php
 use Phalcon\Mvc\Controller;
 
-class RootController extends Controller
+class RootController extends ControllerBase
 {
     /**
      * インデックスアクション
