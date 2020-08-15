@@ -14,40 +14,38 @@
         color: lightcoral;
     }
 
-    .text-warning{
-        color: firebrick;
-    }
-
 </style>
 
 <div class="content_root" style="position: relative;">
 
-<div style="width: 600px; padding: 40px 100px; position: absolute; top: 0%; left: 50%; transform: translate(-50%, 50%)" class="border border-secondary rounded btn-like">
-    <h4 style="text-align: center; margin-bottom: 2.0rem; font-weight: bold;">管理者ログイン</h4>
+    <div style="width: 600px; padding: 40px 100px; position: absolute; top: 0%; left: 50%; transform: translate(-50%, 50%)" class="border border-secondary rounded btn-like">
 
-    <?php if( empty($login_failure_message) === false ): ?>
-        {% for message in login_failure_message %}
-            <p class="text-warning">{{ message }}</p>
-        {% endfor %}
-    <?php endif; ?>
+        <h4 style="text-align: center; margin-bottom: 2.0rem; font-weight: bold;">ログイン</h4>
 
-    <form  action="/login/check" method="post">
-        <input type="hidden" name="<?php echo $this->security->getTokenKey() ?>"
-               value="<?php echo $this->security->getToken() ?>"/>
+        {% if login_failure_message is not empty %}
+            <p class="errorMessage">{{ login_failure_message }}</p>
+        {% endif %}
 
-        <div class="form-element-wrap">
-                <label for="username">ログインID</label>
-                <input name="username" type="text" class="form-control">
-        </div>
-        <div class="form-element-wrap">
-                <label for="username">パスワード</label>
-                <input name="password" type="password" class="form-control">
-        </div>
-        <div class="form-element-wrap" style="margin-top: 2.0rem;">
-            <input style="width: 100%;" type="submit" value="ログイン" class="btn btn-primary" style="display: block;">
-        </div>
-    </form>
-</div>
+        {{ form('/login/check', 'method': 'post') }}
+        {{ hidden_field(security.getTokenKey(), "value": security.getToken()) }}
+
+            <div class="mb-4">
+                {{ form.label('username', ['class' : 'form-label']) }}
+                {{ form.render('username') }}
+                {{ form.messages('username') }}
+            </div>
+
+            <div class="mb-4">
+                {{ form.label('password', ['class' : 'form-label']) }}
+                {{ form.render('password') }}
+                {{ form.messages('password') }}
+            </div>
+
+            {{ form.render('submit') }}
+
+        {{ endform() }}
+
+    </div>
 </div>
 
 {% endblock %}
