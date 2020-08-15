@@ -6,6 +6,7 @@ use \Phalcon\Forms\Element\Numeric;
 use \Phalcon\Forms\Element\Hidden;
 use \Phalcon\Forms\Element\Select;
 use \Phalcon\Forms\Element\Date;
+use \Phalcon\Forms\Element\Password;
 use \Phalcon\Validation\Validator\PresenceOf;
 
 class EmployeesForm extends Form
@@ -14,6 +15,61 @@ class EmployeesForm extends Form
 
         // id
         $this->add(new Hidden('id'));
+
+        // ログインID
+        $username = new Text('username');
+        $username->setLabel('ログインID');
+        $username->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => 'ログインIDを入力してください。',
+            $entity->service_role === 'none' ? 'disabled' : '' =>
+            $entity->service_role === 'none' ? 'disabled' : ''
+
+        ]);
+        // ログインユーザの場合に必須
+        if( !($entity->service_role === 'none') ){
+            $username->addValidators([
+                new PresenceOf([
+                    'message' => 'ログインIDを入力してください'
+                ])
+            ]);
+        }
+        $this->add($username);
+
+        // ログインパスワード
+        $password = new Password('password');
+        $password->setLabel('ログインパスワード');
+        $password->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => 'ログインパスワードを入力してください。',
+            $entity->service_role === 'none' ? 'disabled' : '' =>
+            $entity->service_role === 'none' ? 'disabled' : ''
+
+        ]);
+        // ログインユーザの場合に必須
+        if( !($entity->service_role === 'none') ){
+            $password->addValidators([
+                new PresenceOf([
+                    'message' => 'ログインパスワードを入力してください'
+                ])
+            ]);
+        }
+        $this->add($password);
+
+        // 操作権限
+        $service_role = new Select('service_role',
+            Employees::SERVICE_ROLE_MAP
+        );
+        $service_role->setLabel('操作権限');
+        $service_role->setAttributes([
+            'class' => 'form-control',
+        ]);
+        $service_role->addValidators([
+            new PresenceOf([
+                'message' => '操作権限を選択してください。'
+            ])
+        ]);
+        $this->add($service_role);
 
         // 社員番号
         $employee_no = new Numeric('employee_no');

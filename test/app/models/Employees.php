@@ -62,6 +62,11 @@ class Employees extends Model{
     public $insurance_type;
 
     /**
+     * @var 操作権限
+     */
+    public $service_role;
+
+    /**
      * @var 固定給
      */
     public $monthly_charge;
@@ -188,6 +193,13 @@ class Employees extends Model{
         '5' => '専門職',
     ];
 
+    const SERVICE_ROLE_MAP = [
+        'none' => 'ログイン不可',
+        'user' => '従業員',
+        'admin' => '管理者',
+    ];
+
+
     /**************** methods ****************/
 
     public function initialize(){
@@ -249,7 +261,7 @@ class Employees extends Model{
         return empty($this->employee_no) ? "" :  str_pad($this->employee_no, 5, 0, STR_PAD_LEFT);
     }
 
-    public function authorization($username, $password){
+    public function authentication($username, $password){
         $employee = Employees::findfirst([
             "conditions" => "username = :username: and password = :password:",
             bind => [
@@ -258,6 +270,36 @@ class Employees extends Model{
             ]
         ]);
 
+        return $employee;
+    }
+
+    /**
+     * サロゲートキーをもとに従業員を取得します
+     * @param $employee_id サロゲートキー
+     * @return Employees
+     */
+    public static function getEmployeeById($id){
+        $employee = Employees::findfirst([
+            "conditions" => "id = :employee_id:",
+            bind => [
+                'employee_id' => $id,
+            ]
+        ]);
+        return $employee;
+    }
+
+    /**
+     * ログインIDをもとに従業員を取得します
+     * @param $login_id ログインID
+     * @return Employees
+     */
+    public static function getEmployeeByLoginId($login_id){
+        $employee = Employees::findfirst([
+            "conditions" => "username = :login_id:",
+            bind => [
+                'login_id' => $login_id,
+            ]
+        ]);
         return $employee;
     }
 
