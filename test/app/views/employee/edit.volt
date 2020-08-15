@@ -149,6 +149,39 @@
     </div>
 
     <div class="col-12 mb-4">
+        <div style="border: 1px solid #ced4da; border-radius: 5px; padding: 1.5rem;">
+            <div class="row">
+
+        <span class="col-12">
+            <h2 class="subtitle"><i class="fas fa-user-circle mr-1"></i>ログイン情報</h2>
+        </span>
+
+                <div class="form-element-wrap col-3">
+                    {{ form.label('service_role', ['class' : 'form-label']) }}
+                    {{ form.render('service_role') }}
+                    {{ form.messages('service_role') }}
+                </div>
+
+                <div class="form-element-wrap col-3">
+                    {{ form.label('username', ['class' : 'form-label']) }}
+                    {{ form.render('username') }}
+                    {{ form.messages('username') }}
+                </div>
+
+                <div class="form-element-wrap col-3">
+                    {{ form.label('password', ['class' : 'form-label']) }}
+                    {{ form.render('password') }}
+                    {{ form.messages('password') }}
+                </div>
+
+                <div class="form-element-wrap col-3">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-12 mb-4">
     <div style="border: 1px solid #ced4da; border-radius: 5px; padding: 1.5rem;">
     <div class="row">
 
@@ -825,6 +858,18 @@ $(function() {
         }else{
             $("input[name='insurance_bill']").prop("disabled", true);
             $("input[name='pension_bill']").prop("disabled", true);
+        }
+    })
+
+    {# 操作権限選択 ログイン情報のenable/disableを制御 #}
+    {# disable時、postは飛ばないので自動的にnullとなる #}
+    $(document).on("change", "#service_role", function () {
+        if( $(this).val() === "none" ){
+            $("input[name='username']").prop("disabled", true);
+            $("input[name='password']").prop("disabled", true);
+        }else{
+            $("input[name='username']").prop("disabled", false);
+            $("input[name='password']").prop("disabled", false);
         }
     })
 

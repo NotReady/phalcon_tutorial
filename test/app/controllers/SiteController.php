@@ -1,7 +1,7 @@
 <?php
 use Phalcon\Mvc\Controller;
 
-class SiteController extends Controller
+class SiteController extends ControllerBase
 {
     /**
      * 現場一覧アクション

@@ -1,7 +1,7 @@
 <?php
 use Phalcon\Mvc\Controller;
 
-class EmployeeController extends Controller
+class EmployeeController extends ControllerBase
 {
     /**
      * 従業員一覧アクション
@@ -65,6 +65,18 @@ class EmployeeController extends Controller
             if( $form->isValid() === false )
             {
                 throw new Exception();
+            }
+
+            // オリジナルのエンティティを取得
+            $emploee_origin = Employees::getEmployeeById($params['id']);
+
+            // パスワードの変更チェック
+            if( empty($employee->password) === false ){
+                if( $employee->password !== $emploee_origin->password ){
+                    // ハッシュ
+                    $hash = password_hash($employee->password, PASSWORD_BCRYPT);
+                    $employee->password = $hash;
+                }
             }
 
             if( $employee->save() === false )

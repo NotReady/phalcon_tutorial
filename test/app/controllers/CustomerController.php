@@ -1,7 +1,7 @@
 <?php
 use Phalcon\Mvc\Controller;
 
-class CustomerController extends Controller
+class CustomerController extends ControllerBase
 {
     /**
      * 顧客一覧アクション

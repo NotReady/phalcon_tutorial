@@ -1,7 +1,7 @@
 <?php
 use Phalcon\Mvc\Controller;
 
-class ReportController extends Controller
+class ReportController extends ControllerBase
 {
     /**
      * 勤務表一覧アクション
