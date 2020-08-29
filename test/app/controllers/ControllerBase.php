@@ -10,6 +10,8 @@ class ControllerBase extends Controller
      */
     public function beforeExecuteRoute($dispatcher)
     {
+        Logger::put($this->request->getURI());
+
         // ログイン状態をチェック
         $accessible = LoginManager::isAccessible();
         if( $accessible === false ){
