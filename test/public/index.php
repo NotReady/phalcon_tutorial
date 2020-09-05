@@ -20,6 +20,6 @@ try{
     $response = $application->handle();
     $response->send();
 }catch (\Exception $e){
-    echo 'Exception: ', $e->getMessage();
+    Logger::put("exception! {$e->getMessage()}");
 }
 
