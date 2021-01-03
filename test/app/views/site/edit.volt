@@ -33,9 +33,9 @@
         color: red;
     }
 
-    .tbl-hourly-charge td:nth-of-type(1){width: 30%;}
-    .tbl-hourly-charge td:nth-of-type(2){width: 40%;}
-    .tbl-hourly-charge td:nth-of-type(3){width: 30%;}
+    .cls-tabcontent-table td:nth-of-type(1){width: 30%;}
+    .cls-tabcontent-table td:nth-of-type(2){width: 40%;}
+    .cls-tabcontent-table td:nth-of-type(3){width: 30%;}
 
 </style>
 
@@ -107,7 +107,7 @@
 
         {# header #}
         <span class="col-12">
-            <h2 class="subtitle">時給管理</h2>
+            <h2 class="subtitle">請求と時給の管理</h2>
         </span>
 
         {# nav contents #}
@@ -131,9 +131,16 @@
                     <div class="tab-pane fade {% if setActive is true %}show active{% set setActive = false %}{% endif %}" id="v-charge-{{ worktype.worktype_id }}" role="tabpanel" aria-labelledby="v-pills-{{ worktype.worktype_id }}-tab">
                         <input type="hidden" name="site-id" value="{{ worktype.site_id }}">
                         <input type="hidden" name="worktype-id" value="{{ worktype.worktype_id }}">
-                        {# title #}
+                        {# 請求 #}
+                        <h2 class="table-title">{{ worktype.name }}の請求単価</h2>
+                        <table class="table tbl-hourly-bill cls-tabcontent-table">
+                            <tbody class="cls-hourly-bill-body">
+                            {# ajaxでローディング #}
+                            </tbody>
+                        </table>
+                        {# 時給 #}
                         <h2 class="table-title">{{ worktype.name }}の時給一覧</h2>
-                        <table class="table tbl-hourly-charge">
+                        <table class="table tbl-hourly-charge cls-tabcontent-table">
                             <tbody class="cls-hourly-charge-body">
                             {# ajaxでローディング #}
                             </tbody>
@@ -220,7 +227,7 @@ $(function() {
                 throw new Error("システムエラーです");
             }
 
-            // tabcontentにはめる
+            // 時給テーブルを構築
             $(`#${tabContendId} .cls-hourly-charge-body`).empty();
             $.each(data["hourly_charge"], function (key, value) {
                 $("<tr>").appendTo(`#${tabContendId} .cls-hourly-charge-body`)
@@ -234,6 +241,18 @@ $(function() {
                                             .append($("<button>").addClass("btn btn-danger cls-charge-handler ml-2").text("削除").attr({"data-skill-id": value["skill_id"],"data-action-method": "delete"}))
                          )
             });
+
+            // 請求テーブルを構築する
+            $(`#${tabContendId} .cls-hourly-bill-body`).empty();
+            $("<tr>").appendTo(`#${tabContendId} .cls-hourly-bill-body`)
+                .append($("<td>"))
+                .append($("<td>").append(
+                    $(`<input type="number">`).addClass("form-control text-right").val(data["hourly_bill"]).css({"display": "inline"}).attr({"placeholder": "時間単価を設定してください", "name": "bill"})).append(
+                    $("<span>").text("円").addClass("ml-2")
+                    )
+                )
+                .append($("<td>").append($("<button>").addClass("btn btn-primary cls-bill-handler").text("保存").attr({"data-action-method": "update"}))
+                .append($("<button>").addClass("btn btn-danger cls-bill-handler ml-2").text("削除").attr({"data-action-method": "delete"})));
 
             $(document).triggerHandler('ajaxStop', [ true ]);
         })
@@ -260,6 +279,50 @@ $(function() {
                 work_id: workId,
                 skill_id: skillId,
                 charge: charge
+            },
+            beforeSend: $(document).triggerHandler('ajaxStart'),
+        })
+            .then(function (data, textStatus, jqXHR) {
+                console.log(data);
+
+                // ステータスが無い
+                if( !data["result"] ){
+                    throw new Error("システムエラーです");
+                }
+
+                // 失敗
+                if( data["result"] === "failure"){
+                    if( data["message"] ) {
+                        throw new Error(data['message']);
+                    }
+                    throw new Error("システムエラーです");
+                }
+
+                $(document).triggerHandler('ajaxStop', [ true, actionMethod == "update" ? "保存しました" : "削除しました", ()=>{location.reload();}]);
+
+            })
+            .catch(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                $(document).triggerHandler('ajaxStop', [ false, jqXHR]);
+            });
+
+    });
+
+    {# 請求単価の更新・削除実装 #}
+    $(document).on("click", ".cls-bill-handler", function () {
+        const actionMethod = $(this).data("action-method");
+        const siteId = $(this).parents(".tab-pane").find("input[name='site-id']").val();
+        const workId = $(this).parents(".tab-pane").find("input[name='worktype-id']").val();
+        const bill = $(this).parents("tr").find("input[name='bill']").val();
+
+        $.ajax({
+            url: `/hourlybill/${actionMethod}`,
+            method: "POST",
+            global: false,
+            data: {
+                site_id: siteId,
+                work_id: workId,
+                bill: bill
             },
             beforeSend: $(document).triggerHandler('ajaxStart'),
         })

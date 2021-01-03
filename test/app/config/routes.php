@@ -63,9 +63,11 @@ $router->add('/sites/associate',                ['controller' => "api",      'ac
 $router->add('/customers',                      ['controller' => "customer", 'action'=>'index']);
 $router->add('/customers/update',               ['controller' => "api",      'action'=>'updateCustomer']);
 
-// 時給
+// 時給と請求単価
 $router->add('/hourlycharges/get',              ['controller' => "api",      'action'=>'getHourlyCharge']);
 $router->add('/hourlycharges/update',           ['controller' => "api",      'action'=>'updateHourlyCharge']);
 $router->add('/hourlycharges/delete',           ['controller' => "api",      'action'=>'deleteHourlyCharge']);
+$router->add('/hourlybill/update',              ['controller' => "api",      'action'=>'updateHourlyBill']);
+$router->add('/hourlybill/delete',              ['controller' => "api",      'action'=>'deleteHourlyBill']);
 
 $router->handle();

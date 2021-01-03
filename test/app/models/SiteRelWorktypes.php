@@ -15,6 +15,11 @@ class SiteRelWorktypes extends Model
      */
     public $worktype_id;
 
+    /**
+     * @var 請求時間単価
+     */
+    public $hourly_bill;
+
     public $created;
     public $updated;
 
@@ -96,19 +101,23 @@ class SiteRelWorktypes extends Model
     }
 
     /**
-     * 現場-作業エンティティを作成します
+     * 現場-作業エンティティを保存します
+     * @return SiteRelWorktypes
      */
-    public static function createEntity($site_id, $worktype_id){
+    public static function saveEntity($site_id, $worktype_id, $hourly_bill){
+
         $entity = new SiteRelWorktypes();
         $entity->site_id = $site_id;
         $entity->worktype_id = $worktype_id;
+        $entity->hourly_bill = $hourly_bill;
+
         if( $entity->save() === false ){
             throw new Exception('更新に失敗しました');
         }
     }
 
     /**
-     * 現場-作業エンティティを作成します
+     * 現場-作業エンティティを削除します
      */
     public static function deleteEntity($site_id, $worktype_id){
 
@@ -122,5 +131,4 @@ class SiteRelWorktypes extends Model
             throw new Exception('削除に失敗しました');
         }
     }
-
 }
