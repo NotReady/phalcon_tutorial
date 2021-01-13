@@ -88,27 +88,45 @@
                         </li>
 
                         <li class="form-element-wrap">
-                            {{ form.label('time_from', ['class' : 'form-label']) }}
-                            {{ form.render('time_from') }}
-                            {{ form.messages('time_from') }}
+                            {{ form.label('business_type', ['class' : 'form-label']) }}
+                            {{ form.render('business_type') }}
+                            {{ form.messages('business_type') }}
                         </li>
 
                         <li class="form-element-wrap">
-                            {{ form.label('time_to', ['class' : 'form-label']) }}
-                            {{ form.render('time_to') }}
-                            {{ form.messages('time_to') }}
+                            <div class="row">
+                                <div class="col-6">
+                                    {{ form.label('time_from', ['class' : 'form-label']) }}
+                                    {{ form.render('time_from') }}
+                                    {{ form.messages('time_from') }}
+                                </div>
+                                <div class="col-6">
+                                    {{ form.label('time_to', ['class' : 'form-label']) }}
+                                    {{ form.render('time_to') }}
+                                    {{ form.messages('time_to') }}
+                                </div>
+                            </div>
                         </li>
 
                         <li class="form-element-wrap">
-                            {{ form.label('breaktime_from', ['class' : 'form-label']) }}
-                            {{ form.render('breaktime_from') }}
-                            {{ form.messages('breaktime_from') }}
+                            <div class="row">
+                                <div class="col-6">
+                                    {{ form.label('breaktime_from', ['class' : 'form-label']) }}
+                                    {{ form.render('breaktime_from') }}
+                                    {{ form.messages('breaktime_from') }}
+                                </div>
+                                <div class="col-6">
+                                    {{ form.label('breaktime_to', ['class' : 'form-label']) }}
+                                    {{ form.render('breaktime_to') }}
+                                    {{ form.messages('breaktime_to') }}
+                                </div>
+                            </div>
                         </li>
 
                         <li class="form-element-wrap">
-                            {{ form.label('breaktime_to', ['class' : 'form-label']) }}
-                            {{ form.render('breaktime_to') }}
-                            {{ form.messages('breaktime_to') }}
+                            {{ form.label('monthly_bill_amount', ['class' : 'form-label']) }}
+                            {{ form.render('monthly_bill_amount') }}
+                            {{ form.messages('monthly_bill_amount') }}
                         </li>
 
                     </ul>
@@ -167,13 +185,15 @@
             $("input[name='id']").val("");
             $("select[name='customer_id']").val("");
             $("input[name='sitename']").val("");
+            $("select[name='business_type']").val("");
             $("input[name='time_from']").val("");
             $("input[name='time_to']").val("");
             $("input[name='breaktime_from']").val("");
             $("input[name='breaktime_to']").val("");
+            $("input[name='monthly_bill_amount']").val("");
 
             const site_id = $(e.relatedTarget).data("site-id");
-            {# 編集モードセットアップ #}
+            {# todo: 編集モードセットアップ #}
             if( site_id ){
                 const customer_id = $(e.relatedTarget).data("customer-id");
                 const site_name = $(e.relatedTarget).parents("tr").find("td:eq(0)").text();

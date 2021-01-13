@@ -582,7 +582,7 @@ class ApiController extends ControllerBase
                 echo json_encode([
                     'result' => 'success',
                     'hourly_charge' => $hourlyCharges->toArray(),
-                    'hourly_bill' => $siteRelWorktype->hourly_bill
+                    'hourly_bill' => $siteRelWorktype->hourly_bill_amount
                 ]);
             }catch (Exception $e){
                 echo json_encode([

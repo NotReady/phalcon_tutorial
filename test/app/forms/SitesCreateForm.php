@@ -34,6 +34,22 @@ class SitesCreateForm extends Form
         ]);
         $this->add($customer_id);
 
+        // 契約種別
+        $business_type = new Select('business_type',
+            [''=>'契約種別を選択してください'] +  Sites::BUSINESS_TYPE_MAP
+        );
+        $business_type->setLabel('契約種別');
+        $business_type->setAttributes([
+            'class' => 'form-control',
+        ]);
+        $business_type->addValidators([
+            new PresenceOf([
+                'message' => '契約種別を選択してください。'
+            ])
+        ]);
+        $this->add($business_type);
+
+
         // 現場名
         $sitename = new Text('sitename');
         $sitename->setLabel('現場名');
@@ -103,6 +119,21 @@ class SitesCreateForm extends Form
             ])
         ]);
         $this->add($breaktime_to);
+
+        // 請負金額
+        $monthly_bill_amount = new Numeric('monthly_bill_amount');
+        $monthly_bill_amount->setLabel('請負金額');
+        $monthly_bill_amount->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '請負金額を入力してください。'
+        ]);
+        $monthly_bill_amount->addValidators([
+            new PresenceOf([
+                'message' => '請負金額を入力してください。'
+            ])
+        ]);
+        $this->add($monthly_bill_amount);
+
 
         // 送信
         $this->add(new Submit('submit', [

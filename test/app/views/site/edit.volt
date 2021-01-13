@@ -64,11 +64,15 @@
     </div>
 
     <div class="form-element-wrap col-3">
-        {#blank#}
+        {{ form.label('business_type', ['class' : 'form-label']) }}
+        {{ form.render('business_type') }}
+        {{ form.messages('business_type') }}
     </div>
 
     <div class="form-element-wrap col-3">
-        {#blank#}
+        {{ form.label('monthly_bill_amount', ['class' : 'form-label']) }}
+        {{ form.render('monthly_bill_amount') }}
+        {{ form.messages('monthly_bill_amount') }}
     </div>
 
     <div class="form-element-wrap col-3">
