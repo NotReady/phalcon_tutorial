@@ -18,7 +18,7 @@ class SiteRelWorktypes extends Model
     /**
      * @var 請求時間単価
      */
-    public $hourly_bill;
+    public $hourly_bill_amount;
 
     public $created;
     public $updated;
@@ -104,12 +104,12 @@ class SiteRelWorktypes extends Model
      * 現場-作業エンティティを保存します
      * @return SiteRelWorktypes
      */
-    public static function saveEntity($site_id, $worktype_id, $hourly_bill){
+    public static function saveEntity($site_id, $worktype_id, $hourly_bill_amount){
 
         $entity = new SiteRelWorktypes();
         $entity->site_id = $site_id;
         $entity->worktype_id = $worktype_id;
-        $entity->hourly_bill = $hourly_bill;
+        $entity->hourly_bill = $hourly_bill_amount;
 
         if( $entity->save() === false ){
             throw new Exception('更新に失敗しました');
