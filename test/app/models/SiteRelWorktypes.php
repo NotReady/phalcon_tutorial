@@ -109,7 +109,7 @@ class SiteRelWorktypes extends Model
         $entity = new SiteRelWorktypes();
         $entity->site_id = $site_id;
         $entity->worktype_id = $worktype_id;
-        $entity->hourly_bill = $hourly_bill_amount;
+        $entity->hourly_bill_amount = $hourly_bill_amount;
 
         if( $entity->save() === false ){
             throw new Exception('更新に失敗しました');
