@@ -43,137 +43,143 @@
 
     <h1 class="title">登録情報</h1>
 
-    {{ form('/sites/edit/check', 'method': 'post', 'class': 'row') }}
+    {{ form('/sites/edit/check', 'method': 'post', 'class': 'mb-4') }}
 
     {{ form.render('id') }}
 
-    <span class="col-12">
-        <h2 class="subtitle">基本情報管理</h2>
-    </span>
+    <div class="col-12" style="border: 1px solid #ced4da; border-radius: 5px; padding: 1.5rem;">
+        <div class="row">
+            <span class="col-12">
+                <h2 class="subtitle">基本情報管理</h2>
+            </span>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('customer_id', ['class' : 'form-label']) }}
-        {{ form.render('customer_id') }}
-        {{ form.messages('customer_id') }}
-    </div>
+            <div class="form-element-wrap col-3">
+                {{ form.label('customer_id', ['class' : 'form-label']) }}
+                {{ form.render('customer_id') }}
+                {{ form.messages('customer_id') }}
+            </div>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('sitename', ['class' : 'form-label']) }}
-        {{ form.render('sitename') }}
-        {{ form.messages('sitename') }}
-    </div>
+            <div class="form-element-wrap col-3">
+                {{ form.label('sitename', ['class' : 'form-label']) }}
+                {{ form.render('sitename') }}
+                {{ form.messages('sitename') }}
+            </div>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('business_type', ['class' : 'form-label']) }}
-        {{ form.render('business_type') }}
-        {{ form.messages('business_type') }}
-    </div>
+            <div class="form-element-wrap col-3">
+                {{ form.label('business_type', ['class' : 'form-label']) }}
+                {{ form.render('business_type') }}
+                {{ form.messages('business_type') }}
+            </div>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('monthly_bill_amount', ['class' : 'form-label']) }}
-        {{ form.render('monthly_bill_amount') }}
-        {{ form.messages('monthly_bill_amount') }}
-    </div>
+            <div class="form-element-wrap col-3">
+                {{ form.label('monthly_bill_amount', ['class' : 'form-label']) }}
+                {{ form.render('monthly_bill_amount') }}
+                {{ form.messages('monthly_bill_amount') }}
+            </div>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('time_from', ['class' : 'form-label']) }}
-        {{ form.render('time_from') }}
-        {{ form.messages('time_from') }}
-    </div>
+            <div class="form-element-wrap col-3">
+                {{ form.label('time_from', ['class' : 'form-label']) }}
+                {{ form.render('time_from') }}
+                {{ form.messages('time_from') }}
+            </div>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('time_to', ['class' : 'form-label']) }}
-        {{ form.render('time_to') }}
-        {{ form.messages('time_to') }}
-    </div>
+            <div class="form-element-wrap col-3">
+                {{ form.label('time_to', ['class' : 'form-label']) }}
+                {{ form.render('time_to') }}
+                {{ form.messages('time_to') }}
+            </div>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('breaktime_from', ['class' : 'form-label']) }}
-        {{ form.render('breaktime_from') }}
-        {{ form.messages('breaktime_from') }}
-    </div>
+            <div class="form-element-wrap col-3">
+                {{ form.label('breaktime_from', ['class' : 'form-label']) }}
+                {{ form.render('breaktime_from') }}
+                {{ form.messages('breaktime_from') }}
+            </div>
 
-    <div class="form-element-wrap col-3">
-        {{ form.label('breaktime_to', ['class' : 'form-label']) }}
-        {{ form.render('breaktime_to') }}
-        {{ form.messages('breaktime_to') }}
-    </div>
+            <div class="form-element-wrap col-3">
+                {{ form.label('breaktime_to', ['class' : 'form-label']) }}
+                {{ form.render('breaktime_to') }}
+                {{ form.messages('breaktime_to') }}
+            </div>
 
-    <div class="form-element-wrap col-12 text-right mt-3">
-        <ul>
-            <li>{{ form.render('submit') }}</li>
-        </ul>
+            <div class="form-element-wrap col-12 text-right mt-3 mb-0">
+                <ul class="mb-0">
+                    <li>{{ form.render('submit') }}</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     {{ endform() }}
 
-    <div class="row">
-
+    <div class="col-12" style="border: 1px solid #ced4da; border-radius: 5px; padding: 1.5rem;">
         {# header #}
-        <span class="col-12">
-            <h2 class="subtitle">請求と時給の管理</h2>
-        </span>
+        <div class="row">
+            <span class="col-12">
+                <h2 class="subtitle">請求と時給の管理</h2>
+            </span>
 
-        {# nav contents #}
-        <div class="col-3">
-            <div class="nav flex-column nav-pills" id="id-hourly-charge-tab" role="tablist" aria-orientation="vertical">
-                {% set setActive = true %}
-                {% for worktype in work_types %}
-                <a class="nav-link {% if setActive is true %}active{% set setActive = false %}{% endif %}" id="v-pills-{{ worktype.worktype_id }}-tab" data-toggle="pill" href="#v-charge-{{ worktype.worktype_id }}"
-                   role="tab" aria-controls="v-charge-{{ worktype.worktype_id }}" aria-selected="true" data-site-id="{{ worktype.site_id }}"
-                   data-work-id="{{ worktype.worktype_id }}">{{ worktype.name }}</a>
-                {% endfor %}
-                <a class="nav-link {% if setActive is true %}active{% set setActive = false %}{% endif %}" id="v-pills-add-tab" data-toggle="pill" href="#v-charge-add"
-                   role="tab" aria-controls="v-charge-add" aria-selected="true">作業を追加する</a>
+            {# nav contents #}
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="id-hourly-charge-tab" role="tablist" aria-orientation="vertical">
+                    {% set setActive = true %}
+                    {% for worktype in work_types %}
+                        <a class="nav-link {% if setActive is true %}active{% set setActive = false %}{% endif %}" id="v-pills-{{ worktype.worktype_id }}-tab" data-toggle="pill" href="#v-charge-{{ worktype.worktype_id }}"
+                           role="tab" aria-controls="v-charge-{{ worktype.worktype_id }}" aria-selected="true" data-site-id="{{ worktype.site_id }}"
+                           data-work-id="{{ worktype.worktype_id }}">{{ worktype.name }}</a>
+                    {% endfor %}
+                    <a class="nav-link {% if setActive is true %}active{% set setActive = false %}{% endif %}" id="v-pills-add-tab" data-toggle="pill" href="#v-charge-add"
+                       role="tab" aria-controls="v-charge-add" aria-selected="true">作業を追加する</a>
+                </div>
             </div>
-        </div>
-        <div class="col-9">
-            <div class="tab-content" id="id-hourly-charge-content">
-                {% set setActive = true %}
-                {% for worktype in work_types %}
-                    {# 現場 - 時給ボディ #}
-                    <div class="tab-pane fade {% if setActive is true %}show active{% set setActive = false %}{% endif %}" id="v-charge-{{ worktype.worktype_id }}" role="tabpanel" aria-labelledby="v-pills-{{ worktype.worktype_id }}-tab">
-                        <input type="hidden" name="site-id" value="{{ worktype.site_id }}">
-                        <input type="hidden" name="worktype-id" value="{{ worktype.worktype_id }}">
-                        {# 請求 #}
-                        <h2 class="table-title">{{ worktype.name }}の請求単価</h2>
-                        <table class="table tbl-hourly-bill cls-tabcontent-table">
-                            <tbody class="cls-hourly-bill-body">
-                            {# ajaxでローディング #}
-                            </tbody>
-                        </table>
-                        {# 時給 #}
-                        <h2 class="table-title">{{ worktype.name }}の時給一覧</h2>
-                        <table class="table tbl-hourly-charge cls-tabcontent-table">
-                            <tbody class="cls-hourly-charge-body">
-                            {# ajaxでローディング #}
-                            </tbody>
-                        </table>
-                    </div>
-                {% endfor %}
+            <div class="col-9">
+                <div class="tab-content" id="id-hourly-charge-content">
+                    {% set setActive = true %}
+                    {% for worktype in work_types %}
+                        {# 現場 - 時給ボディ #}
+                        <div class="tab-pane fade {% if setActive is true %}show active{% set setActive = false %}{% endif %}" id="v-charge-{{ worktype.worktype_id }}" role="tabpanel" aria-labelledby="v-pills-{{ worktype.worktype_id }}-tab">
+                            <input type="hidden" name="site-id" value="{{ worktype.site_id }}">
+                            <input type="hidden" name="worktype-id" value="{{ worktype.worktype_id }}">
+                            {# 請求 #}
+                            <div class="cls-bill-form-container" {% if form.getValue('business_type') is not 'spot' %}style="display: none;"{% endif %}">
+                                <h2 class="table-title">{{ worktype.name }}の請求単価</h2>
+                                <table class="table tbl-hourly-bill cls-tabcontent-table">
+                                    <tbody class="cls-hourly-bill-body">
+                                    {# ajaxでローディング #}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {# 時給 #}
+                            <h2 class="table-title">{{ worktype.name }}の時給一覧</h2>
+                            <table class="table tbl-hourly-charge cls-tabcontent-table">
+                                <tbody class="cls-hourly-charge-body">
+                                {# ajaxでローディング #}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endfor %}
 
-                <div class="tab-pane fade {% if setActive is true %}show active{% set setActive = false %}{% endif %}" id="v-charge-add" role="tabpanel" aria-labelledby="v-pills-add-tab">
-                    {# title #}
-                    <div class="row">
-                        <div class="col-12">
-                            <h2 class="table-title">作業を追加します</h2>
+                    <div class="tab-pane fade {% if setActive is true %}show active{% set setActive = false %}{% endif %}" id="v-charge-add" role="tabpanel" aria-labelledby="v-pills-add-tab">
+                        {# title #}
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="table-title">作業を追加します</h2>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <select name="add-work-type" class="form-control">
-                                <option value="">作業を選択してください</option>
-                                {% for work in add_work_types %}
-                                <option value="{{ work.worktype_id }}">{{ work.worktype_name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-primary" id="id-btn-add-worktype">追加する</button>
+                        <div class="row">
+                            <div class="col-6">
+                                <select name="add-work-type" class="form-control">
+                                    <option value="">作業を選択してください</option>
+                                    {% for work in add_work_types %}
+                                        <option value="{{ work.worktype_id }}">{{ work.worktype_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-primary" id="id-btn-add-worktype">追加する</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -186,6 +192,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
 <script>
 $(function() {
+
+    {#
+        契約種別の選択イベント
+        契約種別＝請負契約
+            請負金額フォームを活性、派遣単価を非活性
+        契約種別＝請負契約以外(派遣)
+            請負金額フォームを非活性、派遣単価を活性
+    #}
+    $(document).on("change", "#business_type", function () {
+        if( $(this).val() === 'takeup' ){
+            $("#monthly_bill_amount").prop("disabled", false);
+            $(".cls-bill-form-container").hide();
+        }else{
+            $("#monthly_bill_amount").prop("disabled", true);
+            $(".cls-bill-form-container").show();
+        }
+    });
 
     {# タブの選択イベント #}
     $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {

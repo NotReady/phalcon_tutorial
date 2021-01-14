@@ -10,7 +10,7 @@ use \Phalcon\Validation\Validator\PresenceOf;
 
 class SitesCreateForm extends Form
 {
-    public function initialize($emtry=null, $options=null){
+    public function initialize($entity=null, $options=[]){
 
         // id
         $this->add(new Hidden('id'));
@@ -36,7 +36,7 @@ class SitesCreateForm extends Form
 
         // 契約種別
         $business_type = new Select('business_type',
-            [''=>'契約種別を選択してください'] +  Sites::BUSINESS_TYPE_MAP
+            [''=>'契約種別を選択してください'] + Sites::BUSINESS_TYPE_MAP
         );
         $business_type->setLabel('契約種別');
         $business_type->setAttributes([
@@ -125,13 +125,19 @@ class SitesCreateForm extends Form
         $monthly_bill_amount->setLabel('請負金額');
         $monthly_bill_amount->setAttributes([
             'class' => 'form-control',
-            'placeholder' => '請負金額を入力してください。'
+            'placeholder' => '請負契約時のみ入力',
+            $options['business_type'] === 'takeup' ? '' : 'disabled' =>
+                $options['business_type'] === 'takeup' ? '' : 'disabled'
         ]);
-        $monthly_bill_amount->addValidators([
-            new PresenceOf([
-                'message' => '請負金額を入力してください。'
-            ])
-        ]);
+
+        // 請負契約のみ請負金額必須
+        if( $options['business_type'] === 'takeup' ){
+            $monthly_bill_amount->addValidators([
+                new PresenceOf([
+                    'message' => '請負金額を入力してください'
+                ])
+            ]);
+        }
         $this->add($monthly_bill_amount);
 
 
