@@ -127,22 +127,31 @@ class ReportService
 
     /**
      * 曜日別の出勤日数を取得します
-     * @return int
+     * @return mixed
      */
     public function howDaysWorkedOfDay(){
         $daysWorked = [
             '平日' => 0,
             '土曜日' => 0,
-            '日曜日' => 0
+            '日曜日' => 0,
+            '祝祭日' => 0
         ];
-        foreach ( $this->_reports as $report ){
-            if( $report->attendance === 'absenteeism' ) continue;
 
-            $week = date('w', strtotime($report->at_day));
-            switch ($week){
-                case 0:     $daysWorked['日曜日'] += 1; break; // 日曜日
-                case 6:     $daysWorked['土曜日'] += 1; break; // 土曜日
-                default:    $daysWorked['平日'] += 1; break;   // 平日
+        // 出勤曜日を集計
+        foreach ( $this->_reports as $report ){
+
+            // 欠勤除外
+            if( $report->attendance === 'absenteeism' ) continue;
+            // 有給除外
+            if( $report->attendance === 'holiday' ) continue;
+            if( $report->attendance === 'half-holiday' ) continue;
+
+            // 集計
+            switch ($report->weekday){
+                case 'weekday' : $daysWorked['平日'] += 1; break;
+                case 'saturday': $daysWorked['土曜日'] += 1; break;
+                case 'sunday'  : $daysWorked['日曜日'] += 1; break;
+                case 'holiday' : $daysWorked['祝祭日'] += 1; break;
             }
         }
         return $daysWorked;
@@ -274,9 +283,8 @@ class ReportService
         ];
     }
 
-
     /**
-     * 遅刻か早退のうち、醜状時間に満たない勤怠控除時間合計を取得します
+     * 遅刻か早退のうち、規定就業時間に満たない勤怠控除時間合計を取得します
      * @return string
      */
     public function getMissingTime(){
@@ -292,4 +300,29 @@ class ReportService
 
     }
 
+    /**
+     * 遅刻か早退の日数と時間の内訳を取得します
+     * @return mixed
+     */
+    public function getMissingTimeDetail(){
+        $report = new Reports();
+        $missing = $report->getMissingCharge($this->_employee_id, $this->_year, $this->_month);
+
+        $missing_unit = [
+            'be_late' => ['days' => 0, 'time' => new TimeUtil()],
+            'Leave_early' => ['days' => 0, 'time' => new TimeUtil()]
+        ];
+
+        foreach ($missing as $statement){
+            $missing_unit[$statement->attendance]['days']++;
+            $missing_unit[$statement->attendance]['time']->addTimeStr($statement->time_missing);
+        }
+
+        foreach ($missing_unit as $label => $statement){
+            $missing_unit[$label]['time'] = $statement['time']->getTimeStr();
+        }
+
+        return $missing_unit;
+
+    }
 }

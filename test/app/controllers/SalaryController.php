@@ -23,7 +23,7 @@ class SalaryController extends ControllerBase
         $employee = null;
         $employee = Employees::findfirst($employee_id);
 
-        // 就業トランザクション
+        // 勤怠トランザクション連携
         $reportService = new ReportService($employee_id, $year, $month);
         $this->view->reports = $reportService->getMonthlyReport();
         $this->view->days_worked = $reportService->howDaysWorked();
@@ -31,9 +31,8 @@ class SalaryController extends ControllerBase
         $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();
         $this->view->summary = $reportService->getSummaryBySiteWorkUnit();
 
-        // 給与モデルを取得します
+        // 給与トランザクション連携
         $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
-
         $this->view->employee = $employee;
         $this->view->salary = $salary;
         $this->view->total_salary = $salary->getSalary();
@@ -42,6 +41,50 @@ class SalaryController extends ControllerBase
         $this->view->activeLoan = Loans::getAmount($employee->id);
     }
 
+    /**
+     * 給与明細アクション
+     */
+    public function reportSalaryAction(){
+        $year = $this->dispatcher->getParam('year');
+        $month = $this->dispatcher->getParam('month');
+        $employee_id = $this->dispatcher->getParam('employee_id');
+
+        // 給与モデルを取得します
+        $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
+
+        // 確定前は編集画面にリダイレクトします
+        if( $salary->fixed !== 'fixed' ){
+            return $this->response->redirect("salary/${employee_id}/${year}/${month}/edit");
+        }
+
+        // 社員マスタ
+        $employee = null;
+        $employee = Employees::findfirst($employee_id);
+
+        // 勤怠トランザクション連携
+        $reportService = new ReportService($employee_id, $year, $month);
+        $this->view->reports            = $reportService->getMonthlyReport();
+        $this->view->days_worked        = $reportService->howDaysWorked();              // 出勤日数
+        $this->view->days_Absenteeism   = $reportService->howDaysAbsenteeism();         // 欠勤日数
+        $this->view->days_holiday       = $reportService->howDaysHoliday();             // 有給日数
+        $this->view->days_be_late       = $reportService->getCountOfBeLateDays();       // 遅刻日数
+        $this->view->days_leave_early   = $reportService->getCountOfLeaveEarlyDays();   // 早退日数
+        $this->view->missing_report     = $reportService->getMissingTimeDetail();       // 遅刻・早退内訳
+        $this->view->howDaysWorkedOfDay = $reportService->howDaysWorkedOfDay();         // 出勤曜日内訳
+        $this->view->summary            = $reportService->getSummaryBySiteWorkUnit();   // 出勤時間内訳
+
+        // 給与トランザクション連携
+        $salary = Salaries::getSalaryByEmployeeAndDate($employee_id, $year, $month);
+        $this->view->employee = $employee;
+        $this->view->salary = $salary;
+        $this->view->total_salary = $salary->getSalary();
+        $this->view->thismonth = $month ;
+        $this->view->thisyear = $year ;
+        $this->view->activeLoan = Loans::getAmount($employee->id);
+
+        // 有給
+        $this->view->days_remain_holidays = PaidHolidays::getCountOfRemainHolidays($employee_id);
+    }
     /**
      * 給与編集アクション
      */

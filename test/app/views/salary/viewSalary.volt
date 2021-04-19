@@ -57,6 +57,7 @@
             {{ "%d年 %d月の給与" | format(thisyear, thismonth) }}
         </div>
         <div class="col-4 text-right">
+            <a href="/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/report" class="btn btn-success btn-fix">給与明細</a>
             <a href="/salary/{{ employee.id }}/{{ thisyear }}/{{ thismonth }}/cancel" class="btn btn-danger btn-fix">確定取消</a>
         </div>
     </h1>

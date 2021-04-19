@@ -25,6 +25,8 @@ $router->add('/report/list/worktype',           ['controller' => "api", 'action'
 
 // 給与閲覧
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "salary", 'action'=>'viewSalary']);
+// 給与明細
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/report', ['controller' => "salary", 'action'=>'reportSalary']);
 // 給与編集
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/edit',        ['controller' => "salary", 'action'=>'editSalary']);
 // 給与確定
