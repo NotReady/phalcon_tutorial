@@ -175,7 +175,7 @@ class Salaries extends Model{
 
         $salary = Salaries::findfirst([
             'conditions' => 'employee_id = :employee_id: and salary_date = :salary_date:',
-            bind => [
+            'bind' => [
                 'employee_id' => $employee_id,
                 'salary_date' => $salatyDate,
             ]
