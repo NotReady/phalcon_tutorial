@@ -564,6 +564,9 @@ class ApiController extends ControllerBase
         });
     }
 
+    /**
+     * 現場-作業種別-職能ごとの時給と請求単価を取得します
+     */
     public function getHourlyChargeAction(){
         $this->jsonResponse(function (){
             try{
@@ -571,11 +574,15 @@ class ApiController extends ControllerBase
                 $siteId = $params['site_id'];
                 $workId = $params['work_id'];
 
+                // 現場-作業種別-能力給ごとの時給一覧
                 $hourlyCharges = HourlyCharges::getHourlyChargeBySiteWork($siteId, $workId);
-                $arraiable = $hourlyCharges->toArray();
+                // 現場-作業種別の請求単価
+                $siteRelWorktype = SiteRelWorktypes::getEntity($siteId, $workId);
+
                 echo json_encode([
                     'result' => 'success',
-                    'hourly_charge' => $arraiable
+                    'hourly_charge' => $hourlyCharges->toArray(),
+                    'hourly_bill' => $siteRelWorktype->hourly_bill_amount
                 ]);
             }catch (Exception $e){
                 echo json_encode([
@@ -586,6 +593,9 @@ class ApiController extends ControllerBase
         });
     }
 
+    /**
+     * 時給を更新します
+     */
     public function updateHourlyChargeAction(){
         $this->jsonResponse(function (){
             try{
@@ -608,6 +618,9 @@ class ApiController extends ControllerBase
         });
     }
 
+    /**
+     * 時給を削除します
+     */
     public function deleteHourlyChargeAction(){
         $this->jsonResponse(function (){
             try{
@@ -629,6 +642,55 @@ class ApiController extends ControllerBase
         });
     }
 
+    /**
+     * 請求単価を更新します
+     */
+    public function updateHourlyBillAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $siteId = $params['site_id'];
+                $workId = $params['work_id'];
+                $hourly_bill = $params['bill'];
+                SiteRelWorktypes::saveEntity($siteId, $workId, $hourly_bill);
+                echo json_encode([
+                    'result' => 'success',
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
+     * 請求単価を削除します
+     */
+    public function deleteHourlyBillAction(){
+        $this->jsonResponse(function (){
+            try{
+                $params = $this->request->getPost();
+                $siteId = $params['site_id'];
+                $workId = $params['work_id'];
+                SiteRelWorktypes::deleteEntity($siteId, $workId);
+
+                echo json_encode([
+                    'result' => 'success',
+                ]);
+            }catch (Exception $e){
+                echo json_encode([
+                    'result' => 'failure',
+                    'message' => $e->getMessage()
+                ]);
+            }
+        });
+    }
+
+    /**
+     * 現場に作業種別を追加します
+     */
     public function associateWorkAction(){
         $this->jsonResponse(function (){
             try{
@@ -636,7 +698,7 @@ class ApiController extends ControllerBase
                 $siteId = $params['site_id'];
                 $workId = $params['work_id'];
 
-                SiteRelWorktypes::createEntity($siteId, $workId);
+                SiteRelWorktypes::saveEntity($siteId, $workId, null);
 
                 echo json_encode([
                     'result' => 'success',

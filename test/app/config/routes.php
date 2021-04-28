@@ -25,6 +25,8 @@ $router->add('/report/list/worktype',           ['controller' => "api", 'action'
 
 // 給与閲覧
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}', ['controller' => "salary", 'action'=>'viewSalary']);
+// 給与明細
+$router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/report', ['controller' => "salary", 'action'=>'reportSalary']);
 // 給与編集
 $router->add('/salary/{employee_id}/{year:[0-9]{4}}/{month:[0-9]{2}}/edit',        ['controller' => "salary", 'action'=>'editSalary']);
 // 給与確定
@@ -63,9 +65,11 @@ $router->add('/sites/associate',                ['controller' => "api",      'ac
 $router->add('/customers',                      ['controller' => "customer", 'action'=>'index']);
 $router->add('/customers/update',               ['controller' => "api",      'action'=>'updateCustomer']);
 
-// 時給
+// 時給と請求単価
 $router->add('/hourlycharges/get',              ['controller' => "api",      'action'=>'getHourlyCharge']);
 $router->add('/hourlycharges/update',           ['controller' => "api",      'action'=>'updateHourlyCharge']);
 $router->add('/hourlycharges/delete',           ['controller' => "api",      'action'=>'deleteHourlyCharge']);
+$router->add('/hourlybill/update',              ['controller' => "api",      'action'=>'updateHourlyBill']);
+$router->add('/hourlybill/delete',              ['controller' => "api",      'action'=>'deleteHourlyBill']);
 
 $router->handle();

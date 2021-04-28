@@ -226,6 +226,7 @@ class SalaryHelper
         }
 
         if( $employee->insurance_type === 'enable' ){
+
             /*
             $insurancies = ApiHelper::get(self::INSURANCE_CALC_API_ENDPOINT_V202003, [
                 'salary' => $salary->getChargiesSummary(),

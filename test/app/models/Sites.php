@@ -19,6 +19,11 @@ class Sites extends Model
     public $sitename;
 
     /**
+     * @var 契約種別
+     */
+    public $business_type;
+
+    /**
      * @var 業務開始時間
      */
     public $time_from;
@@ -38,8 +43,19 @@ class Sites extends Model
      */
     public $breaktime_to;
 
+    /**
+     * @var 月額請負金額
+     */
+    public $monthly_bill_amount;
+
     public $created;
+
     public $updated;
+
+    const BUSINESS_TYPE_MAP = [
+        'takeup' => '請負契約',
+        'spot' => '派遣契約',
+    ];
 
     public function initialize(){
         $this->skipAttributes(
@@ -67,10 +83,12 @@ class Sites extends Model
             'select
               s.id as site_id,
               s.sitename,
+              s.business_type,
               s.time_from,
               s.time_to,
               s.breaktime_from,
               s.breaktime_to,
+              s.monthly_bill_amount,
               s.created,
               s.updated,
               c.id as customer_id,

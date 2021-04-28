@@ -35,7 +35,7 @@ class SiteController extends ControllerBase
             $this->session->remove('site_edit_form');
         }else{
             $site = Sites::findFirst($site_id);
-            $form = new SitesCreateForm($site);
+            $form = new SitesCreateForm($site, $site->toArray());
         }
         $this->view->form = $form;
 
@@ -53,7 +53,7 @@ class SiteController extends ControllerBase
      */
     public function editCheckAction(){
         $params = $this->request->getPost();
-        $form = new SitesCreateForm();
+        $form = new SitesCreateForm(null, $params);
         $site = new Sites();
         $form->bind($params, $site);
 
@@ -64,12 +64,14 @@ class SiteController extends ControllerBase
                 throw new Exception();
             }
 
+            // 永続化
             if( $site->save() === false )
             {
                 throw new Exception();
             }
 
         }catch (Exception $e){
+            // インバリデーションフォームをセッションで連携
             $this->session->set('site_edit_form', $form);
         }
 
