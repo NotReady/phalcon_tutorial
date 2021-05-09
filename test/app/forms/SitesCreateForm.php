@@ -120,6 +120,20 @@ class SitesCreateForm extends Form
         ]);
         $this->add($breaktime_to);
 
+        // 定時時間
+        $regulartime = new ExtendedTimeForm('regulartime');
+        $regulartime->setLabel('定時時間');
+        $regulartime->setAttributes([
+            'class' => 'form-control',
+            'placeholder' => '現場の定時時間を入力してください',
+        ]);
+        $regulartime->addValidators([
+            new PresenceOf([
+                'message' => '現場の定時時間を入力してください。'
+            ])
+        ]);
+        $this->add($regulartime);
+                
         // 請負金額
         $monthly_bill_amount = new Numeric('monthly_bill_amount');
         $monthly_bill_amount->setLabel('請負金額');
@@ -146,8 +160,6 @@ class SitesCreateForm extends Form
             'class' => 'form-control btn-primary',
             'value' => '保存'
         ]));
-
-
     }
 
     public function messages($nameControl)

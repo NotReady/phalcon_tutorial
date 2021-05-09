@@ -44,6 +44,11 @@ class Sites extends Model
     public $breaktime_to;
 
     /**
+     * @var 定時時間
+     */
+    public $regulartime;
+
+    /**
      * @var 月額請負金額
      */
     public $monthly_bill_amount;

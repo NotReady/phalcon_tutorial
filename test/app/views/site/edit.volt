@@ -101,6 +101,12 @@
                 {{ form.messages('breaktime_to') }}
             </div>
 
+            <div class="form-element-wrap col-3">
+                {{ form.label('regulartime', ['class' : 'form-label']) }}
+                {{ form.render('regulartime') }}
+                {{ form.messages('regulartime') }}
+            </div>
+
             <div class="form-element-wrap col-12 text-right mt-3 mb-0">
                 <ul class="mb-0">
                     <li>{{ form.render('submit') }}</li>
