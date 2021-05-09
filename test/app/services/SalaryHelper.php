@@ -132,14 +132,17 @@ class SalaryHelper
                     self::getMissingDeductionByTime($salary->base_charge, $bisinessDaysOfThisMonth, $missingTimes);
             }
         }
-        
-        // 時間外手当を補完します
-        if( is_null($salary->overtime_charge) === true ){
-            // みなし残業を優先に設定
-            if( empty($employee->overtime_charge) === false ){
-                $salary->overtime_charge = $employee->overtime_charge;
-            }else{
-                $salary->overtime_charge = self::getOvertimeChargeBasedSalary($salary->base_charge, $bisinessDaysOfThisMonth, $reportHelper);
+
+        // 社員は時間外手当を補完します
+        if( $employee->employee_type === 'pro' ) {
+            if( is_null($salary->overtime_charge) === true ){
+                // みなし残業が設定されている
+                if( empty($employee->overtime_charge) === false ){
+                    $salary->overtime_charge = $employee->overtime_charge;
+                // みなし残業がない場合は基本給から算出する
+                }else{
+                    $salary->overtime_charge = self::getOvertimeChargeBasedSalary($salary->base_charge, $bisinessDaysOfThisMonth, $reportHelper);
+                }
             }
         }
 
