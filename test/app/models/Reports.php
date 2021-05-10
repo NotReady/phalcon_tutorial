@@ -304,7 +304,7 @@ class Reports extends Model
         from
             (
                 select
-                    case when timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) <= s.regulartime then s.regulartime
+                    case when timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) <= s.regulartime then '00:00:00'
                     else timediff(timediff(timediff(rp.time_to, rp.time_from), rp.breaktime), s.regulartime ) end as worktime,
                     rp.site_id,
                     s.sitename,
