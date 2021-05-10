@@ -113,6 +113,11 @@
                                     {{ form.render('breaktime') }}
                                     {{ form.messages('breaktime') }}
                                 </div>
+                                <div class="col-6">
+                                    {{ form.label('regulartime', ['class' : 'form-label']) }}
+                                    {{ form.render('regulartime') }}
+                                    {{ form.messages('regulartime') }}
+                                </div>
                             </div>
                         </li>
 
@@ -207,8 +212,17 @@
                 $(".modal-title").text("現場を追加します");
             }
 
-        })
+        });
 
+        $(document).on("change", "select[name='business_type']", function () {
+            {# 派遣 #}
+            if( $(this).val() === "takeup" ){
+                $("input[name='monthly_bill_amount']").prop("disabled", false);
+            {# 請負 #}
+            }else{
+                $("input[name='monthly_bill_amount']").prop("disabled", true);
+            }
+        });
     })
 </script>
 {% endblock %}
