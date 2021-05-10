@@ -34,8 +34,7 @@
         <th>顧客名</th>
         <th>始業時間</th>
         <th>就業時間</th>
-        <th>休憩開始時間</th>
-        <th>休憩終了時間</th>
+        <th>休憩時間</th>
         <th>編集</th>
         </thead>
         <tbody>
@@ -45,8 +44,7 @@
                     <td class="cell">{{ site.customername }}</td>
                     <td class="cell">{{ date('H:i', site.time_from | strtotime) }}</td>
                     <td class="cell">{{ date('H:i', site.time_to | strtotime) }}</td>
-                    <td class="cell">{{ date('H:i', site.breaktime_from | strtotime) }}</td>
-                    <td class="cell">{{ date('H:i', site.breaktime_to | strtotime) }}</td>
+                    <td class="cell">{{ date('H:i', site.breaktime | strtotime) }}</td>
                     <td class="cell"><a href="/sites/edit/{{ site.site_id }}" class="btn btn-primary">編集</a></td>
                 </tr>
             <?php endforeach; ?>
@@ -111,14 +109,14 @@
                         <li class="form-element-wrap">
                             <div class="row">
                                 <div class="col-6">
-                                    {{ form.label('breaktime_from', ['class' : 'form-label']) }}
-                                    {{ form.render('breaktime_from') }}
-                                    {{ form.messages('breaktime_from') }}
+                                    {{ form.label('breaktime', ['class' : 'form-label']) }}
+                                    {{ form.render('breaktime') }}
+                                    {{ form.messages('breaktime') }}
                                 </div>
                                 <div class="col-6">
-                                    {{ form.label('breaktime_to', ['class' : 'form-label']) }}
-                                    {{ form.render('breaktime_to') }}
-                                    {{ form.messages('breaktime_to') }}
+                                    {{ form.label('regulartime', ['class' : 'form-label']) }}
+                                    {{ form.render('regulartime') }}
+                                    {{ form.messages('regulartime') }}
                                 </div>
                             </div>
                         </li>
@@ -188,8 +186,7 @@
             $("select[name='business_type']").val("");
             $("input[name='time_from']").val("");
             $("input[name='time_to']").val("");
-            $("input[name='breaktime_from']").val("");
-            $("input[name='breaktime_to']").val("");
+            $("input[name='breaktime']").val("");
             $("input[name='monthly_bill_amount']").val("");
 
             const site_id = $(e.relatedTarget).data("site-id");
@@ -199,16 +196,14 @@
                 const site_name = $(e.relatedTarget).parents("tr").find("td:eq(0)").text();
                 const time_from = $(e.relatedTarget).parents("tr").find("td:eq(2)").text();
                 const time_to = $(e.relatedTarget).parents("tr").find("td:eq(3)").text();
-                const breaktime_from = $(e.relatedTarget).parents("tr").find("td:eq(4)").text();
-                const breaktime_to = $(e.relatedTarget).parents("tr").find("td:eq(5)").text();
+                const breaktime = $(e.relatedTarget).parents("tr").find("td:eq(4)").text();
 
                 $("input[name='id']").val(site_id);
                 $("select[name='customer_id']").val(customer_id);
                 $("input[name='sitename']").val(site_name);
                 $("input[name='time_from']").val(time_from);
                 $("input[name='time_to']").val(time_to);
-                $("input[name='breaktime_from']").val(breaktime_from);
-                $("input[name='breaktime_to']").val(breaktime_to);
+                $("input[name='breaktime']").val(breaktime);
 
                 $(".modal-title").text("現場を編集します");
             }
@@ -217,8 +212,17 @@
                 $(".modal-title").text("現場を追加します");
             }
 
-        })
+        });
 
+        $(document).on("change", "select[name='business_type']", function () {
+            {# 派遣 #}
+            if( $(this).val() === "takeup" ){
+                $("input[name='monthly_bill_amount']").prop("disabled", false);
+            {# 請負 #}
+            }else{
+                $("input[name='monthly_bill_amount']").prop("disabled", true);
+            }
+        });
     })
 </script>
 {% endblock %}

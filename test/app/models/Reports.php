@@ -158,7 +158,7 @@ class Reports extends Model
             (
                 select
                     timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) as worktime,
-                    timediff(timediff(s.time_to, s.time_from), timediff(s.breaktime_to, s.breaktime_from)) as overtime,
+                    timediff(timediff(s.time_to, s.time_from), s.breaktime) as overtime,
                     rp.site_id,
                     s.sitename,
                     w.id as worktype_id,
@@ -208,7 +208,7 @@ class Reports extends Model
             rp.attendance,
             -- 勤怠不足時間
             timediff(
-                timediff( timediff(sites.time_to, sites.time_from), timediff(sites.breaktime_to, sites.breaktime_from))
+                timediff( timediff(sites.time_to, sites.time_from), sites.breaktime)
                 ,timediff( timediff( rp.time_to, rp.time_from), rp.breaktime)
             ) as time_missing
         from
@@ -263,7 +263,7 @@ class Reports extends Model
         from
             (
                 select
-                    case when timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) > '08:00:00' then '08:00:00'
+                    case when timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) > s.regulartime then s.regulartime
                     else timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) end as worktime,
                     rp.site_id,
                     s.sitename,
@@ -304,8 +304,8 @@ class Reports extends Model
         from
             (
                 select
-                    case when timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) <= '08:00:00' then '00:00:00'
-                    else timediff(timediff(timediff(rp.time_to, rp.time_from), rp.breaktime), '08:00:00' ) end as worktime,
+                    case when timediff(timediff(rp.time_to, rp.time_from), rp.breaktime) <= s.regulartime then s.regulartime
+                    else timediff(timediff(timediff(rp.time_to, rp.time_from), rp.breaktime), s.regulartime ) end as worktime,
                     rp.site_id,
                     s.sitename,
                     w.id as worktype_id,

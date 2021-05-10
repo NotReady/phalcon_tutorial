@@ -25,7 +25,7 @@ class Worktypes extends Model
                     w.name,
                     s.time_from,
                     s.time_to,
-                    timediff(s.breaktime_to, s.breaktime_from) as breaktime
+                    s.breaktime
                 from
                     employees e
                 join

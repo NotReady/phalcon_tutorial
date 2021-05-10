@@ -34,14 +34,14 @@ class Sites extends Model
     public $time_to;
 
     /**
-     * @var 休憩開始時間
+     * @var 休憩時間
      */
-    public $breaktime_from;
+    public $breaktime;
 
     /**
-     * @var 休憩終了時間
+     * @var 定時時間
      */
-    public $breaktime_to;
+    public $regulartime;
 
     /**
      * @var 月額請負金額
@@ -86,8 +86,7 @@ class Sites extends Model
               s.business_type,
               s.time_from,
               s.time_to,
-              s.breaktime_from,
-              s.breaktime_to,
+              s.breaktime,
               s.monthly_bill_amount,
               s.created,
               s.updated,
