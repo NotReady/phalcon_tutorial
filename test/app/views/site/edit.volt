@@ -90,15 +90,9 @@
             </div>
 
             <div class="form-element-wrap col-3">
-                {{ form.label('breaktime_from', ['class' : 'form-label']) }}
-                {{ form.render('breaktime_from') }}
-                {{ form.messages('breaktime_from') }}
-            </div>
-
-            <div class="form-element-wrap col-3">
-                {{ form.label('breaktime_to', ['class' : 'form-label']) }}
-                {{ form.render('breaktime_to') }}
-                {{ form.messages('breaktime_to') }}
+                {{ form.label('breaktime', ['class' : 'form-label']) }}
+                {{ form.render('breaktime') }}
+                {{ form.messages('breaktime') }}
             </div>
 
             <div class="form-element-wrap col-3">

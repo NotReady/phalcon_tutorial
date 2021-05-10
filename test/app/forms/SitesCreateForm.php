@@ -92,34 +92,21 @@ class SitesCreateForm extends Form
         ]);
         $this->add($time_to);
 
-        // 休憩開始時間
-        $breaktime_from = new ExtendedTimeForm('breaktime_from');
-        $breaktime_from->setLabel('休憩開始時間');
-        $breaktime_from->setAttributes([
+        // 休憩時間
+        $breaktime = new ExtendedTimeForm('breaktime');
+        $breaktime->setLabel('休憩時間');
+        $breaktime->setAttributes([
             'class' => 'form-control',
-            'placeholder' => '休憩開始時間を入力してください。',
+            'placeholder' => '休憩時間を入力してください。',
         ]);
-        $breaktime_from->addValidators([
+        $breaktime->addValidators([
             new PresenceOf([
-                'message' => '休憩開始時間を入力してください。'
+                'message' => '休憩時間を入力してください。'
             ])
         ]);
-        $this->add($breaktime_from);
+        $this->add($breaktime);
 
-        // 休憩終了時間
-        $breaktime_to = new ExtendedTimeForm('breaktime_to');
-        $breaktime_to->setLabel('休憩終了時間');
-        $breaktime_to->setAttributes([
-            'class' => 'form-control',
-            'placeholder' => '休憩終了時間を入力してください。',
-        ]);
-        $breaktime_to->addValidators([
-            new PresenceOf([
-                'message' => '休憩終了時間を入力してください。'
-            ])
-        ]);
-        $this->add($breaktime_to);
-
+        
         // 定時時間
         $regulartime = new ExtendedTimeForm('regulartime');
         $regulartime->setLabel('定時時間');
@@ -133,7 +120,7 @@ class SitesCreateForm extends Form
             ])
         ]);
         $this->add($regulartime);
-                
+
         // 請負金額
         $monthly_bill_amount = new Numeric('monthly_bill_amount');
         $monthly_bill_amount->setLabel('請負金額');
